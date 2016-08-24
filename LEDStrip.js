@@ -73,6 +73,7 @@ class This extends EventEmitter {
     this.sendCommand.apply(this,args);
   }
   sendCommand(command,cb,data,notimeout) {
+    console.log("sending "+command+" to "+this.ip);
     if (!this.ip) {
       console.log("ERROR: sending command to disconnected strip");
       cb(null,"DISCONNECTED");
@@ -157,6 +158,7 @@ class This extends EventEmitter {
     this.sendCommand("brightness?value="+brightness);
   }
   toggle(value) {
+    console.log("toggling: ",value);
     this.sendCommand(value ? "power/on" : "power/off");
   }
   loadPattern(renderedPattern,isPreview,callback) {

@@ -22,7 +22,7 @@ var discoveryProbe = toByteArray(
   "\r\n"
 );
 
-var TIMEOUT_DELAY = 5000;
+var TIMEOUT_DELAY = 20000;
 
 var This = function() {
   this.init.apply(this,arguments);

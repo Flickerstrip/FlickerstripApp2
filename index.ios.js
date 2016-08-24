@@ -7,8 +7,11 @@ import {
   TabBarIOS
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/EvilIcons';
+import EIcon from 'react-native-vector-icons/EvilIcons';
+import NIcon from 'react-native-vector-icons/Entypo';
+import FIcon from 'react-native-vector-icons/FontAwesome';
 import StripListing from "./StripListing";
+import LightworksMain from "./LightworksMain";
 
 var Tabs = require('react-native-tabs');
 var NavigationBar = require('react-native-navbar');
@@ -20,18 +23,11 @@ class FlickerstripApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedTab: 'redTab',
+      //selectedTab: 'strips',
+      selectedTab: 'lightworks',
       notifCount: 0,
       presses: 0,
     }
-  }
-  _renderContent(color: string, pageText: string, num?: number) {
-    return (
-      <View style={[styles.tabContent, {backgroundColor: color}]}>
-        <Text style={styles.tabText}>{pageText}</Text>
-        <Text style={styles.tabText}>{num} re-renders of the {pageText}</Text>
-      </View>
-    );
   }
   render() {
     var rightButtonConfig = {
@@ -44,48 +40,66 @@ class FlickerstripApp extends React.Component {
     var titleConfig = {
       title: 'Hello, world',
     };
-    var icon = (<Icon name="navicon" size={30} color="rgba(0,136,204,1)" style={styles.titleIcon} />);
+
+    var menuButton = (<EIcon name="navicon" size={30} color="rgba(0,136,204,1)" style={styles.titleIcon} />);
+    var stripsButton = (<NIcon name="signal" size={30} color="rgba(0,136,204,1)" />);
 
     return (
       <View style={styles.container}>
-        <NavigationBar title={titleConfig} rightButton={icon} />
+        <NavigationBar title={titleConfig} rightButton={menuButton} />
         <TabBarIOS unselectedTintColor="yellow" tintColor="white" barTintColor="darkslateblue">
-         <TabBarIOS.Item
-           title="Blue Tab"
-           icon={{uri: base64Icon, scale: 3}}
-           selected={this.state.selectedTab === 'blueTab'}
-           onPress={() => {
-             this.setState({
-               selectedTab: 'blueTab',
-             });
-           }}>
-           <StripListing />
-         </TabBarIOS.Item>
-         <TabBarIOS.Item
-           systemIcon="history"
-           badge={this.state.notifCount > 0 ? this.state.notifCount : undefined}
-           selected={this.state.selectedTab === 'redTab'}
-           onPress={() => {
-             this.setState({
-               selectedTab: 'redTab',
-               notifCount: this.state.notifCount + 1,
-             });
-           }}>
-           {this._renderContent('#783E33', 'Red Tab', this.state.notifCount)}
-         </TabBarIOS.Item>
-         <TabBarIOS.Item
-           renderAsOriginal
-           title="More"
-           selected={this.state.selectedTab === 'greenTab'}
-           onPress={() => {
-             this.setState({
-               selectedTab: 'greenTab',
-               presses: this.state.presses + 1
-             });
-           }}>
-           {this._renderContent('#21551C', 'Green Tab', this.state.presses)}
-         </TabBarIOS.Item>
-       </TabBarIOS>
+          <NIcon.TabBarItemIOS
+            title="Strips"
+            iconName="signal"
+            selected={this.state.selectedTab === 'strips'}
+            onPress={() => {
+              this.setState({
+                selectedTab: 'strips',
+              });
+            }}>
+            <StripListing />
+          </NIcon.TabBarItemIOS>
+
+          <FIcon.TabBarItemIOS
+            title="Lightworks"
+            iconName="cube"
+            selected={this.state.selectedTab === 'lightworks'}
+            onPress={() => {
+              this.setState({
+                selectedTab: 'lightworks',
+                presses: this.state.presses + 1
+              });
+            }}>
+            <LightworksMain />
+          </FIcon.TabBarItemIOS>
+
+          <FIcon.TabBarItemIOS
+            title="Editor"
+            iconName="pencil"
+            //badge={this.state.notifCount > 0 ? this.state.notifCount : undefined}
+            selected={this.state.selectedTab === 'editor'}
+            onPress={() => {
+              this.setState({
+                selectedTab: 'editor',
+                notifCount: this.state.notifCount + 1,
+              });
+            }}>
+            <Text>Editor</Text>
+          </FIcon.TabBarItemIOS>
+
+          <FIcon.TabBarItemIOS
+            title="Settings"
+            iconName="cogs"
+            selected={this.state.selectedTab === 'settings'}
+            onPress={() => {
+              this.setState({
+                selectedTab: 'settings',
+                presses: this.state.presses + 1
+              });
+            }}>
+            <Text>Settings</Text>
+          </FIcon.TabBarItemIOS>
+        </TabBarIOS>
       </View>
     );
   }

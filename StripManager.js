@@ -2,6 +2,7 @@ var EventEmitter = require('events').EventEmitter;
 
 var DiscoveryService = require('./DiscoveryService');
 var LEDStrip = require('./LEDStrip');
+var _ = require('lodash');
 
 class This extends EventEmitter {
   constructor(props) {
@@ -13,15 +14,18 @@ class This extends EventEmitter {
 
     this.strips = {};
   }
+  findStripIdByIp(ip) {
+    var found = null;
+    _.each(this.strips,function(value,key) {
+        if (value.ip == ip) found = key;
+    });
+    return found;
+  }
   onStripDiscovered(ip) {
-    console.log("strip discovered",ip);
     LEDStrip.probeStrip(ip,function(strip) {
-      console.log("probed strip",strip);
       if (this.strips[strip.id]) {
-        console.log("emitting connected");
-        this.emit("StripConnected",strip);
+        //this.emit("StripConnected",strip);
       } else {
-        console.log("emitting added");
         this.strips[strip.id] = strip;
         this.emit("StripAdded",strip);
       }
@@ -29,8 +33,16 @@ class This extends EventEmitter {
   }
   onStripLost(ip) {
     console.log("strip lost",ip);
-    var removeList = _.compact(_.map(this.strips,function(strip) { return strip.ip === ip ? strip.id : false}));
-    console.log("remove list: (TODO REMOVE THINGS) ",removeList);
+    //var removeList = _.compact(_.map(this.strips,function(strip) { return strip.ip === ip ? strip.id : false}));
+    //console.log("remove list: (TODO REMOVE THINGS) ",removeList);
+
+    var id = this.findStripIdByIp(ip);
+    var strip = this.strips[id];
+    console.log("foudn strip by ip",id,ip);
+    delete this.strips[id];
+    console.log("deleted item, new arry: ",_.pluck(_.values(this.strips),"ip"));
+
+    this.emit("StripRemoved",strip);
   }
 }
 
