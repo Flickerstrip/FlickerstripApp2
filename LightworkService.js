@@ -23,8 +23,23 @@ class This extends EventEmitter {
             headers: {"Authorization":"Basic " + b64.fromByteArray(getBytes(auth))},
         };
        
-       console.log("requesting!",opt);
        fetch(endpoint+"/user/"+user.id+"/patterns?size=20&page="+page,opt).then((response) => response.json()).then(function(data) {
+           cb(data);
+       }); 
+    }
+    static fetchPublicLightworks(user,page,cb) {
+        page = page || 0;
+
+        var opt = {
+            method: "GET",
+        };
+
+        if (user) {
+            var auth = user.email + ":" + user.password;
+            opt.headers = {"Authorization":"Basic " + b64.fromByteArray(getBytes(auth))};
+        }
+       
+       fetch(endpoint+"/pattern?size=20&page="+page,opt).then((response) => response.json()).then(function(data) {
            cb(data);
        }); 
     }
