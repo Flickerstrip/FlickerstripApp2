@@ -32,15 +32,9 @@ class This extends EventEmitter {
     }.bind(this));
   }
   onStripLost(ip) {
-    console.log("strip lost",ip);
-    //var removeList = _.compact(_.map(this.strips,function(strip) { return strip.ip === ip ? strip.id : false}));
-    //console.log("remove list: (TODO REMOVE THINGS) ",removeList);
-
     var id = this.findStripIdByIp(ip);
     var strip = this.strips[id];
-    console.log("foudn strip by ip",id,ip);
     delete this.strips[id];
-    console.log("deleted item, new arry: ",_.pluck(_.values(this.strips),"ip"));
 
     this.emit("StripRemoved",strip);
   }

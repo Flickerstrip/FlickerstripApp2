@@ -6,9 +6,10 @@
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
+    "base64-js": "^1.1.2",
     "extend": "^3.0.0",
     "node-ssdp": "^2.7.1",
-    "react": "^15.1.0",
+    "react": "~15.2.0",
     "react-native": "^0.27.0-rc2",
     "react-native-navbar": "^1.5.0",
     "react-native-tabs": "^1.0.7",
