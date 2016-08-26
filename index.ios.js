@@ -11,6 +11,7 @@ import EIcon from 'react-native-vector-icons/EvilIcons';
 import NIcon from 'react-native-vector-icons/Entypo';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import StripListing from "./StripListing";
+import LightworkEditor from "./LightworkEditor";
 import LightworksMain from "./LightworksMain";
 
 var Tabs = require('react-native-tabs');
@@ -24,7 +25,8 @@ class FlickerstripApp extends React.Component {
     super(props);
     this.state = {
       //selectedTab: 'strips',
-      selectedTab: 'lightworks',
+      //selectedTab: 'lightworks',
+      selectedTab: 'editor',
       notifCount: 0,
       presses: 0,
     }
@@ -84,7 +86,7 @@ class FlickerstripApp extends React.Component {
                 notifCount: this.state.notifCount + 1,
               });
             }}>
-            <Text>Editor</Text>
+            <LightworkEditor />
           </FIcon.TabBarItemIOS>
 
           <FIcon.TabBarItemIOS

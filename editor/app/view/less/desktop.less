@@ -1,0 +1,273 @@
+@import "style.less";
+
+//////////////LAYOUT////////////////
+body {
+    height: 100vh;
+}
+
+.backButton,
+.showMenuButton {
+    display: none;
+}
+
+.mobileOnly {
+    display: none !important;
+}
+
+.mainContainer {
+	height: 100%;
+    .flex-display;
+    .stripListing {
+        border: none;
+        margin: 5px;
+        width: 300px !important;
+        .flex-display;
+        .flex-direction(column);
+        .body {
+            .flex(1 1 auto);
+        }
+    }
+    .groupDetails {
+        border: none;
+        margin: 5px;
+        .flex(1);
+    }
+}
+
+.mainContainer {
+    .body {
+        margin: 5px;
+        padding: 5px;
+    }
+}
+
+.navigationButtons {
+    display: none;
+}
+
+////////////////////////// Load Pattern Dialog ////////////////////////////////
+
+.loadPatternDialog .titleArea .btn {
+    margin-right: 3px;
+    float: right;
+}
+
+.CodeMirror {
+    border: 1px solid black;
+}
+
+.loadPatternDialog {
+    .paneldisabled {display: none;}
+    &.deselected {
+        .paneldisabled { .flex-display; }
+        .titleArea, .atternPreview, .patternConfiguration { display: none; }
+    }
+}
+
+.editPatternDialog .mbody {
+    .flex-display;
+    .flex-direction(column);
+
+    >* {
+        .flex(0 0 auto);
+
+        &:last-child {
+            .flex(1 1 auto);
+        }
+    }
+}
+
+.editPatternDialog .mcontent {
+    .flexExpandContent;
+}
+
+.downloadPatternDialog .mbody {
+    .flex(1 1 auto);
+    padding: 10px;
+
+    .flex-display;
+    .flex-direction(column);
+
+    >* {
+        .flex(0 0 auto);
+
+        &:last-child {
+            .flex(1 1 auto);
+        }
+    }
+
+    .serverPatterns {
+        .paneldisabled { display: none; };
+        &.empty .paneldisabled { .flex-display; };
+    }
+    .right {
+        .paneldisabled { display: none; };
+        &.deselected {
+            .patternTitle,
+            .patternPreview,
+            .buttons { display: none; };
+
+            .paneldisabled { .flex-display; };
+        }
+    }
+}
+
+.loginDialog {
+    margin: auto;
+    width: 500px;
+
+    .mdialog {
+        top: 0;
+    }
+
+	.error {
+		color: red;
+	}
+}
+
+.downloadPatternDialog .listElement {
+    height: 25px;
+}
+
+.loadPatternDialog .mbody, .downloadPatternDialog .mbody {
+    .flex(1 1 auto);
+    .flex-display;
+    .flex-direction(row);
+    .flex-wrap(no-wrap);
+    .align-items(stretch);
+    padding: 0;
+
+    .listElement {
+        height: 30px;
+    }
+
+    .left {
+        width: 250px;
+        padding: 10px;
+        .flexExpandContent;
+
+        .list-group {
+            overflow-y: auto;
+        }
+    }
+
+    .right {
+        .flex(1 1 auto);
+        padding: 10px;
+
+        .flex-display;
+        .flex-direction(column);
+
+        * {
+            .flex(0 0 auto);
+
+            &:last-child {
+                .flex(1 1 auto);
+            }
+        }
+    }
+}
+
+.modal {
+    .mdialog {
+        //z-index: 1060;
+        .modal-dialog;
+    }
+
+    .mcontent {
+        .modal-content;
+        .flex-display;
+        .flex-direction(column);
+        .flex-wrap(no-wrap);
+        .align-items(stretch);
+
+        .navigationBar {
+            .flex(0 0 auto);
+        }
+
+
+        .mfooter {
+            .flex(0 0 auto);
+        }
+    }
+
+    .mbody {
+        .modal-body;
+    }
+
+    .navigationRemaining {
+        .modal-title;
+    }
+
+    .mfooter {
+        .modal-footer;
+    }
+}
+
+.largemodal {
+    .flexExpandContent;
+
+    .mdialog {
+        .flexExpandContent;
+    }
+}
+////////////////////////// Load Pattern Dialog ////////////////////////////////
+
+.progressDialog {
+    .modal;
+    align-items: center;
+    display: flex;
+
+    .mdialog {
+        //z-index: 1050;
+        .modal-dialog;
+        flex: 1;
+    }
+
+    .mcontent {
+        .modal-content;
+    }
+
+    .mbody {
+        .modal-body;
+    }
+
+    .mtitle {
+        .modal-title;
+    }
+
+    .mheader {
+        .modal-header;
+    }
+}
+
+.groupDetails .nextToBrightnessBar {
+    .flex(1 1 auto);
+    .flex-display;
+    .flex-direction(column);
+    margin-right: 30px;
+
+    >* {
+        .flex(0 0 auto);
+        &.storedPatterns {
+            .flex(1 1 auto);
+        }
+    }
+}
+
+.storedPatterns {
+    overflow-y:scroll;
+}
+
+.forgetPattern,
+.selectPattern {
+    .btn-xs;
+}
+
+.stripDetails .modal-dialog {
+    margin-top: 0;
+
+    .modal-body {
+        padding: 0px 15px;
+    }
+}

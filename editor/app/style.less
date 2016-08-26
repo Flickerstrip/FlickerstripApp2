@@ -1,0 +1,167 @@
+@import "view/less/style.less";
+
+.editPatternDialog {
+    display: block !important;
+}
+
+.navigationBar {
+    display: none;
+}
+
+body { background-color: white; }
+
+.loadingIndicator {
+    font-size: 120px;
+    color: white;
+}
+
+.lightworkBrowser .panel-heading button {
+    position: absolute;
+    top: 5px;
+    right: 21px;
+}
+
+.floatLeft {
+    float: left;
+}
+
+.mainContainer {
+    height: 100%;
+}
+
+.loginPanel {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 2px;
+
+    a.active {
+        color: black;
+        text-decoration: none;
+    }
+}
+
+.scrollable {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.lightworkBrowser {
+    width: 250px;
+    position: relative;
+}
+
+.panel-heading {
+    padding: 5px 15px;
+    min-height: 37px;
+}
+
+.marginRight {
+    margin-right: 3px;
+}
+
+.flexParent {
+    .flex-display;
+}
+
+.flexAlignCenter {
+    .align-items(center);
+}
+
+.flexHorizontal {
+    .flex-direction(row);
+}
+
+.flexVertical {
+    .flex-direction(column);
+}
+
+.flexGrow {
+    .flex(1 1 auto);
+}
+
+.flexShrink {
+    .flex(0 0 auto);
+}
+
+.listElement.selected,.listElement.selected:hover {
+    background-color: #9cf;
+}
+.listElement:hover {
+    background-color: #eee;
+}
+
+
+.listElement .published {
+    margin-left: 3px;
+}
+
+.paginationContainer {
+    text-align: center;
+    > * {
+        display: inline-block;
+    }
+}
+
+.pagination {
+    margin: 0;
+}
+
+.moreLink {
+    text-align: center;
+    width: 100%;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.lightworks {
+    >* {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 5px;
+        margin-bottom: 5px;
+    }
+
+    .left {
+        width: 165px;
+    }
+
+    .middle {
+        width: 20px;
+        font-size: 20px;
+        .align-self(center);
+
+        margin-right: 5px;
+
+        .vote {
+            height: 30px;
+            line-height: 30px;
+            &:first-child {
+                position: relative;
+                left: 1.5px;
+            }
+            &:hover {
+                color: #999;
+            }
+
+            &.active {
+                color: #39f;
+            }
+        }
+    }
+
+    .name {
+        font-size: 24px;
+        display: block;
+    }
+
+    .author {
+        color: #999;
+        display: block;
+    }
+
+    canvas {
+        margin-bottom: 0px;
+    }
+
+}

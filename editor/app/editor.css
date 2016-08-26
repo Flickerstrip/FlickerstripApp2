@@ -1,0 +1,161 @@
+body {
+  background-color: white;
+}
+body.loggedIn .showloggedOut {
+  display: none;
+}
+body:not(.loggedIn) .showloggedIn {
+  display: none;
+}
+.mainContainer.editorActive .browseMode {
+  display: none;
+}
+.loadingIndicator {
+  font-size: 120px;
+  color: white;
+}
+.mainContainer:not(.editorActive) .editorMode {
+  display: none;
+}
+.lightworkBrowser .panel-heading button {
+  position: absolute;
+  top: 5px;
+  right: 21px;
+}
+.floatLeft {
+  float: left;
+}
+.mainContainer {
+  height: 100%;
+}
+.loginPanel {
+  padding: 5px;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 2px;
+}
+.loginPanel a.active {
+  color: black;
+  text-decoration: none;
+}
+.scrollable {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.lightworkBrowser {
+  width: 250px;
+  position: relative;
+}
+.panel-heading {
+  padding: 5px 15px;
+  min-height: 37px;
+}
+.marginRight {
+  margin-right: 3px;
+}
+.flexParent {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -ms-flex;
+  display: flex;
+}
+.flexAlignCenter {
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+}
+.flexHorizontal {
+  -webkit-flex-direction: row;
+  -moz-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+.flexVertical {
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+.flexGrow {
+  -webkit-flex: 1 1 auto;
+  -moz-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+.flexShrink {
+  -webkit-flex: 0 0 auto;
+  -moz-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+}
+.listElement.selected,
+.listElement.selected:hover {
+  background-color: #9cf;
+}
+.listElement:hover {
+  background-color: #eee;
+}
+.listElement .published {
+  margin-left: 3px;
+}
+.paginationContainer {
+  text-align: center;
+}
+.paginationContainer > * {
+  display: inline-block;
+}
+.pagination {
+  margin: 0;
+}
+.moreLink {
+  text-align: center;
+  width: 100%;
+  display: block;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+.lightworks > * {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+  margin-bottom: 5px;
+}
+.lightworks .left {
+  width: 165px;
+}
+.lightworks .middle {
+  width: 20px;
+  font-size: 20px;
+  -webkit-align-self: center;
+  -moz-align-self: center;
+  -ms-align-self: center;
+  align-self: center;
+  margin-right: 5px;
+}
+.lightworks .middle .vote {
+  height: 30px;
+  line-height: 30px;
+}
+.lightworks .middle .vote:first-child {
+  position: relative;
+  left: 1.5px;
+}
+.lightworks .middle .vote:hover {
+  color: #999;
+}
+.lightworks .middle .vote.active {
+  color: #39f;
+}
+.lightworks .name {
+  font-size: 24px;
+  display: block;
+}
+.lightworks .author {
+  color: #999;
+  display: block;
+}
+.lightworks canvas {
+  margin-bottom: 0px;
+}
