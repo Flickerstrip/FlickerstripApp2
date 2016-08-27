@@ -4,7 +4,7 @@ var DiscoveryService = require('./DiscoveryService');
 var LEDStrip = require('./LEDStrip');
 var _ = require('lodash');
 
-class This extends EventEmitter {
+class FlickerstripManager extends EventEmitter {
   constructor(props) {
     super(props);
     this.discover = new DiscoveryService();
@@ -40,7 +40,7 @@ class This extends EventEmitter {
   }
 }
 
-var instance = new This();
+var instance = new FlickerstripManager();
 module.exports = {
   getInstance:function() {
     return instance;

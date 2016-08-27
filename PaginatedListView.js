@@ -11,7 +11,7 @@ var _ = require('lodash');
 
 var LightworkService = require("./LightworkService");
 
-class This extends React.Component {
+class PaginatedListView extends React.Component {
     constructor(props) {
         super(props);
 
@@ -65,4 +65,4 @@ class This extends React.Component {
     }
 }
 
-export default This;
+export default PaginatedListView;

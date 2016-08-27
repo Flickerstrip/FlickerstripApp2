@@ -14,7 +14,7 @@ var _ = require('lodash');
 
 var LightworkService = require("./LightworkService");
 
-class This extends React.Component {
+class UserLightworks extends React.Component {
     constructor(props) {
         super(props);
 
@@ -61,6 +61,7 @@ class This extends React.Component {
         return (
             <ListView
                 ref="userLightworks"
+                style={{flex: 1}}
                 //renderSeparator={this.renderSeparator}
                 dataSource={this.state.dataSource}
                 enableEmptySections={true}
@@ -76,7 +77,7 @@ class This extends React.Component {
     }
 }
 
-export default This;
+export default UserLightworks;
 
 
 

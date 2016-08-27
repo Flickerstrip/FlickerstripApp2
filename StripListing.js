@@ -9,21 +9,21 @@ import {
 
 var _ = require('lodash');
 
-import StripCell from "./StripCell";
+import FlickerstripRow from "./FlickerstripRow";
 
-var StripManager = require("./StripManager").getInstance();
+var FlickerstripManager = require("./FlickerstripManager").getInstance();
 
-class This extends React.Component {
+class StripListing extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       dataSource: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2,
-      }).cloneWithRows(_.values(StripManager.strips)),
+      }).cloneWithRows(_.values(FlickerstripManager.strips)),
     };
 
-    StripManager.on("StripAdded",this.updateDatasource.bind(this));
-    StripManager.on("StripRemoved",this.updateDatasource.bind(this));
+    FlickerstripManager.on("StripAdded",this.updateDatasource.bind(this));
+    FlickerstripManager.on("StripRemoved",this.updateDatasource.bind(this));
   }
   selectStrip(strip) {
     console.log("strip selected",strip.name);
@@ -35,7 +35,7 @@ class This extends React.Component {
   }
   renderRow(strip: Object,sectionID: number | string,rowID: number | string, highlightRowFunc: (sectionID: ?number | string, rowID: ?number | string) => void) {
     return (
-      <StripCell
+      <FlickerstripRow
         strip={strip}
         onSelect={() => this.selectStrip(strip)}
         onToggle={() => this.stripToggle(strip)}
@@ -43,9 +43,9 @@ class This extends React.Component {
     );
   }
   updateDatasource() {
-    console.log("updating datasource..",_.pluck(_.values(StripManager.strips).slice(0),"ip"));
+    console.log("updating datasource..",_.pluck(_.values(FlickerstripManager.strips).slice(0),"ip"));
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(_.values(StripManager.strips).slice(0))
+      dataSource: this.state.dataSource.cloneWithRows(_.values(FlickerstripManager.strips).slice(0))
     });
   }
   getDataSource(data: Array<any>): ListView.DataSource {
@@ -54,6 +54,7 @@ class This extends React.Component {
   render() {
     return (
       <ListView
+        style={{flex: 1}}
         ref="listview"
         //renderSeparator={this.renderSeparator}
         dataSource={this.state.dataSource}
@@ -70,4 +71,4 @@ class This extends React.Component {
   }
 }
 
-export default This;
+export default StripListing;

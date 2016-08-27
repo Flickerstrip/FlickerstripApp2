@@ -15,7 +15,7 @@ var {
 
 import EIcon from 'react-native-vector-icons/EvilIcons';
 
-class This extends React.Component {
+class FlickerstripRow extends React.Component {
   constructor(props) {
     super(props);
     this.state = {key: null};
@@ -68,4 +68,4 @@ var styles = StyleSheet.create({
   },
 });
 
-export default This;
+export default FlickerstripRow;

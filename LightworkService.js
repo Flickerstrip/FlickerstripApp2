@@ -13,7 +13,7 @@ function getBytes(str) {
   return bytes;
 };
 
-class This extends EventEmitter {
+class LightworkService extends EventEmitter {
     static fetchUserLightworks(user,page,cb) {
         page = page || 0;
 
@@ -45,5 +45,5 @@ class This extends EventEmitter {
     }
 }
 
-module.exports = This;
+module.exports = LightworkService;
 

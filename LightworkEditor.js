@@ -9,7 +9,7 @@ import {
 
 var _ = require('lodash');
 
-class This extends React.Component {
+class LightworkEditor extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -17,11 +17,10 @@ class This extends React.Component {
     return (
       <WebView
         source={require('./editor-built.html')}
-        style={{marginTop: 20}}
       />
     )
   }
 }
 
-export default This;
+export default LightworkEditor;
 

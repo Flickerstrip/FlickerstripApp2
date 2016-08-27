@@ -5,7 +5,7 @@ var _ = require('lodash');
 
 var visibleTimeout = 9000;
 
-class This extends EventEmitter {
+class LEDStrip extends EventEmitter {
   constructor(id,ip) {
     super();
     this.id = id;
@@ -212,7 +212,7 @@ class This extends EventEmitter {
   }
 }
 
-This.probeStrip = function(ip,cb) {
+LEDStrip.probeStrip = function(ip,cb) {
   var url = "http://"+ip+"/status";
   fetch(url)
     .catch(function(err) {
@@ -220,10 +220,10 @@ This.probeStrip = function(ip,cb) {
     })
     .then((response) => response.json())
     .then(function(json) {
-      var strip = new This(json.mac,ip);
+      var strip = new LEDStrip(json.mac,ip);
       strip.receivedStatus(json,null);
       cb(strip);
     }.bind(this));
 }
 
-module.exports = This;
+module.exports = LEDStrip;

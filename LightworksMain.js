@@ -14,7 +14,7 @@ import LightworkRepository from "./LightworkRepository";
 
 var _ = require('lodash');
 
-class This extends React.Component {
+class LightworksMain extends React.Component {
   constructor(props) {
     super(props);
     this.state = {activeTab: 0 };
@@ -29,12 +29,12 @@ class This extends React.Component {
         />
         {renderIf(this.state.activeTab == 0)(
           <View>
-            <UserLightworks />
+            <UserLightworks style={{flex: 1}}/>
           </View>
         )}
         {renderIf(this.state.activeTab == 1)(
           <View>
-            <LightworkRepository />
+            <LightworkRepository style={{flex: 1, flexDirection: "column"}}/>
           </View>
         )}
       </View>
@@ -42,4 +42,4 @@ class This extends React.Component {
   }
 }
 
-export default This;
+export default LightworksMain;

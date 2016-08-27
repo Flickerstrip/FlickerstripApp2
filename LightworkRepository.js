@@ -15,7 +15,7 @@ var _ = require('lodash');
 
 var LightworkService = require("./LightworkService");
 
-class This extends React.Component {
+class LightworkRepository extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -41,7 +41,7 @@ class This extends React.Component {
         return (
             <PaginatedListView
                 loadFunction={this.loadLightworks.bind(this)}
-                style={{height: 550}}
+                style={{flex: 1, flexDirection: "column"}}
                 ref="lightworkRepository"
                 //renderSeparator={this.renderSeparator}
                 enableEmptySections={true}
@@ -56,6 +56,6 @@ class This extends React.Component {
     }
 }
 
-export default This;
+export default LightworkRepository;
 
 
