@@ -21,16 +21,20 @@ class FlickerstripRow extends React.Component {
     this.state = {key: null};
   }
 
+  refresh() {
+    this.setState({key:Math.random()});
+  }
+
   render() {
     var TouchableElement = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableHighlight;
     return (
       <View key={this.state.key}>
         <View style={[styles.row,styles.flexRow]}>
           <TouchableElement
-            onPress={this.props.onSelect}
+            onPress={() => { this.props.onSelect(this.props.strip); this.refresh() } }
             //onShowUnderlay={this.props.onHighlight}
             //onHideUnderlay={this.props.onUnhighlight}
-            style={[styles.flex1,styles.flexRow]}
+            style={[styles.flex1,styles.flexRow, this.props.strip.selected ? styles.selectedRow : styles.deselectedRow]}
             >
             <View style={[styles.flex1,styles.flexRow]}>
               <EIcon style={styles.flex0} name="navicon" size={30} color="rgba(0,136,204,1)" />
@@ -42,7 +46,7 @@ class FlickerstripRow extends React.Component {
             </View>
           </TouchableElement>
           <Switch
-            onValueChange={() => { this.props.onToggle(); this.setState({key:Math.random()}) }}
+            onValueChange={() => { this.props.onToggle(); this.refresh() }}
             style={styles.flex0}
             value={this.props.strip.power == 1} />
         </View>
@@ -52,8 +56,13 @@ class FlickerstripRow extends React.Component {
 }
 
 var styles = StyleSheet.create({
-  row: {
+  selectedRow: {
+    backgroundColor: 'red',
+  },
+  deselectedRow: {
     backgroundColor: 'white',
+  },
+  row: {
     padding: 5,
   },
   flexRow: {

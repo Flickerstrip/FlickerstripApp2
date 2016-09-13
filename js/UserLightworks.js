@@ -68,7 +68,7 @@ class UserLightworks extends React.Component {
                 //renderFooter={this.renderFooter}
                 renderRow={this.renderRow.bind(this)}
                 onEndReached={this.onEndReached}
-                //automaticallyAdjustContentInsets={false}
+                automaticallyAdjustContentInsets={false}
                 //keyboardDismissMode="on-drag"
                 //keyboardShouldPersistTaps={true}
                 //showsVerticalScrollIndicator={false}

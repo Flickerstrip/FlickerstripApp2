@@ -10,8 +10,9 @@ import {
 
 import renderIf from './renderIf'
 import UserLightworks from "./UserLightworks";
-import LightworkRepository from "./LightworkRepository";
+import LightworkRepository from "../components/LightworkRepository";
 
+var layoutStyles = require("./layoutStyles.js");
 var _ = require('lodash');
 
 class LightworksMain extends React.Component {
@@ -20,22 +21,19 @@ class LightworksMain extends React.Component {
     this.state = {activeTab: 0 };
   }
   render() {
+    console.log("layout",layoutStyles);
     return (
-      <View>
+      <View style={layoutStyles.flexColumn}>
         <SegmentedControlIOS
           values={['My Lightworks','Lightwork Repository']}
           selectedIndex={this.state.activeTab}
           onChange={(event) => this.setState({activeTab:event.nativeEvent.selectedSegmentIndex})}
         />
         {renderIf(this.state.activeTab == 0)(
-          <View>
-            <UserLightworks style={{flex: 1}}/>
-          </View>
+            <UserLightworks style={layoutStyles.flexColumn} />
         )}
         {renderIf(this.state.activeTab == 1)(
-          <View>
-            <LightworkRepository style={{flex: 1, flexDirection: "column"}}/>
-          </View>
+            <LightworkRepository style={layoutStyles.flexColumn}/>
         )}
       </View>
     )

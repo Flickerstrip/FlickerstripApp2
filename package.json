@@ -8,6 +8,7 @@
   "dependencies": {
     "base64-js": "^1.1.2",
     "extend": "^3.0.0",
+    "flux": "^2.1.1",
     "node-ssdp": "^2.7.1",
     "react": "15.3.1",
     "react-native": "^0.32.0",

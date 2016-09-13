@@ -26,7 +26,7 @@ class StripListing extends React.Component {
     FlickerstripManager.on("StripRemoved",this.updateDatasource.bind(this));
   }
   selectStrip(strip) {
-    console.log("strip selected",strip.name);
+    strip.selected = !strip.selected;
   }
   stripToggle(strip) {
     strip.toggle(!strip.power);

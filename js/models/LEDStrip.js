@@ -12,6 +12,7 @@ class LEDStrip extends EventEmitter {
     this.ip = ip;
     this._busy = false;
     this._queue = [];
+    this.selected = false;
   }
   startWatchdogTimer() {
     if (this._timer) return;

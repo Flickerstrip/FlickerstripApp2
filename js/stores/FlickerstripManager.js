@@ -1,16 +1,27 @@
 var EventEmitter = require('events').EventEmitter;
+var _ = require('lodash');
 
 var DiscoveryService = require('./DiscoveryService');
 var LEDStrip = require('./LEDStrip');
-var _ = require('lodash');
+var FlickerstripDispatcher = require('./FlickerstripDispatcher');
 
 class FlickerstripManager extends EventEmitter {
   constructor(props) {
     super(props);
+
     this.discover = new DiscoveryService();
 
     this.discover.on("Found",this.onStripDiscovered.bind(this));
     this.discover.on("Lost",this.onStripLost.bind(this));
+
+    FlickerstripDispatcher.register(function(payload) {
+        if (payload.actionType === 'select-strip') {
+            FlickerstripManager.findStripById(payload.stripId).selected = true;
+        } else if (payload.actionType === 'deselect-strip') {
+            FlickerstripManager.findStripById(payload.stripId).selected = false;
+        }
+    });
+
 
     this.strips = {};
   }
@@ -18,6 +29,13 @@ class FlickerstripManager extends EventEmitter {
     var found = null;
     _.each(this.strips,function(value,key) {
         if (value.ip == ip) found = key;
+    });
+    return found;
+  }
+  findStripIdById(id) {
+    var found = null;
+    _.each(this.strips,function(value,key) {
+        if (value.id == id) found = key;
     });
     return found;
   }
