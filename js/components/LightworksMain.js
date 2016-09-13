@@ -13,7 +13,7 @@ import UserLightworks from "./UserLightworks";
 import LightworkRepository from "../components/LightworkRepository";
 
 var layoutStyles = require("./layoutStyles.js");
-var _ = require('lodash');
+var _ = require("lodash");
 
 class LightworksMain extends React.Component {
   constructor(props) {

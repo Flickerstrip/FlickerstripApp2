@@ -1,6 +1,6 @@
-var EventEmitter = require('events').EventEmitter;
+var EventEmitter = require("events").EventEmitter;
 
-var _ = require('lodash');
+var _ = require("lodash");
 var b64 = require("base64-js");
 
 var endpoint = "https://lightwork.hohmbody.com";

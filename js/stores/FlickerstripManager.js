@@ -1,9 +1,9 @@
-var EventEmitter = require('events').EventEmitter;
-var _ = require('lodash');
+var EventEmitter = require("events").EventEmitter;
+var _ = require("lodash");
 
-var DiscoveryService = require('./DiscoveryService');
-var LEDStrip = require('./LEDStrip');
-var FlickerstripDispatcher = require('./FlickerstripDispatcher');
+var DiscoveryService = require("./DiscoveryService");
+var LEDStrip = require("./LEDStrip");
+var FlickerstripDispatcher = require("./FlickerstripDispatcher");
 
 class FlickerstripManager extends EventEmitter {
   constructor(props) {

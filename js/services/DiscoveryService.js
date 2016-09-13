@@ -1,8 +1,8 @@
-var EventEmitter = require('events').EventEmitter;
-var dgram = require('react-native-udp')
-var extend = require('extend');
-var util = require('util');
-var _ = require('lodash');
+var EventEmitter = require("events").EventEmitter;
+var dgram = require("react-native-udp")
+var extend = require("extend");
+var util = require("util");
+var _ = require("lodash");
 
 function toByteArray(obj) {
   var uint = new Uint8Array(obj.length);

@@ -11,7 +11,7 @@ import {
 import LightworkRow from "./LightworkRow";
 import PaginatedListView from "./PaginatedListView";
 
-var _ = require('lodash');
+var _ = require("lodash");
 
 var LightworkService = require("./LightworkService");
 

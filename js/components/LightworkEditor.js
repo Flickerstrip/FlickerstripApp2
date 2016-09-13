@@ -7,7 +7,7 @@ import {
   WebView,
 } from 'react-native';
 
-var _ = require('lodash');
+var _ = require("lodash");
 
 class LightworkEditor extends React.Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class LightworkEditor extends React.Component {
   render() {
     return (
       <WebView
-        source={require('./editor-built.html')}
+        source={require("./editor-built.html")}
       />
     )
   }

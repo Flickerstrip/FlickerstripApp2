@@ -1,6 +1,6 @@
-var EventEmitter = require('events').EventEmitter;
+var EventEmitter = require("events").EventEmitter;
 var util = require("util");
-var _ = require('lodash');
+var _ = require("lodash");
 //var fs = require("fs");
 
 var visibleTimeout = 9000;

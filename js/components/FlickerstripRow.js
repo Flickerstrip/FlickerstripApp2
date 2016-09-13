@@ -1,7 +1,7 @@
 'use strict';
 
-var React = require('react');
-var ReactNative = require('react-native');
+var React = require("react");
+var ReactNative = require("react-native");
 var {
   Image,
   Platform,

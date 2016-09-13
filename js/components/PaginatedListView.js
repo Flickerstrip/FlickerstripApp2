@@ -7,7 +7,7 @@ import {
     ListView,
 } from 'react-native';
 
-var _ = require('lodash');
+var _ = require("lodash");
 
 class PaginatedListView extends React.Component {
     constructor(props) {

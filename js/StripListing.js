@@ -7,7 +7,7 @@ import {
   ListView,
 } from 'react-native';
 
-var _ = require('lodash');
+var _ = require("lodash");
 
 import FlickerstripRow from "./FlickerstripRow";
 

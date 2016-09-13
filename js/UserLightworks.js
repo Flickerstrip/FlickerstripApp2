@@ -10,7 +10,7 @@ import {
 
 import LightworkRow from "./LightworkRow";
 
-var _ = require('lodash');
+var _ = require("lodash");
 
 var LightworkService = require("./LightworkService");
 
