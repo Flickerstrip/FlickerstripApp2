@@ -227,4 +227,4 @@ LEDStrip.probeStrip = function(ip,cb) {
     }.bind(this));
 }
 
-module.exports = LEDStrip;
+export default LEDStrip;

@@ -80,4 +80,4 @@ extend(This.prototype,{
   }
 });
 
-module.exports = This;
+export default This;

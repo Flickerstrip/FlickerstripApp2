@@ -9,4 +9,4 @@ const layoutStyles = StyleSheet.create({
   }
 });
 
-module.exports = layoutStyles;
+export default layoutStyles;

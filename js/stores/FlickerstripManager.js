@@ -59,7 +59,7 @@ class FlickerstripManager extends EventEmitter {
 }
 
 var instance = new FlickerstripManager();
-module.exports = {
+export default {
   getInstance:function() {
     return instance;
   }
