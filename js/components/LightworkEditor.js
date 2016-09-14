@@ -16,7 +16,7 @@ class LightworkEditor extends React.Component {
   render() {
     return (
       <WebView
-        source={require(__js + "../editor-built.html")}
+        source={require("../../editor-built.html")}
       />
     )
   }

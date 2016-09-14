@@ -2,6 +2,7 @@ var EventEmitter = require("events").EventEmitter;
 var _ = require("lodash");
 
 import DiscoveryService from "~/services/DiscoveryService.js";
+import ActionTypes from "~/constants/ActionTypes.js";
 import LEDStrip from "~/models/LEDStrip.js";
 import FlickerstripDispatcher from "~/dispatcher/FlickerstripDispatcher.js";
 
@@ -14,14 +15,22 @@ class FlickerstripManager extends EventEmitter {
     this.discover.on("Found",this.onStripDiscovered.bind(this));
     this.discover.on("Lost",this.onStripLost.bind(this));
 
-    FlickerstripDispatcher.register(function(payload) {
-        if (payload.actionType === 'select-strip') {
-            FlickerstripManager.findStripById(payload.stripId).selected = true;
-        } else if (payload.actionType === 'deselect-strip') {
-            FlickerstripManager.findStripById(payload.stripId).selected = false;
+    FlickerstripDispatcher.register(function(e) {
+        if (e.type === ActionTypes.SELECT_STRIP) {
+            console.log("strip selected!");
+            this.getStrip(e.stripId).selected = true;
+            this.emit("StripUpdated",e.stripId);
+        } else if (e.type === ActionTypes.DESELECT_STRIP) {
+            console.log("strip deselected!");
+            this.getStrip(e.stripId).selected = false;
+            this.emit("StripUpdated",e.stripId);
+        } else if (e.type === ActionTypes.TOGGLE_POWER) {
+            console.log("toggling power");
+            var strip = this.getStrip(e.stripId);
+            strip.toggle(e.power === undefined ? !strip.power : e.power); //set the power based on the "power" parameter or toggle if parameter isnt provided
+            this.emit("StripUpdated",e.stripId);
         }
-    });
-
+    }.bind(this));
 
     this.strips = {};
   }
@@ -32,12 +41,8 @@ class FlickerstripManager extends EventEmitter {
     });
     return found;
   }
-  findStripIdById(id) {
-    var found = null;
-    _.each(this.strips,function(value,key) {
-        if (value.id == id) found = key;
-    });
-    return found;
+  getStrip(id) {
+    return this.strips[id];
   }
   onStripDiscovered(ip) {
     LEDStrip.probeStrip(ip,function(strip) {

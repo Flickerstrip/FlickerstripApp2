@@ -14,11 +14,16 @@ var {
 } = ReactNative;
 
 import EIcon from "react-native-vector-icons/EvilIcons";
+import FlickerstripManager from "~/stores/FlickerstripManager.js";
 
 class FlickerstripRow extends React.Component {
   constructor(props) {
     super(props);
     this.state = {key: null};
+
+    FlickerstripManager.on("StripUpdated",function(id) {
+        if (id == this.props.strip.id) this.refresh();
+    }.bind(this));
   }
 
   refresh() {
@@ -31,7 +36,7 @@ class FlickerstripRow extends React.Component {
       <View key={this.state.key}>
         <View style={[styles.row,styles.flexRow]}>
           <TouchableElement
-            onPress={() => { this.props.onSelect(this.props.strip); this.refresh() } }
+            onPress={() => { this.props.onSelect(this.props.strip) } }
             //onShowUnderlay={this.props.onHighlight}
             //onHideUnderlay={this.props.onUnhighlight}
             style={[styles.flex1,styles.flexRow, this.props.strip.selected ? styles.selectedRow : styles.deselectedRow]}
@@ -46,7 +51,7 @@ class FlickerstripRow extends React.Component {
             </View>
           </TouchableElement>
           <Switch
-            onValueChange={() => { this.props.onToggle(); this.refresh() }}
+            onValueChange={() => { this.props.onToggle(this.props.strip) }}
             style={styles.flex0}
             value={this.props.strip.power == 1} />
         </View>
