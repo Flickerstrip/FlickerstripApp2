@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   AppRegistry,
   StyleSheet,
@@ -8,11 +8,11 @@ import {
   SegmentedControlIOS,
 } from 'react-native';
 
-import renderIf from './renderIf'
-import UserLightworks from "./UserLightworks";
-import LightworkRepository from "../components/LightworkRepository";
+import renderIf from __main + "utils/renderIf"
+import UserLightworks from __main + "UserLightworks";
+import LightworkRepository from __main + "components/LightworkRepository";
 
-var layoutStyles = require("./layoutStyles.js");
+import layoutStyles from __main + "styles/layoutStyles";
 var _ = require("lodash");
 
 class LightworksMain extends React.Component {

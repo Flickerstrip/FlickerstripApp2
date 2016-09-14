@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
     AppRegistry,
     StyleSheet,
@@ -8,12 +8,12 @@ import {
     SegmentedControlIOS,
 } from 'react-native';
 
-import LightworkRow from "./LightworkRow";
-import PaginatedListView from "./PaginatedListView";
+import LightworkRow from __main + "components/LightworkRow";
+import PaginatedListView from __main + "components/PaginatedListView";
 
 var _ = require("lodash");
 
-var LightworkService = require("./LightworkService");
+import LightworkService from __main + "services/LightworkService";
 
 class LightworkRepository extends React.Component {
     constructor(props) {

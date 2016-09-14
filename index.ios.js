@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   AppRegistry,
   StyleSheet,
@@ -9,12 +9,12 @@ import {
 
 global.__base = __dirname + '/js/';
 
-import EIcon from 'react-native-vector-icons/EvilIcons';
-import NIcon from 'react-native-vector-icons/Entypo';
-import FIcon from 'react-native-vector-icons/FontAwesome';
-import StripListing from "./StripListing";
-import LightworkEditor from "./LightworkEditor";
-import LightworksMain from "./LightworksMain";
+import EIcon from "react-native-vector-icons/EvilIcons";
+import NIcon from "react-native-vector-icons/Entypo";
+import FIcon from "react-native-vector-icons/FontAwesome";
+import StripListing from __main + "StripListing";
+import LightworkEditor from __main + "components/LightworkEditor";
+import LightworksMain from __main + "components/LightworksMain";
 
 var Tabs = require("react-native-tabs");
 var NavigationBar = require("react-native-navbar");

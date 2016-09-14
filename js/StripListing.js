@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   AppRegistry,
   StyleSheet,
@@ -9,9 +9,9 @@ import {
 
 var _ = require("lodash");
 
-import FlickerstripRow from "./FlickerstripRow";
+import FlickerstripRow from __main + "components/FlickerstripRow";
 
-var FlickerstripManager = require("./FlickerstripManager").getInstance();
+import FlickerstripManager from __main + "stores/FlickerstripManager";
 
 class StripListing extends React.Component {
   constructor(props) {

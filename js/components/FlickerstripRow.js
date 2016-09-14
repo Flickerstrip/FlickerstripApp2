@@ -13,7 +13,7 @@ var {
   View
 } = ReactNative;
 
-import EIcon from 'react-native-vector-icons/EvilIcons';
+import EIcon from "react-native-vector-icons/EvilIcons";
 
 class FlickerstripRow extends React.Component {
   constructor(props) {

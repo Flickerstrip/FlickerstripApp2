@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
     AppRegistry,
     StyleSheet,
@@ -8,11 +8,11 @@ import {
     SegmentedControlIOS,
 } from 'react-native';
 
-import LightworkRow from "./LightworkRow";
+import LightworkRow from __main + "components/LightworkRow";
 
 var _ = require("lodash");
 
-var LightworkService = require("./LightworkService");
+import LightworkService from __main + "services/LightworkService";
 
 class UserLightworks extends React.Component {
     constructor(props) {
