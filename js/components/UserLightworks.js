@@ -9,45 +9,66 @@ import {
 } from 'react-native';
 
 import LightworkRow from "~/components/LightworkRow";
-import PaginatedListView from "~/components/PaginatedListView";
 
 var _ = require("lodash");
 
 import LightworkService from "~/services/LightworkService";
 
-class LightworkRepository extends React.Component {
+class UserLightworks extends React.Component {
     constructor(props) {
         super(props);
+
+        this.page = 0;
+        this.refreshUserLightworks();
+
+        this.state = {
+            dataSource: new ListView.DataSource({
+                rowHasChanged: (row1, row2) => row1 !== row2,
+            }).cloneWithRows([]),
+        };
     }
     renderRow(lightwork: Object,sectionID: number | string,rowID: number | string, highlightRowFunc: (sectionID: ?number | string, rowID: ?number | string) => void) {
         return (
             <LightworkRow
-                lightwork={lightwork}
+            lightwork={lightwork}
             />
         );
     }
-    loadLightworks(page,cb) {
+    refreshUserLightworks() {
+        this.loading = true;
         var user = {
             id: 2,
             email: "julianh2o@gmail.com",
             password: "6ZUMm2TXrHmRuZd"
         };
-        console.log("load lightworks called",page);
-        LightworkService.fetchPublicLightworks(user,page,function(result) {
-            cb(result.totalPages,result.results);
+        LightworkService.fetchUserLightworks(user,this.page,function(result) {
+            this.loading = false;
+            this.updateDatasource(result);
+        }.bind(this));
+    }
+    updateDatasource(data) {
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(data.slice(0))
         });
+    }
+    onEndReached() {
+        if (this.loading) return;
+        
+        this.page++;
+        console.log("reached end of user lightworks");
     }
     render() {
         return (
-            <PaginatedListView
-                loadFunction={this.loadLightworks.bind(this)}
-                style={{flex: 1, flexDirection: "column"}}
-                ref="lightworkRepository"
+            <ListView
+                ref="userLightworks"
+                style={{flex: 1}}
                 //renderSeparator={this.renderSeparator}
+                dataSource={this.state.dataSource}
                 enableEmptySections={true}
                 //renderFooter={this.renderFooter}
                 renderRow={this.renderRow.bind(this)}
-                //automaticallyAdjustContentInsets={false}
+                onEndReached={this.onEndReached}
+                automaticallyAdjustContentInsets={false}
                 //keyboardDismissMode="on-drag"
                 //keyboardShouldPersistTaps={true}
                 //showsVerticalScrollIndicator={false}
@@ -56,6 +77,7 @@ class LightworkRepository extends React.Component {
     }
 }
 
-export default LightworkRepository;
+export default UserLightworks;
+
 
 

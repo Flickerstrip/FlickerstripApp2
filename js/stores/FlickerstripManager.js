@@ -1,9 +1,9 @@
 var EventEmitter = require("events").EventEmitter;
 var _ = require("lodash");
 
-import DiscoveryService from "./js/services/DiscoveryService";
-import LEDStrip from "./js/models/LEDStrip";
-import FlickerstripDispatcher from "./js/dispatcher/FlickerstripDispatcher";
+import DiscoveryService from "~/services/DiscoveryService";
+import LEDStrip from "~/models/LEDStrip";
+import FlickerstripDispatcher from "~/dispatcher/FlickerstripDispatcher";
 
 class FlickerstripManager extends EventEmitter {
   constructor(props) {

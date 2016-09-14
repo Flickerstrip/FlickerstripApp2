@@ -1,0 +1,9 @@
+{
+      "plugins": [
+        ["babel-root-import",{
+            "rootPathPrefix": "~",
+            "rootPathSuffix": "js"
+        }]
+      ],
+      "presets": ["react-native"]
+}
