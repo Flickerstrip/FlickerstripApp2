@@ -7,14 +7,13 @@ import {
   TabBarIOS
 } from 'react-native';
 
-global.__base = __dirname + '/js/';
-
 import EIcon from "react-native-vector-icons/EvilIcons";
 import NIcon from "react-native-vector-icons/Entypo";
 import FIcon from "react-native-vector-icons/FontAwesome";
-import StripListing from __main + "StripListing";
-import LightworkEditor from __main + "components/LightworkEditor";
-import LightworksMain from __main + "components/LightworksMain";
+import StripListing from "./js/components/StripListing.js";
+/*
+import LightworkEditor from __js + "components/LightworkEditor";
+import LightworksMain from __js + "components/LightworksMain";
 
 var Tabs = require("react-native-tabs");
 var NavigationBar = require("react-native-navbar");
@@ -35,10 +34,6 @@ class FlickerstripApp extends React.Component {
       presses: 0,
     }
   }
-              /*
-              <View style={[layoutStyles.flexColumn, styles.marginBottomForTab]}>
-              </View>
-              */
 
   render() {
     var rightButtonConfig = {
@@ -141,4 +136,13 @@ const styles = StyleSheet.create({
   },
 });
 
+*/
+
+class FlickerstripApp extends React.Component {
+  render() {
+    return (
+        <Text>Foo</Text>
+    )
+  }
+}
 AppRegistry.registerComponent('FlickerstripApp', () => FlickerstripApp);

@@ -1,5 +1,5 @@
-var FlickerstripDispatcher = require(__main + "dispatcher/FlickerstripDispatcher");
-var ActionTypes = require(__main + "constants/ActionTypes");
+var FlickerstripDispatcher = require(__js + "dispatcher/FlickerstripDispatcher");
+var ActionTypes = require(__js + "constants/ActionTypes");
 
 export default {
   selectStrip: function(threadID) {

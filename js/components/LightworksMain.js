@@ -8,11 +8,11 @@ import {
   SegmentedControlIOS,
 } from 'react-native';
 
-import renderIf from __main + "utils/renderIf"
-import UserLightworks from __main + "UserLightworks";
-import LightworkRepository from __main + "components/LightworkRepository";
+import renderIf from "./js/utils/renderIf"
+import UserLightworks from "./js/UserLightworks";
+import LightworkRepository from "./js/components/LightworkRepository";
 
-import layoutStyles from __main + "styles/layoutStyles";
+import layoutStyles from "./js/styles/layoutStyles";
 var _ = require("lodash");
 
 class LightworksMain extends React.Component {
