@@ -8,12 +8,12 @@ import {
     SegmentedControlIOS,
 } from 'react-native';
 
-import LightworkRow from "~/components/LightworkRow";
-import PaginatedListView from "~/components/PaginatedListView";
+import LightworkRow from "~/components/LightworkRow.js";
+import PaginatedListView from "~/components/PaginatedListView.js";
 
 var _ = require("lodash");
 
-import LightworkService from "~/services/LightworkService";
+import LightworkService from "~/services/LightworkService.js";
 
 class LightworkRepository extends React.Component {
     constructor(props) {

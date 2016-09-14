@@ -9,9 +9,9 @@ import {
 
 var _ = require("lodash");
 
-import FlickerstripRow from "~/components/FlickerstripRow";
+import FlickerstripRow from "~/components/FlickerstripRow.js";
 
-import FlickerstripManager from "~/stores/FlickerstripManager";
+import FlickerstripManager from "~/stores/FlickerstripManager.js";
 
 class StripListing extends React.Component {
   constructor(props) {

@@ -9,10 +9,10 @@ import {
 } from 'react-native';
 
 import renderIf from "~/utils/renderIf"
-import UserLightworks from "~/UserLightworks";
-import LightworkRepository from "~/components/LightworkRepository";
+import UserLightworks from "~/components/UserLightworks.js";
+import LightworkRepository from "~/components/LightworkRepository.js";
 
-import layoutStyles from "~/styles/layoutStyles";
+import layoutStyles from "~/styles/layoutStyles.js";
 var _ = require("lodash");
 
 class LightworksMain extends React.Component {
