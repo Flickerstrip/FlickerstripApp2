@@ -24,20 +24,19 @@ class PaginatedListView extends React.Component {
     }
     loadNextPage() {
         this.loading = true;
-        console.log("callbing load function");
         this.props.loadFunction(this.page,this.dataLoaded.bind(this));
     }
     dataLoaded(totalPages,rows) {
-        console.log("data loaded");
         this.loading = false;
         this.totalPages = totalPages;
         this.rows = this.rows.concat(rows);
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(this.rows.slice(0))
-        });
+        setTimeout(function() {
+            this.setState({
+                dataSource: this.state.dataSource.cloneWithRows(this.rows.slice(0))
+            });
+        }.bind(this),0);
     }
-    onEndReached() {
-        console.log("end reached!");
+    onEndReached() { //TODO this seems to be firing prematurely..
         if (this.loading) return;
         if (this.page+1 >= this.totalPages) return; //end reached
 

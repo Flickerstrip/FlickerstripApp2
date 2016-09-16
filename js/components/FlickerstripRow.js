@@ -22,7 +22,7 @@ class FlickerstripRow extends React.Component {
         this.state = {key: null};
 
         FlickerstripManager.on("StripUpdated",function(id) {
-                if (id == this.props.strip.id) this.refresh();
+            if (id == this.props.strip.id) this.refresh();
         }.bind(this));
     }
 

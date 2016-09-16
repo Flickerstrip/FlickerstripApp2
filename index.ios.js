@@ -16,10 +16,13 @@ AppRegistry.registerComponent('FlickerstripApp', () => DummyApp);
 import EIcon from "react-native-vector-icons/EvilIcons";
 import NIcon from "react-native-vector-icons/Entypo";
 import FIcon from "react-native-vector-icons/FontAwesome";
+
+import MenuButton from "~/components/MenuButton.js";
 import StripListing from "~/components/StripListing.js";
 import LightworkEditor from "~/components/LightworkEditor.js";
 import LightworksMain from "~/components/LightworksMain.js";
 import FlickerstripManager from "~/stores/FlickerstripManager.js";
+import LightworkManager from "~/stores/LightworkManager.js";
 import layoutStyles from "~/styles/layoutStyles";
 
 var Tabs = require("react-native-tabs");
@@ -30,19 +33,23 @@ class FlickerstripApp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTab: 'strips',
-            //selectedTab: 'lightworks',
+            //selectedTab: 'strips',
+            selectedTab: 'lightworks',
             //selectedTab: 'editor',
             key: null,
         }
 
         FlickerstripManager.on("StripUpdated",function(id) {
-                this.refresh();
+            this.refresh();
+        }.bind(this));
+
+        LightworkManager.on("LightworkUpdated",function(id) {
+            console.log("got lightwork updated");
+            this.refresh();
         }.bind(this));
     }
 
     refresh() {
-        console.log("refreshing index");
         this.setState({key:Math.random()});
     }
 
@@ -54,75 +61,85 @@ class FlickerstripApp extends React.Component {
             }
         };
 
-        var titleConfig = {
-            title: 'Hello, world',
-        };
-
-        var menuButton = (<EIcon name="navicon" size={30} color="rgba(0,136,204,1)" style={styles.titleIcon} />);
-        var stripsButton = (<NIcon name="signal" size={30} color="rgba(0,136,204,1)" />);
-
         return (
-                <TabBarIOS unselectedTintColor="yellow" tintColor="white" barTintColor="darkslateblue">
-                        <NIcon.TabBarItemIOS
-                            title="Strips"
-                            iconName="signal"
-                            badge={_.filter(FlickerstripManager.strips,(strip) => {strip.selected}).length || null}
-                            selected={this.state.selectedTab === 'strips'}
-                            onPress={() => {
-                                this.setState({
-                                    selectedTab: 'strips',
-                                });
-                            }}>
-                            <View style={[layoutStyles.flexColumn, styles.marginBottomForTab]}>
-                                    <NavigationBar title={titleConfig} rightButton={menuButton} />
-                                    <StripListing style={layoutStyles.flexColumn}/>
-                            </View>
-                        </NIcon.TabBarItemIOS>
+            <TabBarIOS unselectedTintColor="yellow" tintColor="white" barTintColor="darkslateblue">
+                <NIcon.TabBarItemIOS
+                    title="Strips"
+                    iconName="signal"
+                    badge={FlickerstripManager.getSelectedCount() || null}
+                    selected={this.state.selectedTab === 'strips'}
+                    onPress={() => {
+                    this.setState({
+                        selectedTab: 'strips',
+                    });
+                    }}>
+                    <View style={[layoutStyles.flexColumn, styles.marginBottomForTab]}>
+                        <NavigationBar
+                        title={{title:'Strips'}}
+                        rightButton={(<MenuButton name="navicon" 
+                            options={_.compact([
+                                {"label":"On", onPress:() => {console.log("on")}},
+                                {"label":"Off", onPress:() => {console.log("off")}},
+                                {"label":"Clear Patterns", destructive:true, onPress:() => {console.log("clear")}},
+                                {"label":"Cancel", cancel:true},
+                            ])}
+                        />)}
+                        />
+                        <StripListing style={layoutStyles.flexColumn}/>
+                    </View>
+                </NIcon.TabBarItemIOS>
 
-                        <FIcon.TabBarItemIOS
-                            title="Lightworks"
-                            iconName="cube"
-                            selected={this.state.selectedTab === 'lightworks'}
-                            onPress={() => {
-                                this.setState({
-                                    selectedTab: 'lightworks',
-                                });
-                            }}>
-                            <View style={[layoutStyles.flexColumn,styles.marginBottomForTab]}>
-                                    <NavigationBar title={titleConfig} rightButton={menuButton} />
-                                    <LightworksMain style={[layoutStyles.flexColumn]} />
-                            </View>
-                        </FIcon.TabBarItemIOS>
-                        <FIcon.TabBarItemIOS
-                            title="Editor"
-                            iconName="pencil"
-                            selected={this.state.selectedTab === 'editor'}
-                            onPress={() => {
-                                this.setState({
-                                    selectedTab: 'editor',
-                                });
-                            }}>
-                            <View style={[layoutStyles.flexColumn, styles.marginBottomForTab]}>
-                                    <NavigationBar title={titleConfig} rightButton={menuButton} />
-                                    <LightworkEditor />
-                            </View>
-                        </FIcon.TabBarItemIOS>
+                <FIcon.TabBarItemIOS
+                    title="Lightworks"
+                    iconName="cube"
+                    selected={this.state.selectedTab === 'lightworks'}
+                    badge={LightworkManager.getSelectedCount() || null}
+                    onPress={() => {
+                    this.setState({
+                        selectedTab: 'lightworks',
+                    });
+                    }}>
+                    <View style={[layoutStyles.flexColumn,styles.marginBottomForTab]}>
+                        <NavigationBar
+                            title={{title:'Lightworks'}}
+                        />
+                        <LightworksMain style={[layoutStyles.flexColumn]} />
+                    </View>
+                </FIcon.TabBarItemIOS>
+                <FIcon.TabBarItemIOS
+                    title="Editor"
+                    iconName="pencil"
+                    selected={this.state.selectedTab === 'editor'}
+                    onPress={() => {
+                    this.setState({
+                        selectedTab: 'editor',
+                    });
+                    }}>
+                    <View style={[layoutStyles.flexColumn, styles.marginBottomForTab]}>
+                        <NavigationBar
+                            title={{title:'Editor'}}
+                        />
+                        <LightworkEditor />
+                    </View>
+                </FIcon.TabBarItemIOS>
 
-                        <FIcon.TabBarItemIOS
-                            title="Settings"
-                            iconName="cogs"
-                            selected={this.state.selectedTab === 'settings'}
-                            onPress={() => {
-                                this.setState({
-                                    selectedTab: 'settings',
-                                });
-                            }}>
-                            <View style={[layoutStyles.flexColumn, styles.marginBottomForTab]}>
-                                    <NavigationBar title={titleConfig} rightButton={menuButton} />
-                                    <Text>Settings</Text>
-                            </View>
-                        </FIcon.TabBarItemIOS>
-                </TabBarIOS>
+                <FIcon.TabBarItemIOS
+                    title="Settings"
+                    iconName="cogs"
+                    selected={this.state.selectedTab === 'settings'}
+                    onPress={() => {
+                    this.setState({
+                        selectedTab: 'settings',
+                    });
+                    }}>
+                    <View style={[layoutStyles.flexColumn, styles.marginBottomForTab]}>
+                        <NavigationBar
+                            title={{title:'Settings'}}
+                        />
+                        <Text>Settings</Text>
+                    </View>
+                </FIcon.TabBarItemIOS>
+            </TabBarIOS>
         );
     }
 }
@@ -130,14 +147,6 @@ class FlickerstripApp extends React.Component {
 const styles = StyleSheet.create({
     marginBottomForTab:{
         marginBottom: 50
-    },
-    container: {
-        flex: 1,
-        backgroundColor: '#F5FCFF',
-    },
-    titleIcon: {
-        paddingTop:9,
-        paddingRight:7,
     },
 });
 

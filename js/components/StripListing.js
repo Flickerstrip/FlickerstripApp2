@@ -25,28 +25,16 @@ class StripListing extends React.Component {
         FlickerstripManager.on("StripAdded",this.updateDatasource.bind(this));
         FlickerstripManager.on("StripRemoved",this.updateDatasource.bind(this));
     }
-    selectStrip(strip) {
-        if (strip.selected) {
-            StripActions.deselectStrip(strip.id);
-        } else {
-            StripActions.selectStrip(strip.id);
-        }
-    }
-    stripToggle(strip) {
-        console.log("toggling strip: ",!strip.power);
-        StripActions.togglePower(strip.id,!strip.power);
-    }
     renderRow(strip: Object,sectionID: number | string,rowID: number | string, highlightRowFunc: (sectionID: ?number | string, rowID: ?number | string) => void) {
         return (
             <FlickerstripRow
                 strip={strip}
-                onSelect={() => this.selectStrip(strip)}
-                onToggle={() => this.stripToggle(strip)}
+                onSelect={() => { strip.selected ? StripActions.deselectStrip(strip.id) : StripActions.selectStrip(strip.id) }}
+                onToggle={() => { StripActions.togglePower(strip.id,!strip.power) }}
             />
         );
     }
     updateDatasource() {
-        console.log("updating datasource..",_.pluck(_.values(FlickerstripManager.strips).slice(0),"ip"));
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(_.values(FlickerstripManager.strips).slice(0))
         });

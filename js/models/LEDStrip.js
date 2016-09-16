@@ -74,7 +74,6 @@ class LEDStrip extends EventEmitter {
         this.sendCommand.apply(this,args);
     }
     sendCommand(command,cb,data,notimeout) {
-        console.log("sending "+command+" to "+this.ip);
         if (!this.ip) {
             console.log("ERROR: sending command to disconnected strip");
             cb(null,"DISCONNECTED");
@@ -160,7 +159,6 @@ class LEDStrip extends EventEmitter {
     }
     toggle(value) {
         this.power = value;
-        console.log("toggling: ",value);
         this.sendCommand(value ? "power/on" : "power/off");
     }
     loadPattern(renderedPattern,isPreview,callback) {

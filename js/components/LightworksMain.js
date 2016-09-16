@@ -21,7 +21,6 @@ class LightworksMain extends React.Component {
         this.state = {activeTab: 0 };
     }
     render() {
-        console.log("layout",layoutStyles);
         return (
             <View style={layoutStyles.flexColumn}>
                 <SegmentedControlIOS
@@ -30,10 +29,10 @@ class LightworksMain extends React.Component {
                     onChange={(event) => this.setState({activeTab:event.nativeEvent.selectedSegmentIndex})}
                 />
                 {renderIf(this.state.activeTab == 0)(
-                        <UserLightworks style={layoutStyles.flexColumn} />
+                    <UserLightworks style={layoutStyles.flexColumn} />
                 )}
                 {renderIf(this.state.activeTab == 1)(
-                        <LightworkRepository style={layoutStyles.flexColumn}/>
+                    <LightworkRepository style={layoutStyles.flexColumn}/>
                 )}
             </View>
         )

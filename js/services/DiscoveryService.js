@@ -31,8 +31,6 @@ var This = function() {
 util.inherits(This, EventEmitter);
 extend(This.prototype,{
     init:function() {
-        console.log("initting discovery service");
-
         this.endpoints = {};
 
         this.client = dgram.createSocket("udp4");
@@ -40,8 +38,6 @@ extend(This.prototype,{
         this.client.on("message", this.messageReceived.bind(this));
 
         this.client.on("listening",function() {
-            console.log("socket listening, starting probe");
-
             setInterval(this.sendProbe.bind(this),2000);
             this.sendProbe();
         }.bind(this));

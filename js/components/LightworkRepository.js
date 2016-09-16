@@ -10,10 +10,10 @@ import {
 
 import LightworkRow from "~/components/LightworkRow.js";
 import PaginatedListView from "~/components/PaginatedListView.js";
+import LightworkActions from "~/actions/LightworkActions.js";
+import LightworkManager from "~/stores/LightworkManager.js";
 
 var _ = require("lodash");
-
-import LightworkService from "~/services/LightworkService.js";
 
 class LightworkRepository extends React.Component {
     constructor(props) {
@@ -32,10 +32,7 @@ class LightworkRepository extends React.Component {
             email: "julianh2o@gmail.com",
             password: "6ZUMm2TXrHmRuZd"
         };
-        console.log("load lightworks called",page);
-        LightworkService.fetchPublicLightworks(user,page,function(result) {
-            cb(result.totalPages,result.results);
-        });
+        LightworkManager.getPublicLightworks(user,page,cb);
     }
     render() {
         return (

@@ -14,35 +14,35 @@ function getBytes(str) {
 };
 
 class LightworkService extends EventEmitter {
-        static fetchUserLightworks(user,page,cb) {
-                page = page || 0;
+    static fetchUserLightworks(user,page,cb) {
+        page = page || 0;
 
-                var auth = user.email + ":" + user.password;
-                var opt = {
-                        method: "GET",
-                        headers: {"Authorization":"Basic " + b64.fromByteArray(getBytes(auth))},
-                };
-             
-             fetch(endpoint+"/user/"+user.id+"/patterns?size=20&page="+page,opt).then((response) => response.json()).then(function(data) {
-                     cb(data);
-             }); 
+        var auth = user.email + ":" + user.password;
+        var opt = {
+            method: "GET",
+            headers: {"Authorization":"Basic " + b64.fromByteArray(getBytes(auth))},
+        };
+         
+         fetch(endpoint+"/user/"+user.id+"/patterns?size=20&page="+page,opt).then((response) => response.json()).then(function(data) {
+             cb(data);
+         }); 
+    }
+    static fetchPublicLightworks(user,page,cb) {
+        page = page || 0;
+
+        var opt = {
+            method: "GET",
+        };
+
+        if (user) {
+            var auth = user.email + ":" + user.password;
+            opt.headers = {"Authorization":"Basic " + b64.fromByteArray(getBytes(auth))};
         }
-        static fetchPublicLightworks(user,page,cb) {
-                page = page || 0;
-
-                var opt = {
-                        method: "GET",
-                };
-
-                if (user) {
-                        var auth = user.email + ":" + user.password;
-                        opt.headers = {"Authorization":"Basic " + b64.fromByteArray(getBytes(auth))};
-                }
-             
-             fetch(endpoint+"/pattern?size=20&page="+page,opt).then((response) => response.json()).then(function(data) {
-                     cb(data);
-             }); 
-        }
+         
+         fetch(endpoint+"/pattern?size=20&page="+page,opt).then((response) => response.json()).then(function(data) {
+             cb(data);
+         }); 
+    }
 }
 
 export default LightworkService;

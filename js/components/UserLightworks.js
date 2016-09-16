@@ -12,25 +12,28 @@ import LightworkRow from "~/components/LightworkRow.js";
 
 var _ = require("lodash");
 
-import LightworkService from "~/services/LightworkService.js";
+import LightworkManager from "~/stores/LightworkManager.js";
+import LightworkActions from "~/actions/LightworkActions.js";
 
 class UserLightworks extends React.Component {
     constructor(props) {
         super(props);
 
         this.page = 0;
-        this.refreshUserLightworks();
 
         this.state = {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2,
             }).cloneWithRows([]),
         };
+
+        this.refreshUserLightworks();
     }
     renderRow(lightwork: Object,sectionID: number | string,rowID: number | string, highlightRowFunc: (sectionID: ?number | string, rowID: ?number | string) => void) {
         return (
             <LightworkRow
-            lightwork={lightwork}
+                onSelect={() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
+                lightwork={lightwork}
             />
         );
     }
@@ -41,21 +44,22 @@ class UserLightworks extends React.Component {
             email: "julianh2o@gmail.com",
             password: "6ZUMm2TXrHmRuZd"
         };
-        LightworkService.fetchUserLightworks(user,this.page,function(result) {
+        LightworkManager.getUserLightworks(user,this.page,function(result) {
             this.loading = false;
             this.updateDatasource(result);
         }.bind(this));
     }
     updateDatasource(data) {
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(data.slice(0))
-        });
+        setTimeout(function() {
+            this.setState({
+                dataSource: this.state.dataSource.cloneWithRows(data.slice(0))
+            });
+        }.bind(this),0)
     }
     onEndReached() {
         if (this.loading) return;
         
         this.page++;
-        console.log("reached end of user lightworks");
     }
     render() {
         return (
