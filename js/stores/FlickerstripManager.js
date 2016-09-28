@@ -26,6 +26,12 @@ class FlickerstripManager extends EventEmitter {
                 var strip = this.getStrip(e.stripId);
                 strip.toggle(e.power === undefined ? !strip.power : e.power); //set the power based on the "power" parameter or toggle if parameter isnt provided
                 this.emit("StripUpdated",e.stripId);
+            } else if (e.type === ActionTypes.LOAD_PATTERN) {
+                var strip = this.getStrip(e.stripId);
+                strip.loadPattern(e.pattern,false);
+            } else if (e.type === ActionTypes.LOAD_PREVIEW) {
+                var strip = this.getStrip(e.stripId);
+                strip.loadPattern(e.pattern,true);
             }
         }.bind(this));
 
@@ -43,6 +49,9 @@ class FlickerstripManager extends EventEmitter {
     }
     getSelectedCount() {
         return _.filter(this.strips,(strip) => {return strip.selected}).length;
+    }
+    getSelectedFlickerstrips() {
+        return _.filter(this.strips,(strip) => {return strip.selected});
     }
     onStripDiscovered(ip) {
         LEDStrip.probeStrip(ip,function(strip) {

@@ -20,6 +20,19 @@ class LightworkManager extends EventEmitter {
             } else if (e.type === ActionTypes.DESELECT_LIGHTWORK) {
                 this.getLightwork(e.lightworkId).selected = false;
                 this.emit("LightworkUpdated",e.lightworkId);
+            } else if (e.type === ActionTypes.LOAD_LIGHTWORK) {
+                var lw = this.getLightwork(e.lightworkId);
+                if (lw.pixelData) {
+                    e.callback(lw);
+                } else {
+                    LightworkService.fetchLightworkData(null,lw.id,function(lwdata) {
+                        var b64 = require("base64-js");
+                        console.log("loaded lw data",lwdata);
+                        _.extend(lw,lwdata);
+                        lw.pixelData = b64.toByteArray(lw.pixelData);
+                        e.callback(lw);
+                    }.bind(this));
+                }
             }
         }.bind(this));
 
@@ -32,6 +45,9 @@ class LightworkManager extends EventEmitter {
     }
     getSelectedCount() {
         return _.filter(_.values(this.lightworksById),(lightwork) => {return lightwork.selected}).length;
+    }
+    getSelectedLightworks() {
+        return _.filter(_.values(this.lightworksById),(lightwork) => {return lightwork.selected});
     }
     hasCachedUserLightworks(user,page) {
         if (!this.userLightworks[user.id]) return false;

@@ -21,4 +21,18 @@ export default {
             power: power,
         });
     },
+    loadPattern: function(stripId, pattern) {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.LOAD_PATTERN,
+            stripId: stripId,
+            pattern: pattern,
+        });
+    },
+    loadPreview: function(stripId, pattern) {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.LOAD_PREVIEW,
+            stripId: stripId,
+            pattern: pattern,
+        });
+    },
 };

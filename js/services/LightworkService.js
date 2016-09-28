@@ -43,6 +43,20 @@ class LightworkService extends EventEmitter {
              cb(data);
          }); 
     }
+    static fetchLightworkData(user,id,cb) {
+        var opt = {
+            method: "GET",
+        };
+
+        if (user) {
+            var auth = user.email + ":" + user.password;
+            opt.headers = {"Authorization":"Basic " + b64.fromByteArray(getBytes(auth))};
+        }
+         
+         fetch(endpoint+"/pattern/"+id,opt).then((response) => response.json()).then(function(data) {
+             cb(data);
+         }); 
+    }
 }
 
 export default LightworkService;

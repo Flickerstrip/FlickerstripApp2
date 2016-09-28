@@ -24,6 +24,7 @@ import LightworksMain from "~/components/LightworksMain.js";
 import FlickerstripManager from "~/stores/FlickerstripManager.js";
 import LightworkManager from "~/stores/LightworkManager.js";
 import layoutStyles from "~/styles/layoutStyles";
+import BulkActions from "~/actions/BulkActions.js";
 
 var Tabs = require("react-native-tabs");
 var NavigationBar = require("react-native-navbar");
@@ -80,7 +81,7 @@ class FlickerstripApp extends React.Component {
                             options={_.compact([
                                 {"label":"On", onPress:() => {console.log("on")}},
                                 {"label":"Off", onPress:() => {console.log("off")}},
-                                {"label":"Clear Patterns", destructive:true, onPress:() => {console.log("clear")}},
+                                {"label":"Clear Patterns", destructive:true, onPress:() => { console.log("clearing patterns.."); }},
                                 {"label":"Cancel", cancel:true},
                             ])}
                         />)}
@@ -102,6 +103,12 @@ class FlickerstripApp extends React.Component {
                     <View style={[layoutStyles.flexColumn,styles.marginBottomForTab]}>
                         <NavigationBar
                             title={{title:'Lightworks'}}
+                            rightButton={(<MenuButton name="navicon" 
+                                options={_.compact([
+                                    {"label":"Load Patterns", onPress:() => { BulkActions.loadSelectedLightworksToSelectedStrips() }},
+                                    {"label":"Cancel", cancel:true},
+                                ])}
+                            />)}
                         />
                         <LightworksMain style={[layoutStyles.flexColumn]} />
                     </View>

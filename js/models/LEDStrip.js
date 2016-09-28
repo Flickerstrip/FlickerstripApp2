@@ -2,6 +2,7 @@ var EventEmitter = require("events").EventEmitter;
 var util = require("util");
 var _ = require("lodash");
 //var fs = require("fs");
+var Pattern = require("~/models/Pattern.js");
 
 var visibleTimeout = 9000;
 
@@ -87,19 +88,26 @@ class LEDStrip extends EventEmitter {
         this.stopWatchdogTimer();
         var url = "http://"+this.ip+"/"+command;
         if (data && typeof data === 'object' && !(data instanceof Buffer)) {
-                data = JSON.stringify(data);
+            data = JSON.stringify(data);
         }
         var opt = {};
-        if (data) opt.data = data;
-        if (!notimeout) opt.timeout = 2000;
+        if (data) {
+            opt.method = "POST";
+            opt.body = data;
+        }
+        //if (!notimeout) opt.timeout = 2000; TODO reimplement timeout? Does it exist?
         //For upload status: r.req.connection.socket._bytesDispatched
+
+        console.log("sending req",url,opt);
+
         fetch(url,opt)
             .catch(function(err) {
+                console.log("error",err);
                 this.setVisible(false);
-                if (error.code != "ETIMEDOUT") console.log("error!",error,command);
-                if (cb) cb(null,error.code);
+                if (err.code != "ETIMEDOUT") console.log("error!",err,command);
+                if (cb) cb(null,err.code);
                 return;
-            })
+            }.bind(this))
             .then(function(response) {
                 var json = response.json();
 
@@ -161,38 +169,26 @@ class LEDStrip extends EventEmitter {
         this.power = value;
         this.sendCommand(value ? "power/on" : "power/off");
     }
-    loadPattern(renderedPattern,isPreview,callback) {
-        console.log("TODO IMPLEMENT ME");
-        /*
-        var frames = renderedPattern.rendered.frames;
-        var pixels = renderedPattern.rendered.pixels;
-        var fps = renderedPattern.rendered.fps;
-        var data = renderedPattern.rendered.data;
-        var metadata = _c.packSync("PatternMetadata",{
-            name:renderedPattern.name,
-            address: 0,
-            len: pixels*frames*3, //payload total size
-            frames: frames,
-            flags: 0x0000,
-            fps: fps,
-        });
-        var page = 0;
-        var bufferSize = pixels*frames*3;
-        var payload = new Buffer(bufferSize);
-
-        for (var i=0; i<data.length; i++) {
-            payload.writeUInt8(data[i],i);
+    loadPattern(pattern,isPreview,callback) {
+        var p = new Pattern();
+        _.extend(p,pattern);
+        var send = {
+            name:p.name,
+            fps:p.fps,
+            pixels:p.pixels,
+            frames:p.frames,
+            pixelData:p.getEncodedData(),
         }
+        var serialized = JSON.stringify(send);
 
-        var concatted = Buffer.concat([metadata,payload]);
+        console.log("serialized",serialized);
 
         this.sendCommand(isPreview ? "pattern/test" : "pattern/save",_.bind(function(content,err) {
             this.emit("Strip.UploadPatternComplete");
             if (callback) callback(err);
-        },this),concatted,true);
+        },this),serialized,true);
 
         if (!isPreview) this.requestStatus();
-        */
     }
     selectPattern(index) {
         if (index < 0) index = 0;
