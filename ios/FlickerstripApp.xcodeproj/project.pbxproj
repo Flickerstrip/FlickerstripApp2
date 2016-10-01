@@ -32,6 +32,7 @@
 		B91A61A51D711F8000B15CC1 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B91A619D1D711F8000B15CC1 /* Octicons.ttf */; settings = {ASSET_TAGS = (); }; };
 		B91A61A61D711F8000B15CC1 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B91A619E1D711F8000B15CC1 /* Zocial.ttf */; settings = {ASSET_TAGS = (); }; };
 		B91A61AD1D71214000B15CC1 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B91A61AC1D7120F900B15CC1 /* libRNVectorIcons.a */; };
+		B9E49F8A1DA02E6200937889 /* PatternLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = B9E49F881DA02E6200937889 /* PatternLoader.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -159,6 +160,8 @@
 		B91A619D1D711F8000B15CC1 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		B91A619E1D711F8000B15CC1 /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
 		B91A61A71D7120F900B15CC1 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
+		B9E49F881DA02E6200937889 /* PatternLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PatternLoader.m; path = ../PatternLoader.m; sourceTree = "<group>"; };
+		B9E49F891DA02E6200937889 /* PatternLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PatternLoader.h; path = ../PatternLoader.h; sourceTree = "<group>"; };
 		C3E3E155379B49F1946AD570 /* libUdpSockets.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libUdpSockets.a; sourceTree = "<group>"; };
 		E5B7237A917947B4887FF0D3 /* UdpSockets.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = UdpSockets.xcodeproj; path = "../node_modules/react-native-udp/ios/UdpSockets.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -269,6 +272,8 @@
 		13B07FAE1A68108700A75B9A /* FlickerstripApp */ = {
 			isa = PBXGroup;
 			children = (
+				B9E49F881DA02E6200937889 /* PatternLoader.m */,
+				B9E49F891DA02E6200937889 /* PatternLoader.h */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -644,6 +649,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9E49F8A1DA02E6200937889 /* PatternLoader.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -683,10 +689,7 @@
 				INFOPLIST_FILE = FlickerstripAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FlickerstripApp.app/FlickerstripApp";
 			};
@@ -700,10 +703,7 @@
 				INFOPLIST_FILE = FlickerstripAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FlickerstripApp.app/FlickerstripApp";
 			};

@@ -9,9 +9,13 @@ import {
 
 var _ = require("lodash");
 
+import layoutStyles from "~/styles/layoutStyles";
 import FlickerstripRow from "~/components/FlickerstripRow.js";
 import StripActions from "~/actions/StripActions.js";
 import FlickerstripManager from "~/stores/FlickerstripManager.js";
+import MenuButton from "~/components/MenuButton.js";
+
+var NavigationBar = require("react-native-navbar");
 
 class StripListing extends React.Component {
     constructor(props) {
@@ -29,7 +33,8 @@ class StripListing extends React.Component {
         return (
             <FlickerstripRow
                 strip={strip}
-                onSelect={() => { strip.selected ? StripActions.deselectStrip(strip.id) : StripActions.selectStrip(strip.id) }}
+                onPress={() => { FlickerstripManager.getSelectedCount() == 0 ? console.log("strip pressed") : (strip.selected ? StripActions.deselectStrip(strip.id) : StripActions.selectStrip(strip.id)) }}
+                onSelectToggle={() => { strip.selected ? StripActions.deselectStrip(strip.id) : StripActions.selectStrip(strip.id) }}
                 onToggle={() => { StripActions.togglePower(strip.id,!strip.power) }}
             />
         );
@@ -44,20 +49,22 @@ class StripListing extends React.Component {
     }
     render() {
         return (
-            <ListView
-                style={{flex: 1}}
-                ref="listview"
-                //renderSeparator={this.renderSeparator}
-                dataSource={this.state.dataSource}
-                enableEmptySections={true}
-                //renderFooter={this.renderFooter}
-                renderRow={this.renderRow.bind(this)}
-                //onEndReached={this.onEndReached}
-                //automaticallyAdjustContentInsets={false}
-                //keyboardDismissMode="on-drag"
-                //keyboardShouldPersistTaps={true}
-                //showsVerticalScrollIndicator={false}
-            />
+            <View style={layoutStyles.flexColumn}>
+                <ListView
+                    style={{flex: 1}}
+                    ref="listview"
+                    //renderSeparator={this.renderSeparator}
+                    dataSource={this.state.dataSource}
+                    enableEmptySections={true}
+                    //renderFooter={this.renderFooter}
+                    renderRow={this.renderRow.bind(this)}
+                    //onEndReached={this.onEndReached}
+                    //automaticallyAdjustContentInsets={false}
+                    //keyboardDismissMode="on-drag"
+                    //keyboardShouldPersistTaps={true}
+                    //showsVerticalScrollIndicator={false}
+                />
+            </View>
         )
     }
 }

@@ -4,7 +4,8 @@ import {
     StyleSheet,
     Text,
     View,
-    TabBarIOS
+    TabBarIOS,
+    NavigatorIOS,
 } from 'react-native';
 
 
@@ -21,6 +22,7 @@ import MenuButton from "~/components/MenuButton.js";
 import StripListing from "~/components/StripListing.js";
 import LightworkEditor from "~/components/LightworkEditor.js";
 import LightworksMain from "~/components/LightworksMain.js";
+import SettingsMain from "~/components/SettingsMain.js";
 import FlickerstripManager from "~/stores/FlickerstripManager.js";
 import LightworkManager from "~/stores/LightworkManager.js";
 import layoutStyles from "~/styles/layoutStyles";
@@ -34,8 +36,8 @@ class FlickerstripApp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            //selectedTab: 'strips',
-            selectedTab: 'lightworks',
+            selectedTab: 'strips',
+            //selectedTab: 'lightworks',
             //selectedTab: 'editor',
             key: null,
         }
@@ -45,7 +47,6 @@ class FlickerstripApp extends React.Component {
         }.bind(this));
 
         LightworkManager.on("LightworkUpdated",function(id) {
-            console.log("got lightwork updated");
             this.refresh();
         }.bind(this));
     }
@@ -54,7 +55,13 @@ class FlickerstripApp extends React.Component {
         this.setState({key:Math.random()});
     }
 
+    componentWillMount() {
+        FIcon.getImageSource('navicon', 30).then((source) => this.setState({ navicon: source }));
+    }
+
     render() {
+        if (!this.state.navicon) return false;
+
         var rightButtonConfig = {
             title: 'Next',
             handler: function onNext() {
@@ -70,23 +77,28 @@ class FlickerstripApp extends React.Component {
                     badge={FlickerstripManager.getSelectedCount() || null}
                     selected={this.state.selectedTab === 'strips'}
                     onPress={() => {
-                    this.setState({
-                        selectedTab: 'strips',
-                    });
+                        this.setState({
+                            selectedTab: 'strips',
+                        });
                     }}>
                     <View style={[layoutStyles.flexColumn, styles.marginBottomForTab]}>
-                        <NavigationBar
-                        title={{title:'Strips'}}
-                        rightButton={(<MenuButton name="navicon" 
-                            options={_.compact([
-                                {"label":"On", onPress:() => {console.log("on")}},
-                                {"label":"Off", onPress:() => {console.log("off")}},
-                                {"label":"Clear Patterns", destructive:true, onPress:() => { console.log("clearing patterns.."); }},
-                                {"label":"Cancel", cancel:true},
-                            ])}
-                        />)}
+                        <NavigatorIOS
+                            initialRoute={{
+                                component: StripListing,
+                                title: 'Strips',
+                                //wrapperStyle:styles.paddingTopForNavigation, //TODO why isnt this needed..?
+                                rightButtonIcon: this.state.navicon, 
+                                onRightButtonPress:() => {
+                                    MenuButton.showMenu([
+                                        {"label":"On", onPress:() => {console.log("on")}},
+                                        {"label":"Off", onPress:() => {console.log("off")}},
+                                        {"label":"Clear Patterns", destructive:true, onPress:() => { console.log("clearing patterns.."); }},
+                                        {"label":"Cancel", cancel:true},
+                                    ]);
+                                }
+                            }}
+                            style={layoutStyles.flexColumn}
                         />
-                        <StripListing style={layoutStyles.flexColumn}/>
                     </View>
                 </NIcon.TabBarItemIOS>
 
@@ -96,21 +108,26 @@ class FlickerstripApp extends React.Component {
                     selected={this.state.selectedTab === 'lightworks'}
                     badge={LightworkManager.getSelectedCount() || null}
                     onPress={() => {
-                    this.setState({
-                        selectedTab: 'lightworks',
-                    });
+                        this.setState({
+                            selectedTab: 'lightworks',
+                        });
                     }}>
                     <View style={[layoutStyles.flexColumn,styles.marginBottomForTab]}>
-                        <NavigationBar
-                            title={{title:'Lightworks'}}
-                            rightButton={(<MenuButton name="navicon" 
-                                options={_.compact([
-                                    {"label":"Load Patterns", onPress:() => { BulkActions.loadSelectedLightworksToSelectedStrips() }},
-                                    {"label":"Cancel", cancel:true},
-                                ])}
-                            />)}
+                        <NavigatorIOS
+                            initialRoute={{
+                                component: LightworksMain,
+                                title: 'Lightworks',
+                                wrapperStyle:styles.paddingTopForNavigation,
+                                rightButtonIcon: this.state.navicon, 
+                                onRightButtonPress:() => { 
+                                    MenuButton.showMenu([
+                                        {"label":"Load Patterns", onPress:() => { BulkActions.loadSelectedLightworksToSelectedStrips() }},
+                                        {"label":"Cancel", cancel:true},
+                                    ]);
+                                }
+                            }}
+                            style={layoutStyles.flexColumn}
                         />
-                        <LightworksMain style={[layoutStyles.flexColumn]} />
                     </View>
                 </FIcon.TabBarItemIOS>
                 <FIcon.TabBarItemIOS
@@ -123,10 +140,14 @@ class FlickerstripApp extends React.Component {
                     });
                     }}>
                     <View style={[layoutStyles.flexColumn, styles.marginBottomForTab]}>
-                        <NavigationBar
-                            title={{title:'Editor'}}
+                        <NavigatorIOS
+                            initialRoute={{
+                                component: LightworkEditor,
+                                title: 'Editor',
+                                wrapperStyle:styles.paddingTopForNavigation,
+                            }}
+                            style={layoutStyles.flexColumn}
                         />
-                        <LightworkEditor />
                     </View>
                 </FIcon.TabBarItemIOS>
 
@@ -140,10 +161,14 @@ class FlickerstripApp extends React.Component {
                     });
                     }}>
                     <View style={[layoutStyles.flexColumn, styles.marginBottomForTab]}>
-                        <NavigationBar
-                            title={{title:'Settings'}}
+                        <NavigatorIOS
+                            initialRoute={{
+                                component: SettingsMain,
+                                title: 'Settings',
+                                wrapperStyle:styles.paddingTopForNavigation,
+                            }}
+                            style={layoutStyles.flexColumn}
                         />
-                        <Text>Settings</Text>
                     </View>
                 </FIcon.TabBarItemIOS>
             </TabBarIOS>
@@ -154,6 +179,9 @@ class FlickerstripApp extends React.Component {
 const styles = StyleSheet.create({
     marginBottomForTab:{
         marginBottom: 50
+    },
+    paddingTopForNavigation:{
+        paddingTop: 64
     },
 });
 

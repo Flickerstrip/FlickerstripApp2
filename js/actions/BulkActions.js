@@ -13,7 +13,7 @@ export default {
         var lightworks = LightworkManager.getSelectedLightworks();
         _.each(flickerstrips,function(fs) {
             _.each(lightworks,function(lw) {
-                LightworkActions.loadLightwork(lw.id,function(lw) {
+                LightworkManager.getLightworkData(lw.id,function(lw) {
                     StripActions.loadPattern(fs.id,lw);
                 });
             }.bind(this));

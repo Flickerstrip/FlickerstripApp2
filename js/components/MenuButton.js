@@ -18,16 +18,18 @@ class MenuButton extends React.Component {
     constructor(props) {
         super(props);
     }
-    optionClicked(index) {
-        var opt = this.props.options[index];
-        if (opt.onPress) opt.onPress();
-    }
-    showMenu() {
+    static showMenu(opt) {
         ActionSheetIOS.showActionSheetWithOptions({
-            options: _.pluck(this.props.options,"label"),
-            cancelButtonIndex: _.findIndex(this.props.options, {"cancel":true}),
-            destructiveButtonIndex: _.findIndex(this.props.options, {"destructive":true}),
-        },this.optionClicked.bind(this));
+            options: _.pluck(opt,"label"),
+            cancelButtonIndex: _.findIndex(opt, {"cancel":true}),
+            destructiveButtonIndex: _.findIndex(opt, {"destructive":true}),
+        },function(index) {
+            var item = opt[index];
+            if (item.onPress) item.onPress();
+        });
+    }
+    buttonClicked() {
+        MenuButton.showMenu(this.props.options);
     }
     render() {
         return (

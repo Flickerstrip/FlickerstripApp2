@@ -3,8 +3,19 @@ var util = require("util");
 var _ = require("lodash");
 //var fs = require("fs");
 var Pattern = require("~/models/Pattern.js");
+var b64 = require("base64-js");
+
+import { NativeModules } from 'react-native';
+var PatternLoader = NativeModules.PatternLoader;
 
 var visibleTimeout = 9000;
+
+function param(params) {
+    var query = Object.keys(params)
+        .map(function(k) { return params[k] == null ? encodeURIComponent(k) : encodeURIComponent(k) + '=' + encodeURIComponent(params[k]); })
+        .join('&');
+    return query;
+}
 
 class LEDStrip extends EventEmitter {
     constructor(id,ip) {
@@ -87,18 +98,41 @@ class LEDStrip extends EventEmitter {
         this._busy = true;
         this.stopWatchdogTimer();
         var url = "http://"+this.ip+"/"+command;
-        if (data && typeof data === 'object' && !(data instanceof Buffer)) {
+        /*
+        if (data && typeof data === 'object') {
+            console.log("stringifying data..");
             data = JSON.stringify(data);
         }
-        var opt = {};
+        */
+        var opt = undefined;
         if (data) {
+            opt = {};
             opt.method = "POST";
             opt.body = data;
+            console.log("sending req",url,opt);
+            fetch(url,data)
+                .catch(function(err) {
+                    console.log("error",err);
+                    this.setVisible(false);
+                    if (err.code != "ETIMEDOUT") console.log("error!",err,command);
+                    if (cb) cb(null,err.code);
+                    return;
+                }.bind(this))
+                .then(function(response) {
+                    var json = response.json();
+
+                    this.startWatchdogTimer();
+                    this._busy = false;
+
+                    if (cb) cb(json);
+
+                    this.handleQueue();
+                }.bind(this));
+            return;
         }
         //if (!notimeout) opt.timeout = 2000; TODO reimplement timeout? Does it exist?
         //For upload status: r.req.connection.socket._bytesDispatched
 
-        console.log("sending req",url,opt);
 
         fetch(url,opt)
             .catch(function(err) {
@@ -170,23 +204,32 @@ class LEDStrip extends EventEmitter {
         this.sendCommand(value ? "power/on" : "power/off");
     }
     loadPattern(pattern,isPreview,callback) {
-        var p = new Pattern();
-        _.extend(p,pattern);
-        var send = {
-            name:p.name,
-            fps:p.fps,
-            pixels:p.pixels,
-            frames:p.frames,
-            pixelData:p.getEncodedData(),
+        var data = pattern.pixelData;
+        var bufferSize = pattern.pixels*pattern.frames*3;
+        var payload = [];
+        for (var i=0; i<data.length; i++) payload[i] = data[i];
+
+        var p = {
+            name: pattern.name,
+            frames: pattern.frames,
+            pixels: pattern.pixels,
+            fps: pattern.fps,
         }
-        var serialized = JSON.stringify(send);
 
-        console.log("serialized",serialized);
+        if (isPreview) p.preview = null;
 
-        this.sendCommand(isPreview ? "pattern/test" : "pattern/save",_.bind(function(content,err) {
+        console.log(payload);
+        var url = "http://"+this.ip+"/pattern/create?"+param(p);
+        PatternLoader.upload(url,payload,function(err,res) {
+            console.log("got result",arguments);
+        });
+
+        /*
+        this.sendCommand("pattern/create?"+param(p),_.bind(function(content,err) {
             this.emit("Strip.UploadPatternComplete");
             if (callback) callback(err);
-        },this),serialized,true);
+        },this),b64string,true);
+        */
 
         if (!isPreview) this.requestStatus();
     }

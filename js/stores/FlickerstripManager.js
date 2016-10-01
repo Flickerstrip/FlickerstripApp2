@@ -40,7 +40,7 @@ class FlickerstripManager extends EventEmitter {
     findStripIdByIp(ip) {
         var found = null;
         _.each(this.strips,function(value,key) {
-                if (value.ip == ip) found = key;
+            if (value.ip == ip) found = key;
         });
         return found;
     }

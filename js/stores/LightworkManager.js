@@ -7,6 +7,7 @@ import FlickerstripDispatcher from "~/dispatcher/FlickerstripDispatcher.js";
 import LightworkService from "~/services/LightworkService.js";
 
 var pageSize = 20;
+var b64 = require("base64-js");
 
 class LightworkManager extends EventEmitter {
     constructor(props) {
@@ -21,24 +22,25 @@ class LightworkManager extends EventEmitter {
                 this.getLightwork(e.lightworkId).selected = false;
                 this.emit("LightworkUpdated",e.lightworkId);
             } else if (e.type === ActionTypes.LOAD_LIGHTWORK) {
-                var lw = this.getLightwork(e.lightworkId);
-                if (lw.pixelData) {
-                    e.callback(lw);
-                } else {
-                    LightworkService.fetchLightworkData(null,lw.id,function(lwdata) {
-                        var b64 = require("base64-js");
-                        console.log("loaded lw data",lwdata);
-                        _.extend(lw,lwdata);
-                        lw.pixelData = b64.toByteArray(lw.pixelData);
-                        e.callback(lw);
-                    }.bind(this));
-                }
+                this.getLightworkData(e.lightworkId);
             }
         }.bind(this));
 
         this.lightworksById = {};
         this.userLightworks = {};
         this.publicLightworks = null;
+    }
+    getLightworkData(id,cb) {
+        var lw = this.getLightwork(id);
+        if (lw.pixelData) {
+            cb(lw);
+        } else {
+            LightworkService.fetchLightworkData(null,lw.id,function(lwdata) {
+                _.extend(lw,lwdata);
+                lw.pixelData = b64.toByteArray(lw.pixelData);
+                cb(lw);
+            }.bind(this));
+        }
     }
     getLightwork(id) {
         return this.lightworksById[id];

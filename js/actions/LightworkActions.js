@@ -14,11 +14,10 @@ export default {
             lightworkId: lightworkId
         });
     },
-    loadLightwork: function(lightworkId,cb) {
+    loadLightwork: function(lightworkId) {
         FlickerstripDispatcher.dispatch({
             type: ActionTypes.LOAD_LIGHTWORK,
             lightworkId: lightworkId,
-            callback:cb,
         });
     },
 };
