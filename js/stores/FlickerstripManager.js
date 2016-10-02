@@ -63,7 +63,6 @@ class FlickerstripManager extends EventEmitter {
     }
     stripUpdateReceived(id,events) {
         _.each(this.listeners,function(l) {
-            console.log("iterating listeners..",l);
             if (l.id && l.id != id) return;
             if (l.events && _.intersection(l.events,events).length == 0) return;
             l.callback(id,events);

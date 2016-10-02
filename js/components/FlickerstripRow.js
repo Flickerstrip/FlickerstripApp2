@@ -16,6 +16,7 @@ var {
 import EIcon from "react-native-vector-icons/EvilIcons";
 import FlickerstripManager from "~/stores/FlickerstripManager.js";
 import CheckBox from 'react-native-checkbox';
+import skinStyles from '~/styles/skinStyles';
 
 class FlickerstripRow extends React.Component {
     constructor(props) {
@@ -36,7 +37,7 @@ class FlickerstripRow extends React.Component {
         var TouchableElement = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableHighlight;
         return (
             <View key={this.state.key}>
-                <View style={[styles.row,styles.flexRow, this.props.strip.selected ? styles.selectedRow : styles.deselectedRow]}>
+                <View style={[styles.row,styles.flexRow, this.props.strip.selected ? skinStyles.rowSelected : skinStyles.rowDeselected]}>
                     <CheckBox
                         label=''
                         checked={this.props.strip.selected}
@@ -67,12 +68,6 @@ class FlickerstripRow extends React.Component {
 }
 
 var styles = StyleSheet.create({
-    selectedRow: {
-        backgroundColor: '#c4daff',
-    },
-    deselectedRow: {
-        backgroundColor: 'white',
-    },
     row: {
         padding: 5,
     },

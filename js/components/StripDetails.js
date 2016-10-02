@@ -32,7 +32,6 @@ class StripDetails extends React.Component {
         },this.refresh.bind(this));
     }
     refresh() {
-        console.log("refreshing strip details..!");
         this.updateDatasource();
         this.setState({key:Math.random()});
     }
@@ -41,6 +40,7 @@ class StripDetails extends React.Component {
             <LightworkRow
                 lightwork={lightwork}
                 strip={this.props.strip}
+                selected={this.props.strip.selectedPattern == lightwork.id}
                 onPress={() => { StripActions.selectPattern(this.props.strip.id, lightwork.id); }}
                 onDelete={() => { StripActions.deletePattern(this.props.strip.id, lightwork.id); }}
             />

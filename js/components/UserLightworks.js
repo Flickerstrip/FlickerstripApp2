@@ -22,6 +22,7 @@ class UserLightworks extends React.Component {
         this.page = 0;
 
         this.state = {
+            key: null,
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2,
             }).cloneWithRows([]),
@@ -32,6 +33,7 @@ class UserLightworks extends React.Component {
     renderRow(lightwork: Object,sectionID: number | string,rowID: number | string, highlightRowFunc: (sectionID: ?number | string, rowID: ?number | string) => void) {
         return (
             <LightworkRow
+                selected={() => lightwork.selected}
                 onPress={() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
                 lightwork={lightwork}
             />

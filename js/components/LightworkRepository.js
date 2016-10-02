@@ -22,6 +22,8 @@ class LightworkRepository extends React.Component {
     renderRow(lightwork: Object,sectionID: number | string,rowID: number | string, highlightRowFunc: (sectionID: ?number | string, rowID: ?number | string) => void) {
         return (
             <LightworkRow
+                selected={() => lightwork.selected}
+                onPress={() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
                 lightwork={lightwork}
             />
         );
