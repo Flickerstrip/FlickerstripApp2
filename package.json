@@ -6,6 +6,7 @@
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
+    "@maintained-repos/react-native-swipeout": "git+https://github.com/maintained-repos/react-native-swipeout.git",
     "base64-js": "^1.2.0",
     "extend": "^3.0.0",
     "flux": "^2.1.1",
@@ -15,6 +16,7 @@
     "react-native": "^0.33.0",
     "react-native-checkbox": "^1.0.15",
     "react-native-navbar": "^1.5.0",
+    "react-native-swipeout": "git+https://github.com/nasal/react-native-swipeout.git",
     "react-native-tabs": "^1.0.9",
     "react-native-udp": "^1.2.5",
     "react-native-vector-icons": "^2.1.0",

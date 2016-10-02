@@ -15,6 +15,7 @@ var {
 
 import EIcon from "react-native-vector-icons/EvilIcons";
 
+import renderIf from "~/utils/renderIf"
 import LightworkManager from "~/stores/LightworkManager.js";
 
 class LightworkRow extends React.Component {
@@ -26,34 +27,48 @@ class LightworkRow extends React.Component {
             LightworkManager.on("LightworkUpdated",function(id) {
                 if (id == this.props.lightwork.id) this.refresh();
             }.bind(this));
-        }.bind(this),0);
+        }.bind(this),100);
     }
 
     refresh() {
-        console.log("refresh"); //tODO figure out why this is generating a warning
         this.setState({key:Math.random()});
     }
 
     render() {
         var TouchableElement = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableHighlight;
+        var swipeoutBtns = [
+            {
+                text: 'Button'
+            }
+        ];
         return (
             <View key={this.state.key}>
                 <View style={[styles.row,styles.flexRow] }>
                     <TouchableElement
-                        onPress={this.props.onSelect}
+                        onPress={this.props.onPress}
                         //onShowUnderlay={this.props.onHighlight}
                         //onHideUnderlay={this.props.onUnhighlight}
                         style={[styles.flex1,styles.flexRow,this.props.lightwork.selected ? styles.selected : styles.deselected]}
-                        >
+                    >
                         <View style={[styles.flex1,styles.flexRow]}>
-                            <EIcon style={styles.flex0} name="navicon" size={30} color="rgba(0,136,204,1)" />
+                            {renderIf(!this.props.strip)(
+                                <EIcon style={styles.flex0} name="navicon" size={30} color="rgba(0,136,204,1)" />
+                            )}
                             <View style={styles.flex1}>
-                                <Text style={styles.movieTitle} numberOfLines={2}>
-                                    {this.props.lightwork.name == '' ? 'Unknown Strip' : this.props.lightwork.name}
+                                <Text numberOfLines={2}>
+                                    {this.props.lightwork.name}
                                 </Text>
                             </View>
                         </View>
                     </TouchableElement>
+                    {renderIf(this.props.onDelete)(
+                        <EIcon
+                            name="close-o"
+                            size={30}
+                            color="rgba(255,0,0,1)"
+                            onPress={this.props.onDelete}
+                        />
+                    )}
                 </View>
             </View>
         );

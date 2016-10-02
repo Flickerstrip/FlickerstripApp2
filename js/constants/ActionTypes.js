@@ -6,6 +6,7 @@ export default keyMirror({
     TOGGLE_POWER: null,
     LOAD_PATTERN: null,
     LOAD_PREVIEW: null,
+    DELETE_PATTERN: null,
 
     SELECT_LIGHTWORK: null,
     DESELECT_LIGHTWORK: null,

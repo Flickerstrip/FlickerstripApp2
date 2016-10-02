@@ -81,12 +81,12 @@ class FlickerstripApp extends React.Component {
                             selectedTab: 'strips',
                         });
                     }}>
-                    <View style={[layoutStyles.flexColumn, styles.marginBottomForTab]}>
+                    <View style={[layoutStyles.flexColumn, layoutStyles.marginBottomForTab]}>
                         <NavigatorIOS
                             initialRoute={{
                                 component: StripListing,
                                 title: 'Strips',
-                                //wrapperStyle:styles.paddingTopForNavigation, //TODO why isnt this needed..?
+                                //wrapperStyle:layoutStyles.paddingTopForNavigation, //TODO why isnt this needed..?
                                 rightButtonIcon: this.state.navicon, 
                                 onRightButtonPress:() => {
                                     MenuButton.showMenu([
@@ -112,12 +112,12 @@ class FlickerstripApp extends React.Component {
                             selectedTab: 'lightworks',
                         });
                     }}>
-                    <View style={[layoutStyles.flexColumn,styles.marginBottomForTab]}>
+                    <View style={[layoutStyles.flexColumn,layoutStyles.marginBottomForTab]}>
                         <NavigatorIOS
                             initialRoute={{
                                 component: LightworksMain,
                                 title: 'Lightworks',
-                                wrapperStyle:styles.paddingTopForNavigation,
+                                wrapperStyle:layoutStyles.paddingTopForNavigation,
                                 rightButtonIcon: this.state.navicon, 
                                 onRightButtonPress:() => { 
                                     MenuButton.showMenu([
@@ -139,12 +139,12 @@ class FlickerstripApp extends React.Component {
                         selectedTab: 'editor',
                     });
                     }}>
-                    <View style={[layoutStyles.flexColumn, styles.marginBottomForTab]}>
+                    <View style={[layoutStyles.flexColumn, layoutStyles.marginBottomForTab]}>
                         <NavigatorIOS
                             initialRoute={{
                                 component: LightworkEditor,
                                 title: 'Editor',
-                                wrapperStyle:styles.paddingTopForNavigation,
+                                wrapperStyle:layoutStyles.paddingTopForNavigation,
                             }}
                             style={layoutStyles.flexColumn}
                         />
@@ -160,12 +160,12 @@ class FlickerstripApp extends React.Component {
                         selectedTab: 'settings',
                     });
                     }}>
-                    <View style={[layoutStyles.flexColumn, styles.marginBottomForTab]}>
+                    <View style={[layoutStyles.flexColumn, layoutStyles.marginBottomForTab]}>
                         <NavigatorIOS
                             initialRoute={{
                                 component: SettingsMain,
                                 title: 'Settings',
-                                wrapperStyle:styles.paddingTopForNavigation,
+                                wrapperStyle:layoutStyles.paddingTopForNavigation,
                             }}
                             style={layoutStyles.flexColumn}
                         />
@@ -177,12 +177,6 @@ class FlickerstripApp extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    marginBottomForTab:{
-        marginBottom: 50
-    },
-    paddingTopForNavigation:{
-        paddingTop: 64
-    },
 });
 
 AppRegistry.registerComponent('FlickerstripApp', () => FlickerstripApp);

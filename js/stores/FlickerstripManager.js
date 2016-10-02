@@ -12,6 +12,8 @@ class FlickerstripManager extends EventEmitter {
 
         this.discover = new DiscoveryService();
 
+        this.listeners = [];
+
         this.discover.on("Found",this.onStripDiscovered.bind(this));
         this.discover.on("Lost",this.onStripLost.bind(this));
 
@@ -32,6 +34,12 @@ class FlickerstripManager extends EventEmitter {
             } else if (e.type === ActionTypes.LOAD_PREVIEW) {
                 var strip = this.getStrip(e.stripId);
                 strip.loadPattern(e.pattern,true);
+            } else if (e.type === ActionTypes.SELECT_PATTERN) {
+                var strip = this.getStrip(e.stripId);
+                strip.selectPattern(e.patternId);
+            } else if (e.type === ActionTypes.DELETE_PATTERN) {
+                var strip = this.getStrip(e.stripId);
+                strip.forgetPattern(e.patternId);
             }
         }.bind(this));
 
@@ -53,6 +61,25 @@ class FlickerstripManager extends EventEmitter {
     getSelectedFlickerstrips() {
         return _.filter(this.strips,(strip) => {return strip.selected});
     }
+    stripUpdateReceived(id,events) {
+        _.each(this.listeners,function(l) {
+            console.log("iterating listeners..",l);
+            if (l.id && l.id != id) return;
+            if (l.events && _.intersection(l.events,events).length == 0) return;
+            l.callback(id,events);
+        });
+    }
+    addListener(opt,cb) {
+        var opt = _.extend({},opt);
+        opt.lid = new Date().getTime();
+        opt.callback = cb;
+        this.listeners.push(opt);
+        return opt.lid;
+    }
+    removeListener(lid) {
+        var index = _.findIndex(this.listeners,{lid:new Date().getTime()});
+        this.listeners.splice(index,1);
+    }
     onStripDiscovered(ip) {
         LEDStrip.probeStrip(ip,function(strip) {
             if (this.strips[strip.id]) {
@@ -60,6 +87,7 @@ class FlickerstripManager extends EventEmitter {
             } else {
                 this.strips[strip.id] = strip;
                 this.emit("StripAdded",strip);
+                strip.on("StripUpdated",this.stripUpdateReceived.bind(this));
             }
         }.bind(this));
     }

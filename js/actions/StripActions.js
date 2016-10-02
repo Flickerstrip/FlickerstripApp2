@@ -35,4 +35,18 @@ export default {
             pattern: pattern,
         });
     },
+    selectPattern: function(stripId, patternId) {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.SELECT_PATTERN,
+            stripId: stripId,
+            patternId: patternId,
+        });
+    },
+    deletePattern: function(stripId, patternId) {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.DELETE_PATTERN,
+            stripId: stripId,
+            patternId: patternId,
+        });
+    },
 };

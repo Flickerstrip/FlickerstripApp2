@@ -29,6 +29,7 @@ class LEDStrip extends EventEmitter {
     startWatchdogTimer() {
         if (this._timer) return;
         this._timer = setInterval(_.bind(function() {
+            if (new Date().getTime() - this._lastCommand < visibleTimeout*.3+500) return; //someone's running commands, skip the watch dog cycle
             this.requestStatus();
         },this),visibleTimeout*.3);
     }
@@ -71,13 +72,30 @@ class LEDStrip extends EventEmitter {
             if (this.visible) this.setVisible(false);
             return;
         }
-        if (!status) status = {};
+        if (!status || status["type"] != "status") status = {};
+        var changedProperties = [];
+        _.forOwn(status,function(value,key) {
+            var change = typeof value == "object" ? JSON.stringify(this[key]) != JSON.stringify(value) : this[key] != value;
+            if (change) changedProperties.push(key);
+        }.bind(this));
+
+        if (changedProperties.length) console.log("Changed: ",changedProperties);
+
         _.extend(this,status);
+
         this.setVisible(true);
         this.status = true;
         status.visible = this.visible;
         status.ip = this.ip;
         this.emit("Strip.StatusUpdated",status);
+
+        //Send events based on what changed
+        var events = [];
+        if (_.contains(changedProperties,"patterns")) events.push("patterns");
+        if (_.intersection(changedProperties,["name","group","length","start","end","fade","reversed","cycle"]).length) events.push("configuration");
+        if (_.intersection(changedProperties,["brightness","selectedPattern","memory"]).length) events.push("state");
+
+        if (events.length) this.emit("StripUpdated",this.id,events);
     }
     handleQueue() {
         if (!this._queue.length) return;
@@ -96,7 +114,7 @@ class LEDStrip extends EventEmitter {
             return;
         }
         this._busy = true;
-        this.stopWatchdogTimer();
+        this._lastCommand = new Date().getTime();
         var url = "http://"+this.ip+"/"+command;
         /*
         if (data && typeof data === 'object') {
@@ -104,35 +122,13 @@ class LEDStrip extends EventEmitter {
             data = JSON.stringify(data);
         }
         */
-        var opt = undefined;
+        var opt = {};
         if (data) {
-            opt = {};
             opt.method = "POST";
             opt.body = data;
-            console.log("sending req",url,opt);
-            fetch(url,data)
-                .catch(function(err) {
-                    console.log("error",err);
-                    this.setVisible(false);
-                    if (err.code != "ETIMEDOUT") console.log("error!",err,command);
-                    if (cb) cb(null,err.code);
-                    return;
-                }.bind(this))
-                .then(function(response) {
-                    var json = response.json();
-
-                    this.startWatchdogTimer();
-                    this._busy = false;
-
-                    if (cb) cb(json);
-
-                    this.handleQueue();
-                }.bind(this));
-            return;
         }
         //if (!notimeout) opt.timeout = 2000; TODO reimplement timeout? Does it exist?
         //For upload status: r.req.connection.socket._bytesDispatched
-
 
         fetch(url,opt)
             .catch(function(err) {
@@ -142,13 +138,12 @@ class LEDStrip extends EventEmitter {
                 if (cb) cb(null,err.code);
                 return;
             }.bind(this))
-            .then(function(response) {
-                var json = response.json();
-
+            .then((response) => response.json())
+            .then(function(responseJson) {
                 this.startWatchdogTimer();
                 this._busy = false;
 
-                if (cb) cb(json);
+                if (cb) cb(responseJson);
 
                 this.handleQueue();
             }.bind(this));
@@ -218,29 +213,18 @@ class LEDStrip extends EventEmitter {
 
         if (isPreview) p.preview = null;
 
-        console.log(payload);
         var url = "http://"+this.ip+"/pattern/create?"+param(p);
         PatternLoader.upload(url,payload,function(err,res) {
-            console.log("got result",arguments);
+            //console.log("got result",arguments); //TODO implement this callback
         });
-
-        /*
-        this.sendCommand("pattern/create?"+param(p),_.bind(function(content,err) {
-            this.emit("Strip.UploadPatternComplete");
-            if (callback) callback(err);
-        },this),b64string,true);
-        */
 
         if (!isPreview) this.requestStatus();
     }
-    selectPattern(index) {
-        if (index < 0) index = 0;
-        if (index > this.patterns.length-1) index = this.patterns.length-1;
-        this.selectedPattern = index;
-        this.sendCommand("pattern/select?index="+index);
+    selectPattern(id) {
+        this.sendCommand("pattern/select?id="+id);
     }
-    forgetPattern(index) {
-        this.sendCommand("pattern/forget?index="+index);
+    forgetPattern(id) {
+        this.sendCommand("pattern/forget?id="+id);
         this.requestStatus();
     }
     disconnectStrip() {
@@ -257,7 +241,7 @@ LEDStrip.probeStrip = function(ip,cb) {
         .catch(function(err) {
             cb(null);
         })
-        .then((response) => response.json())
+        .then((response) => response ? response.json() : null)
         .then(function(json) {
             var strip = new LEDStrip(json.mac,ip);
             strip.receivedStatus(json,null);
