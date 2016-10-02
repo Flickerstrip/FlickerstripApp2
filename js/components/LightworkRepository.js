@@ -12,6 +12,7 @@ import LightworkRow from "~/components/LightworkRow.js";
 import PaginatedListView from "~/components/PaginatedListView.js";
 import LightworkActions from "~/actions/LightworkActions.js";
 import LightworkManager from "~/stores/LightworkManager.js";
+import BulkActions from "~/actions/BulkActions.js";
 
 var _ = require("lodash");
 
@@ -22,9 +23,11 @@ class LightworkRepository extends React.Component {
     renderRow(lightwork: Object,sectionID: number | string,rowID: number | string, highlightRowFunc: (sectionID: ?number | string, rowID: ?number | string) => void) {
         return (
             <LightworkRow
-                selected={() => lightwork.selected}
-                onPress={() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
-                lightwork={lightwork}
+                lightwork      = {lightwork}
+                selected       = {() => lightwork.selected}
+                onDrilldown    = {() => console.log("drilldownnn")}
+                onPress       = {() => LightworkManager.getSelectedCount() == 0 ? BulkActions.previewLightworkOnSelectedStrips(lightwork.id) : lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
+                onSelectToggle = {() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
             />
         );
     }

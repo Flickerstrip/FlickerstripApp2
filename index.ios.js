@@ -77,12 +77,14 @@ class FlickerstripApp extends React.Component {
                     badge={FlickerstripManager.getSelectedCount() || null}
                     selected={this.state.selectedTab === 'strips'}
                     onPress={() => {
+                        if (this.state.selectedTab == "strips") this._stripsNavigator.popToTop();
                         this.setState({
                             selectedTab: 'strips',
                         });
                     }}>
                     <View style={[layoutStyles.flexColumn, layoutStyles.marginBottomForTab]}>
                         <NavigatorIOS
+                            ref={(c) => this._stripsNavigator = c}
                             initialRoute={{
                                 component: StripListing,
                                 title: 'Strips',

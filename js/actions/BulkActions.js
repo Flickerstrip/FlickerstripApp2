@@ -19,5 +19,13 @@ export default {
             }.bind(this));
         }.bind(this));
     },
+    previewLightworkOnSelectedStrips: function(lightworkId) {
+        var flickerstrips = FlickerstripManager.getSelectedFlickerstrips();
+        _.each(flickerstrips,function(fs) {
+            LightworkManager.getLightworkData(lightworkId,function(lw) {
+                StripActions.loadPattern(fs.id,lw);
+            });
+        }.bind(this));
+    },
 };
 
