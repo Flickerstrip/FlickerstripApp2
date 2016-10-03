@@ -88,7 +88,7 @@ class FlickerstripApp extends React.Component {
                             initialRoute={{
                                 component: StripListing,
                                 title: 'Strips',
-                                //wrapperStyle:layoutStyles.paddingTopForNavigation, //TODO why isnt this needed..?
+                                wrapperStyle:layoutStyles.paddingTopForNavigation,
                                 rightButtonIcon: this.state.navicon, 
                                 onRightButtonPress:() => {
                                     MenuButton.showMenu([

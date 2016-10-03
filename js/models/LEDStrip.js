@@ -82,6 +82,7 @@ class LEDStrip extends EventEmitter {
         if (changedProperties.length) console.log("Changed: ",changedProperties);
 
         _.extend(this,status);
+        delete this.type;
 
         this.setVisible(true);
         this.status = true;
@@ -102,6 +103,9 @@ class LEDStrip extends EventEmitter {
 
         var args = this._queue.shift();
         this.sendCommand.apply(this,args);
+    }
+    getRegisteredStrips(cb) {
+        this.sendCommand("registered",cb);
     }
     sendCommand(command,cb,data,notimeout) {
         if (!this.ip) {
@@ -138,7 +142,7 @@ class LEDStrip extends EventEmitter {
                 if (cb) cb(null,err.code);
                 return;
             }.bind(this))
-            .then((response) => response.json())
+            .then((response) => response ? response.json() : null)
             .then(function(responseJson) {
                 this.startWatchdogTimer();
                 this._busy = false;

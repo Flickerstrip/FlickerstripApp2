@@ -61,6 +61,35 @@ class FlickerstripManager extends EventEmitter {
     getSelectedFlickerstrips() {
         return _.filter(this.strips,(strip) => {return strip.selected});
     }
+    getConfigurationMasterFlickerstrip() { //returns null if none
+        var apStrips = _.filter(this.strips,{"ap":1});
+        if (apStrips.length == 0) return null;
+        return apStrips[0];
+    }
+    configureImpl(ip,ssid,password) {
+        console.log("configure",ip);
+        var opt = {
+            method:"POST",
+            body: "ssid="+ssid+"&password="+password,
+            //body:{
+                //"ssid":ssid,
+                //"password":password,
+            //}
+        }
+        fetch("http://"+ip+"/connect",opt);
+    }
+    configureAll(ssid,password) {
+        var master = this.getConfigurationMasterFlickerstrip()
+        if (!master) return;
+
+        master.getRegisteredStrips(function(registered) {
+            console.log("got registered..");
+            _.each(registered,function(ip) {
+                this.configureImpl(ip,ssid,password);
+            }.bind(this));
+            this.configureImpl(master.ip,ssid,password);
+        }.bind(this));
+    }
     stripUpdateReceived(id,events) {
         _.each(this.listeners,function(l) {
             if (l.id && l.id != id) return;
