@@ -1,0 +1,11 @@
+#!/bin/bash
+
+rm -rf build || true
+mkdir build
+r.js -o build.js
+lessc app/style.less > build/style.css
+mkdir -p ./build/view/lib
+mkdir -p ./build/view/less
+cp -r ./app/view/lib/spectrum.css ./build/view/lib/spectrum.css
+cp -r ./app/view/less/fonts ./build/view/less/
+cp ./app/editor.html ./build/editor.html

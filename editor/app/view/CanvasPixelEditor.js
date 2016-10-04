@@ -29,20 +29,15 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
     var nudgeSpinAmount = 10;
 
     $.extend(This.prototype,{
-        init:function(image,palette) {
+        init:function(image,palette,$currentColorContainer,$paletteContainer) {
 			window.cpe = this;
             this.image = image;
             this.palette = palette;
             this.$el = $(template);
             this.lastNonblackwhiteColor = null;
-            this.$controls = this.$el.find(".controls");
 
-            if (platform == "mobile" && !isTablet) {
-                var $metricsDisclosure = $("<div class='metricsDisclosure'><label>P<span class='pixels'></span></label><label>T<span class='frames'></span></label><label>F<span class='fps'></span></label>");
-                util.bindClickEvent($metricsDisclosure.appendTo(this.$controls),_.bind(function() {
-                    this.$el.closest(".editPatternDialog").find(".patternControls>.right").toggle();
-                },this));
-            }
+            this.$currentColorContainer = $currentColorContainer;
+            this.$paletteContainer = $paletteContainer;
 
             this.displayMargins = {left:40,top:20,right:10,bottom:10}
             if (platform == "mobile") {
@@ -70,8 +65,8 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
 				},this)
             };
 
-            this.$controls.find(".fg").val("#fff").spectrum(colorOpts);
-            if (platform != "mobile") this.$controls.find(".bg").val("#000").spectrum(colorOpts);
+            this.$currentColorContainer.find(".fg").val("#fff").spectrum(colorOpts);
+            if (platform != "mobile") this.$currentColorContainer.find(".bg").val("#000").spectrum(colorOpts);
 
             setTimeout(_.bind(function() {
                 this.colorChanged();
@@ -171,38 +166,38 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
             return $panel;
         },
         updatePalette:function() {
-            var palette = this.palette;
-            var $special = null;
-            var $firstRow = $("<div class='paletteRow'></div>");
-            var $secondRow = $("<div class='paletteRow'></div>");
-
-            if (isTablet) {
-                $special = $("<div class='specialPalette paletteRow'></div>");
-
-                var colors = [
-                    this.fg.clone().spin(nudgeSpinAmount),
-                    this.fg.clone().spin(-nudgeSpinAmount),
-                    this.fg.clone().lighten(nudgeBrightenAmount),
-                    this.fg.clone().darken(nudgeBrightenAmount)
-                ];
-
-                _.each(colors,_.bind(function(c) {
-                    if (isBlackOrWhite(c)) c = this.fg;
-                    $special.append(this.generateColorPanel(c));
-                },this));
-            }
-
-            _.each(palette,_.bind(function(color,index) {
-                var c = tinycolor({r:color[0],g:color[1],b:color[2]});
-                var $panel = this.generateColorPanel(c,index);
-                $panel.appendTo(index < palette.length/2 ? $firstRow : $secondRow);
+            //Generate special palette
+            var specialPalette = [];
+            var colors = [
+                this.fg.clone().spin(nudgeSpinAmount),
+                this.fg.clone().spin(-nudgeSpinAmount),
+                this.fg.clone().lighten(nudgeBrightenAmount),
+                this.fg.clone().darken(nudgeBrightenAmount)
+            ];
+            _.each(colors,_.bind(function(c) {
+                if (isBlackOrWhite(c)) c = this.fg;
+                specialPalette.push(this.generateColorPanel(c));
             },this));
 
-            var $palette = this.$controls.find(".palette").empty();
+            //Generate normal palette
+            var colorPalette = [];
+            _.each(this.palette,_.bind(function(color,index) {
+                var c = tinycolor({r:color[0],g:color[1],b:color[2]});
+                colorPalette.push(this.generateColorPanel(c,index));
+            },this));
 
-            if ($special) $palette.append($special);
-            $palette.append($firstRow,$secondRow);
+            var $palette = this.$paletteContainer.empty();
+            $palette.append(specialPalette);
+            $palette.append(colorPalette);
 
+            setTimeout(function() {
+                $palette.children().each(function() {
+                    $(this).height($(this).width());
+                });
+                $palette.height($palette.height());
+            },20);
+
+            /*
             if (platform == "mobile" && !isTablet) {
                 setTimeout(_.bind(function() {
                     var nPerRow = palette.length/2;
@@ -213,6 +208,7 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
                     this.$controls.find(".metricsDisclosure").width(Math.floor(w)+"px");
                 },this),5);
             }
+            */
         },
         setImage:function(image) {
             this.image = image;
@@ -223,14 +219,14 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
                 this.lastNonblackwhiteColor = this.fg;
             }
 
-            this.$controls.find(".fg").spectrum("set", this.fg.toHexString());
-            this.$controls.find(".bg").spectrum("set", this.bg.toHexString());
+            this.$currentColorContainer.find(".fg").spectrum("set", this.fg.toHexString());
+            this.$currentColorContainer.find(".bg").spectrum("set", this.bg.toHexString());
 
             this.updatePalette();
         },
         colorChanged:function() {
-            this.fg = tinycolor(this.$controls.find(".fg").val());
-            this.bg = tinycolor(this.$controls.find(".bg").val());
+            this.fg = tinycolor(this.$currentColorContainer.find(".fg").val());
+            this.bg = tinycolor(this.$currentColorContainer.find(".bg").val());
 
             if (!isBlackOrWhite(this.fg)) {
                 this.lastNonblackwhiteColor = this.fg;

@@ -17,14 +17,14 @@ function($,tinycolor,ace,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop
     }
 
     $.extend(This.prototype, {
-        init:function(conduit,gui,pattern) {
+        init:function(conduit,gui,pattern,$el) {
             this.conduit = conduit;
             this.gui = gui;
 			this.widgets = [];
-            this.$el = $("<div class='editPatternDialog'/>");
+            this.$el = $el || $("<div class='editPatternDialog'/>");
+            this.$el.addClass("body bodyWithPreview bodyNoPadding noTouchEvents");
 
             this.$el.append(platform == "desktop" ? desktop_template : mobile_template);
-            this.$el = this.$el.children();
 
             if (platform == "mobile" && !isTablet) this.$el.find(".patternControls>.right").hide();
 
@@ -37,73 +37,18 @@ function($,tinycolor,ace,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop
             this.pattern = pattern.clone();
 
             this.$preview = this.$el.find(".patternPreview");
-            this.stripRenderer = new LEDStripRenderer(150);
+            this.stripRenderer = new LEDStripRenderer(75); //TODO an option to change this?
             this.$preview.empty().append(this.stripRenderer.$el);
             setTimeout(_.bind(function() {
                 this.stripRenderer.resizeToParent();
-            },this),5);
+            },this),100);
 
             $(window).on("resize",_.bind(function() {
                 this.stripRenderer.resizeToParent();
                 this.editor.resizeToParent();
             },this));
 
-            this.$el.find(".titletext").text(this.pattern.name);
-            util.bindClickEvent(this.$el.find(".titletext"),_.bind(function() {
-                var name = prompt("Pattern name",this.pattern.name);
-                if (name == null) return;
-                this.pattern.name = name;
-                this.$el.find(".titletext").text(this.pattern.name);
-            },this));
-
-            util.bindClickEvent(this.$el.find(".previewPatternButton"),_.bind(function() {
-                this.pattern.renderJavascriptPattern(null);
-                this.conduit.emit("LoadPattern",this.gui.selectedStrips[0].id,this.pattern,true);
-            },this));
-
-
-            this.$el.find(".patternControls").addClass("hide");
-            util.bindClickEvent(this.$el.find(".saveButton"),_.bind(this.savePatternClicked,this));
-
-            this.$el.find(".openConsole").click(_.bind(function() {
-                this.conduit.emit("OpenConsole");
-            },this));
-
-            console.log("hiding console..");
-            //for now, we ignore javascript.. we'll reimplement it later
-            this.$el.find(".openConsole").hide();
-            this.$el.find(".patternControls").removeClass("hide");
-
-            util.bindClickEvent(this.$el.find(".loadImage"),_.bind(function() {
-                util.openFileDialog(this.$el,{
-                    accepts:"*.png,*.gif,*.jpg,*.jpeg"
-                },_.bind(function(path) {
-                    if (!path) return;
-                    this.conduit.request("OpenImage",path,_.bind(function(width,height,pixels) {
-                        var transpose = false;
-                        this.canvas = util.renderPattern(pixels,width,height,null,null,transpose);
-                        this.editor.setImage(this.canvas);
-                        this.editor.setFps(this.pattern.fps);
-
-                        this.pattern.frames = transpose ? width : height;
-                        this.pattern.pixels = transpose ? height : width;
-
-                        this.updateEditor();
-                        this.updatePattern();
-                    },this));
-                },this));
-                        
-            },this));
-            util.bindClickEvent(this.$el.find(".saveImage"),_.bind(function() {
-                util.openFileDialog(this.$el,{
-                    nwsaveas:"pattern.png"
-                },_.bind(function(path) {
-                    var dataUrl = this.canvas.toDataURL();
-                    this.conduit.emit("SaveImage",dataUrl,path);
-                },this));
-            },this));
-
-            this.editor = new CanvasPixelEditor(null,this.pattern.palette);
+            this.editor = new CanvasPixelEditor(null,this.pattern.palette,this.$el.find(".currentColor"),this.$el.find(".palette"));
             $(this.editor).on("PaletteUpdated",_.bind(function(e,palette) {
                 this.pattern.palette = palette;
             },this));
@@ -117,6 +62,10 @@ function($,tinycolor,ace,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop
             this.$el.find(".metricsPanel input").click(function() {
                 $(this).select();
             });
+
+            util.bindClickEvent(this.$el.find(".metricsDisclosure"),_.bind(function() {
+                this.$el.find(".metricsPanel").toggle();
+            },this));
 
             this.$el.find(".metricsPanel input").change(_.bind(function() {
                 this.pattern.fps = parseInt(this.$fps.val()); //TODO upgeade to float
@@ -134,11 +83,10 @@ function($,tinycolor,ace,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop
                 this.doUpdateDelay();
             },this));
 
-            this.$el.find(".controls").replaceWith(this.editor.$controls);
             this.$el.find(".editorcontainer").append(this.editor.$el);
             setTimeout(_.bind(function() {
                 this.editor.resizeToParent();
-            },this),5);
+            },this),50);
 
             this.$fps = this.$el.find(".metricsPanel .fps");
             this.$frames = this.$el.find(".metricsPanel .frames");
@@ -150,6 +98,16 @@ function($,tinycolor,ace,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop
         },
         togglePreviewButton:function(enabled) {
             this.$el.find(".previewPatternButton").toggleClass("disabled",!enabled);
+        },
+        loadPattern:function(pattern) {
+            this.pattern = pattern;
+
+            this.canvas = util.renderPattern(this.pattern.pixelData,this.pattern.pixels,this.pattern.frames,null,null,false,false);
+            this.editor.setImage(this.canvas);
+            this.editor.setFps(this.pattern.fps);
+
+            this.updateEditor();
+            this.updatePattern();
         },
         updateEditor:function() {
             this.$frames.val(this.pattern.frames);

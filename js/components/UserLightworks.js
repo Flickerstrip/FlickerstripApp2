@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 
 import LightworkRow from "~/components/LightworkRow.js";
+import LightworkEditor from "~/components/LightworkEditor.js";
+import layoutStyles from "~/styles/layoutStyles";
 
 var _ = require("lodash");
 
@@ -31,13 +33,28 @@ class UserLightworks extends React.Component {
 
         this.refreshUserLightworks();
     }
+    rowDrilldownPressed(lw) {
+        LightworkManager.getLightworkData(lw.id,function(lw) {
+            this.props.navigator.push({
+                component: LightworkEditor,
+                title:lw.name,
+                wrapperStyle:layoutStyles.paddingTopForNavigation,
+                passProps: { lightwork: lw },
+                leftButtonTitle: "Back",
+                onLeftButtonPress:() => {
+                    this.props.navigator.pop();
+                }
+            });
+        }.bind(this));
+    }
     renderRow(lightwork: Object,sectionID: number | string,rowID: number | string, highlightRowFunc: (sectionID: ?number | string, rowID: ?number | string) => void) {
         return (
             <LightworkRow
                 lightwork     = {lightwork}
                 selected      = {() => lightwork.selected}
-                onDrilldown   = {() => console.log("drilldownnn")}
-                onPress       = {() => LightworkManager.getSelectedCount() == 0 ? BulkActions.previewLightworkOnSelectedStrips(lightwork.id) : lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
+                onDrilldown   = {() => this.rowDrilldownPressed(lightwork)}
+                onPress       = {() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
+                onPressTmp    = {() => LightworkManager.getSelectedCount() == 0 ? BulkActions.previewLightworkOnSelectedStrips(lightwork.id) : lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
                 onSelectToggle= {() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
             />
         );

@@ -45,6 +45,7 @@ class LightworkRow extends React.Component {
         return (
             <View key = {this.state.key} style={[styles.row,styles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>
                 {/*TODO figure out why this generates an EXC_BAD_ACCESS ?? */}
+                {/*
                 {renderIf(!this.props.strip)(
                     <CheckBox
                         label=''
@@ -52,6 +53,7 @@ class LightworkRow extends React.Component {
                         onChange={(checked) => this.props.onSelectToggle(this.props.lightwork)}
                     />
                 )}
+                */}
                 <TouchableElement
                     onPress={this.props.onPress}
                     //onShowUnderlay={this.props.onHighlight}

@@ -1,7 +1,48 @@
 @import "view/less/style.less";
+@import "view/lib/spectrum.css";
+
+.lightworkEditor {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+
+    .flex-display;
+    .flex-direction(column);
+}
 
 .editPatternDialog {
-    display: block !important;
+    .flex-display;
+    .flex-direction(column);
+}
+
+.patternPreview, .patternControls {
+    .flex(0 0 auto);
+}
+
+.patternPreview {
+    height: 20px;
+}
+
+.editorcontainer {
+    .flex(1 1 auto);
+}
+
+.mainPanelRow {
+    .flex-display;
+    .flex-direction(row);
+
+    .currentColor { flex: 0 0 auto; }
+    .metricsPanel { flex: 1 1 auto; }
+
+    .saveImage, .loadImage {
+        display: none;
+    }
+
+    .bg {
+        display: none;
+    }
 }
 
 .navigationBar {

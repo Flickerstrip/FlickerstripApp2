@@ -36,8 +36,8 @@ class FlickerstripApp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTab: 'strips',
-            //selectedTab: 'lightworks',
+            //selectedTab: 'strips',
+            selectedTab: 'lightworks',
             //selectedTab: 'editor',
             key: null,
         }
@@ -145,8 +145,8 @@ class FlickerstripApp extends React.Component {
                         <NavigatorIOS
                             initialRoute={{
                                 component: LightworkEditor,
+                                passProps: { lightwork: null },
                                 title: 'Editor',
-                                wrapperStyle:layoutStyles.paddingTopForNavigation,
                             }}
                             style={layoutStyles.flexColumn}
                         />

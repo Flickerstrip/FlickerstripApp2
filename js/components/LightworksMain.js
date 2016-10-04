@@ -29,10 +29,10 @@ class LightworksMain extends React.Component {
                     onChange={(event) => this.setState({activeTab:event.nativeEvent.selectedSegmentIndex})}
                 />
                 {renderIf(this.state.activeTab == 0)(
-                    <UserLightworks style={layoutStyles.flexColumn} />
+                    <UserLightworks navigator={this.props.navigator} style={layoutStyles.flexColumn} />
                 )}
                 {renderIf(this.state.activeTab == 1)(
-                    <LightworkRepository style={layoutStyles.flexColumn}/>
+                    <LightworkRepository navigator={this.props.navigator} style={layoutStyles.flexColumn}/>
                 )}
             </View>
         )

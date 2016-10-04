@@ -13,19 +13,20 @@ define(['jquery','tinycolor2',"view/util.js"],function($,tinycolor,util) {
 
 	var frameDebug = false;
 
-    var padding = {top: 10, right: 2, bottom: 10, left: 2};
+    var padding = {top: 0, right: 0, bottom: 0, left: 0};
     var ledHeight = 12;
 
     $.extend(This.prototype,{
         init:function(stripLength) {
             var canvas = document.createElement("canvas");
             canvas.width = 500;
-            canvas.height = 80;
+            canvas.height = ledHeight;
 
             this.canvas = canvas;
             this.$el = $(this.canvas);
 			this.frameDebugIndex = 0;
 
+            /*
             this.$el.on("mousemove",_.bind(function(e) {
                 var pos = util.getCursorPosition(this.canvas,e);
 
@@ -36,6 +37,7 @@ define(['jquery','tinycolor2',"view/util.js"],function($,tinycolor,util) {
                 }
 
             },this));
+            */
 
 			if (frameDebug) {
 				this.$el.on("click",_.bind(function(e) {
@@ -219,6 +221,37 @@ define(['jquery','tinycolor2',"view/util.js"],function($,tinycolor,util) {
             var imageData = imgctx.getImageData(0,0,this.rendered.width,this.rendered.height);
 
             var currentFrame = Math.floor((this.pattern.fps*((new Date().getTime() - this.startTime)/1000)) % this.pattern.frames);
+			if (frameDebug) {
+				if (this.frameDebugIndex >= this.pattern.frames) {
+					this.frameDebugIndex = 0;
+				}
+				currentFrame = this.frameDebugIndex;
+				this.frameDebugIndex++;
+			}
+
+            var usableWidth = this.canvas.width - padding.left - padding.right;
+            var separation = usableWidth / this.stripLength;
+
+            g.clearRect(0,0,this.canvas.width,this.canvas.height);
+
+
+            g.fillStyle = "#000";
+            g.fillRect(padding.left-1,padding.top-1,this.canvas.width-padding.right,ledHeight+2);
+
+            //render LED strip at current frame
+            for (var i=0; i<this.stripLength; i++) {
+                var pixel = util.getPixelFromImageData(imageData,i,currentFrame);
+                var c = new tinycolor({r:pixel[0],g:pixel[1],b:pixel[2]});
+
+                g.fillStyle = tinycolor(c.toString()).toHexString();
+                g.fillRect(padding.left+i*separation,padding.top,separation,ledHeight);
+            }
+
+            /*
+            var imgctx = this.rendered.getContext("2d");
+            var imageData = imgctx.getImageData(0,0,this.rendered.width,this.rendered.height);
+
+            var currentFrame = Math.floor((this.pattern.fps*((new Date().getTime() - this.startTime)/1000)) % this.pattern.frames);
 
             var usableHeight = this.canvas.height;
             var separation = usableHeight / this.stripLength;
@@ -238,6 +271,7 @@ define(['jquery','tinycolor2',"view/util.js"],function($,tinycolor,util) {
 						separation
 						);
             }
+            */
 		},
         setPattern:function(pattern) {
             this.pattern = pattern;
