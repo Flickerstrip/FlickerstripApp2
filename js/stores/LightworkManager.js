@@ -3,7 +3,6 @@ var _ = require("lodash");
 
 import ActionTypes from "~/constants/ActionTypes.js";
 import FlickerstripDispatcher from "~/dispatcher/FlickerstripDispatcher.js";
-
 import LightworkService from "~/services/LightworkService.js";
 
 var pageSize = 20;
@@ -35,7 +34,7 @@ class LightworkManager extends EventEmitter {
         if (lw.pixelData) {
             cb(lw);
         } else {
-            LightworkService.fetchLightworkData(null,lw.id,function(lwdata) {
+            LightworkService.fetchLightworkData(lw.id,function(lwdata) {
                 _.extend(lw,lwdata);
                 lw.pixelData = b64.toByteArray(lw.pixelData);
                 cb(lw);
@@ -51,40 +50,44 @@ class LightworkManager extends EventEmitter {
     getSelectedLightworks() {
         return _.filter(_.values(this.lightworksById),(lightwork) => {return lightwork.selected});
     }
-    hasCachedUserLightworks(user,page) {
-        if (!this.userLightworks[user.id]) return false;
+    saveLightwork(lightworkId,lw) {
+        LightworkService.saveLightwork(lightworkId,lw,function(data) {
+            console.log("saved lightwork, response",data);
+        });
+    }
+    hasCachedUserLightworks(userId,page) {
+        if (!this.userLightworks[userId]) return false;
 
-        var pagesTotal = Math.ceil(this.userLightworks[user.id].totalLightworks / pageSize);
-        var pagesLoaded = Math.ceil(this.userLightworks[user.id].lightworks.length / pageSize);
+        var pagesTotal = Math.ceil(this.userLightworks[userId].totalLightworks / pageSize);
+        var pagesLoaded = Math.ceil(this.userLightworks[userId].lightworks.length / pageSize);
 
         if (page > pagesLoaded) return false;
 
         return true;
     }
-    getUserLightworks(user,page,cb) {
-        console.log("get user lightworks calld","u:"+user.id,page);
-        if (this.hasCachedUserLightworks(user,page)) {
-            var lightworks = _.chunk(this.userLightworks[user.id].lightworks,pageSize)[page].map(function(lightworkId) {
+    getUserLightworks(userId,page,cb) {
+        if (this.hasCachedUserLightworks(userId,page)) {
+            var lightworks = _.chunk(this.userLightworks[userId].lightworks,pageSize)[page].map(function(lightworkId) {
                 return this.getLightwork(lightworkId);
             }.bind(this));
 
             return cb(lightworks);
         }
 
-        var pagesLoaded = !this.userLightworks[user.id] ? 0 : Math.ceil(this.userLightworks[user.id].lightworks.length / pageSize);
+        var pagesLoaded = !this.userLightworks[userId] ? 0 : Math.ceil(this.userLightworks[userId].lightworks.length / pageSize);
         if (page != pagesLoaded) return console.log("ERROR: tried to load user lightwork pages out of order..!");
 
-        LightworkService.fetchUserLightworks(user,this.page,function(result) { //TODO this currently doesnt paginate.. but it should
-            this.userLightworks[user.id] = {
+        LightworkService.fetchUserLightworks(userId,this.page,function(result) { //TODO this currently doesnt paginate.. but it should
+            this.userLightworks[userId] = {
                 totalLightworks: result.length,
                 lightworks: [],
             }
             _.each(result,function(lw) {
                 this.lightworksById[lw.id] = lw;
-                this.userLightworks[user.id].lightworks.push(lw.id);
+                this.userLightworks[userId].lightworks.push(lw.id);
             }.bind(this));
 
-            this.getUserLightworks(user,page,cb); //should be safe to call the original function now that we've filled the cache
+            this.getUserLightworks(userId,page,cb); //should be safe to call the original function now that we've filled the cache
         }.bind(this));
     }
     hasCachedPublicLightworks(page) {
@@ -97,8 +100,7 @@ class LightworkManager extends EventEmitter {
 
         return true;
     }
-    getPublicLightworks(user,page,cb) { //DRY this up a bit (with user lightworks)
-        console.log("getting public lightworks",page);
+    getPublicLightworks(page,cb) { //DRY this up a bit (with user lightworks)
         if (this.hasCachedPublicLightworks(page)) {
             var lightworks = _.chunk(this.publicLightworks.lightworks,pageSize)[page].map(function(lightworkId) {
                 return this.getLightwork(lightworkId);
@@ -110,7 +112,7 @@ class LightworkManager extends EventEmitter {
         var pagesLoaded = !this.publicLightworks ? 0 : Math.ceil(this.publicLightworks.lightworks.length / pageSize);
         if (page != pagesLoaded) return console.log("ERROR: tried to load public lightwork pages out of order..!"); //TODO automatically load intervening pages
 
-        LightworkService.fetchPublicLightworks(user,page,function(result) {
+        LightworkService.fetchPublicLightworks(page,function(result) {
             if (!this.publicLightworks) this.publicLightworks = {totalLightworks:result.total,lightworks:[]};
 
             _.each(result.results,function(lw) {
@@ -118,7 +120,7 @@ class LightworkManager extends EventEmitter {
                 this.publicLightworks.lightworks.push(lw.id);
             }.bind(this));
 
-            this.getPublicLightworks(user,page,cb);
+            this.getPublicLightworks(page,cb);
         }.bind(this));
     }
 }

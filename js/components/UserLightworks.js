@@ -10,6 +10,7 @@ import {
 
 import LightworkRow from "~/components/LightworkRow.js";
 import LightworkEditor from "~/components/LightworkEditor.js";
+import EditorActions from "~/actions/EditorActions.js";
 import layoutStyles from "~/styles/layoutStyles";
 
 var _ = require("lodash");
@@ -17,6 +18,7 @@ var _ = require("lodash");
 import LightworkManager from "~/stores/LightworkManager.js";
 import LightworkActions from "~/actions/LightworkActions.js";
 import BulkActions from "~/actions/BulkActions.js";
+import SettingsManager from "~/stores/SettingsManager";
 
 class UserLightworks extends React.Component {
     constructor(props) {
@@ -34,18 +36,7 @@ class UserLightworks extends React.Component {
         this.refreshUserLightworks();
     }
     rowDrilldownPressed(lw) {
-        LightworkManager.getLightworkData(lw.id,function(lw) {
-            this.props.navigator.push({
-                component: LightworkEditor,
-                title:lw.name,
-                wrapperStyle:layoutStyles.paddingTopForNavigation,
-                passProps: { lightwork: lw },
-                leftButtonTitle: "Back",
-                onLeftButtonPress:() => {
-                    this.props.navigator.pop();
-                }
-            });
-        }.bind(this));
+        EditorActions.openLightwork(lw.id);
     }
     renderRow(lightwork: Object,sectionID: number | string,rowID: number | string, highlightRowFunc: (sectionID: ?number | string, rowID: ?number | string) => void) {
         return (
@@ -61,12 +52,7 @@ class UserLightworks extends React.Component {
     }
     refreshUserLightworks() {
         this.loading = true;
-        var user = {
-            id: 2,
-            email: "julianh2o@gmail.com",
-            password: "6ZUMm2TXrHmRuZd"
-        };
-        LightworkManager.getUserLightworks(user,this.page,function(result) {
+        LightworkManager.getUserLightworks(SettingsManager.getUserId(),this.page,function(result) {
             this.loading = false;
             this.updateDatasource(result);
         }.bind(this));

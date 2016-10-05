@@ -135,6 +135,7 @@ function($,tinycolor,ace,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop
             */
 
             this.pattern.pixelData = util.canvasToBytes(this.canvas,false);
+            $(this).trigger("PatternUpdated",[this.pattern]);
             this.updateRendered();
         },
         updateRendered:function() {

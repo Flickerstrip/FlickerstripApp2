@@ -8,6 +8,10 @@ require(['jquery','shared/Pattern.js','view/EditPatternDialog.js','bootstrap'],f
 
             setTimeout(function() {
                 if (WebViewBridge) {
+                    $(this.editPatternDialog).on("PatternUpdated",function(e,pattern) {
+                        WebViewBridge.send(JSON.stringify({"command":"update","lightwork":pattern}));
+                    });
+
                     WebViewBridge.onMessage = function(reactNativeData) {
                         var json = JSON.parse(reactNativeData);
 

@@ -25,8 +25,10 @@ import LightworksMain from "~/components/LightworksMain.js";
 import SettingsMain from "~/components/SettingsMain.js";
 import FlickerstripManager from "~/stores/FlickerstripManager.js";
 import LightworkManager from "~/stores/LightworkManager.js";
+import EditorManager from "~/stores/EditorManager.js";
 import layoutStyles from "~/styles/layoutStyles";
 import BulkActions from "~/actions/BulkActions.js";
+import EditorActions from "~/actions/EditorActions.js";
 
 var Tabs = require("react-native-tabs");
 var NavigationBar = require("react-native-navbar");
@@ -37,8 +39,10 @@ class FlickerstripApp extends React.Component {
         super(props);
         this.state = {
             //selectedTab: 'strips',
-            selectedTab: 'lightworks',
+            //selectedTab: 'lightworks',
             //selectedTab: 'editor',
+            selectedTab: 'settings',
+            activeLightwork: null,
             key: null,
         }
 
@@ -48,6 +52,10 @@ class FlickerstripApp extends React.Component {
 
         LightworkManager.on("LightworkUpdated",function(id) {
             this.refresh();
+        }.bind(this));
+
+        EditorManager.on("ActiveLightworkChanged",function(id) {
+            this.setState({activeLightwork: id, selectedTab:"editor"});
         }.bind(this));
     }
 
@@ -143,10 +151,21 @@ class FlickerstripApp extends React.Component {
                     }}>
                     <View style={[layoutStyles.flexColumn, layoutStyles.marginBottomForTab]}>
                         <NavigatorIOS
+                            key={this.state.activeLightwork}
                             initialRoute={{
                                 component: LightworkEditor,
-                                passProps: { lightwork: null },
-                                title: 'Editor',
+                                passProps: { lightwork: EditorManager.getActiveLightwork() },
+                                title: EditorManager.getActiveLightwork() ? EditorManager.getActiveLightwork().name : "Editor",
+                                leftButtonTitle: EditorManager.getActiveLightwork() ? "Close" : undefined, 
+                                onLeftButtonPress: EditorManager.getActiveLightwork() ? () => { 
+                                    EditorActions.closeLightwork(EditorManager.getActiveLightwork().id)
+                                } : undefined,
+                                rightButtonTitle: EditorManager.getActiveLightwork() ? "Save" : "Create", 
+                                onRightButtonPress: EditorManager.getActiveLightwork() ? () => { 
+                                    EditorActions.saveLightwork(EditorManager.getActiveLightwork().id)
+                                } : () => {
+                                    EditorActions.createLightwork();
+                                },
                             }}
                             style={layoutStyles.flexColumn}
                         />

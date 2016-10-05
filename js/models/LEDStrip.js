@@ -79,7 +79,7 @@ class LEDStrip extends EventEmitter {
             if (change) changedProperties.push(key);
         }.bind(this));
 
-        if (changedProperties.length) console.log("Changed: ",changedProperties);
+        //if (changedProperties.length) console.log("Changed: ",changedProperties);
 
         _.extend(this,status);
         delete this.type;
