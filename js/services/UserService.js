@@ -17,15 +17,15 @@ function getBytes(str) {
 
 class UserService extends EventEmitter {
     static getAuthorizationHeader(user) {
-        return "Basic " + b64.fromByteArray(getBytes(user.username + ":" + user.password));
+        return "Basic " + b64.fromByteArray(getBytes(user.email + ":" + user.password));
     }
-    static validateUser(username,password,cb) {
+    static validateUser(email,password,cb) {
         var opt = {
             method: "POST",
         };
 
         opt.headers = {};
-        opt.headers["Authorization"] = UserService.getAuthorizationHeader({username:username,password:password});
+        opt.headers["Authorization"] = UserService.getAuthorizationHeader({email:email,password:password});
 
         fetch(Configuration.LIGHTWORK_ENDPOINT+"/user/challenge",opt)
             .then((response) => response.ok ? response.json() : cb(false,null))

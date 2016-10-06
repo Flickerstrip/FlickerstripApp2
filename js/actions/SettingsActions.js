@@ -9,5 +9,10 @@ export default {
             password: password,
         });
     },
+    userLogout:function() {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.USER_LOGOUT,
+        });
+    },
 };
 

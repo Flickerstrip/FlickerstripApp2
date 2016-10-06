@@ -4,6 +4,7 @@ var _ = require("lodash");
 import ActionTypes from "~/constants/ActionTypes.js";
 import FlickerstripDispatcher from "~/dispatcher/FlickerstripDispatcher.js";
 import LightworkService from "~/services/LightworkService.js";
+import SettingsManager from "~/stores/SettingsManager.js";
 
 var pageSize = 20;
 var b64 = require("base64-js");
@@ -50,10 +51,18 @@ class LightworkManager extends EventEmitter {
     getSelectedLightworks() {
         return _.filter(_.values(this.lightworksById),(lightwork) => {return lightwork.selected});
     }
-    saveLightwork(lightworkId,lw) {
+    saveLightwork(lightworkId,lw,cb) {
         LightworkService.saveLightwork(lightworkId,lw,function(data) {
             console.log("saved lightwork, response",data);
-        });
+            if (lightworkId == null) { //new lightwork created
+                data.pixelData = lw;
+                data.selected = false;
+                this.lightworksById[data.id] = data;
+                if (this.userLightworks[SettingsManager.getUser().id]) this.userLightworks[SettingsManager.getUser().id].lightworks.push(data);
+                cb(data.id,data);
+                this.emit("UserLightworksUpdated");
+            }
+        }.bind(this));
     }
     hasCachedUserLightworks(userId,page) {
         if (!this.userLightworks[userId]) return false;

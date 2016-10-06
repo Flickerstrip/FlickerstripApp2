@@ -51,9 +51,9 @@ class PaginatedListView extends React.Component {
                 renderRow={this.props.renderRow}
                 dataSource={this.state.dataSource}
                 onEndReached={this.onEndReached.bind(this)}
+                {...this.props}
                 //renderSeparator={this.renderSeparator}
                 //renderFooter={this.renderFooter}
-                //automaticallyAdjustContentInsets={false}
                 //keyboardDismissMode="on-drag"
                 //keyboardShouldPersistTaps={true}
                 //showsVerticalScrollIndicator={false}

@@ -40,8 +40,8 @@ class FlickerstripApp extends React.Component {
         this.state = {
             //selectedTab: 'strips',
             //selectedTab: 'lightworks',
-            //selectedTab: 'editor',
-            selectedTab: 'settings',
+            selectedTab: 'editor',
+            //selectedTab: 'settings',
             activeLightwork: null,
             key: null,
         }

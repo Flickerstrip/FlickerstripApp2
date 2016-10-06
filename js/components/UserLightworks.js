@@ -33,6 +33,7 @@ class UserLightworks extends React.Component {
             }).cloneWithRows([]),
         };
 
+        LightworkManager.on("UserLightworksUpdated",() => this.refreshUserLightworks());
         this.refreshUserLightworks();
     }
     rowDrilldownPressed(lw) {
@@ -42,10 +43,10 @@ class UserLightworks extends React.Component {
         return (
             <LightworkRow
                 lightwork     = {lightwork}
-                selected      = {() => lightwork.selected}
+                selected      = {() => lightwork.selected || false}
                 onDrilldown   = {() => this.rowDrilldownPressed(lightwork)}
-                onPress       = {() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
-                onPressTmp    = {() => LightworkManager.getSelectedCount() == 0 ? BulkActions.previewLightworkOnSelectedStrips(lightwork.id) : lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
+                onPressTmp       = {() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
+                onPress    = {() => LightworkManager.getSelectedCount() == 0 ? BulkActions.previewLightworkOnSelectedStrips(lightwork.id) : lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
                 onSelectToggle= {() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
             />
         );

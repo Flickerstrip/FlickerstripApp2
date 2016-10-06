@@ -30,7 +30,15 @@ class EditorManager extends EventEmitter {
                 this.addLightwork(lw);
             } else if (e.type === ActionTypes.EDITOR_SAVE_LIGHTWORK) {
                 var i = this.lightworkIndexById(e.lightworkId);
-                LightworkManager.saveLightwork(e.lightworkId,this.lightworks[i]);
+                var id = e.lightworkId;
+                if (id.indexOf("tmp_") == 0) id = null;
+                LightworkManager.saveLightwork(id,this.lightworks[i],function(saveId,lw) {
+                    if (id == null) {
+                        console.log("save lightwork returned.. writing save id to index",saveId,i);
+                        this.activeLightwork = saveId;
+                        this.lightworks[i].id = saveId;
+                    }
+                }.bind(this));
             }
         }.bind(this));
     }

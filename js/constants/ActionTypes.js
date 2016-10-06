@@ -18,4 +18,5 @@ export default keyMirror({
     EDITOR_SAVE_LIGHTWORK: null,
 
     USER_LOGIN: null,
+    USER_LOGOUT: null,
 });

@@ -63,15 +63,22 @@ class LightworkService extends EventEmitter {
 
         opt.headers["Content-Type"] = "application/json";
 
-        console.log("saving lightwork",id,lw,opt);
         //TODO fix this, we should make the pattern object used throughout
         var p = new Pattern();
         _.extend(p,lw);
         opt.body=p.serializeToJSON();
 
-        fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern/"+id+"/update",opt).then((response) => response.json()).then(function(data) {
-            cb(data);
-        }); 
+        if (id == null) {
+            console.log("create",opt);
+            fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern/create",opt).then((response) => response.json()).then(function(data) {
+                cb(data);
+            }); 
+        } else {
+            console.log("update",opt);
+            fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern/"+id+"/update",opt).then((response) => response.json()).then(function(data) {
+                cb(data);
+            }); 
+        }
     }
 }
 
