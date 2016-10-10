@@ -49,4 +49,18 @@ export default {
             patternId: patternId,
         });
     },
+    configure: function(stripId, opt) {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.CONFIGURE,
+            stripId: stripId,
+            opt: opt,
+        });
+    },
+    downloadLightwork: function(stripId, lightworkId) {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.DOWNLOAD_LIGHTWORK,
+            stripId: stripId,
+            lightworkId: lightworkId,
+        });
+    },
 };

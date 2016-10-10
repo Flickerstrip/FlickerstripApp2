@@ -14,6 +14,7 @@ var {
 } = ReactNative;
 
 import EIcon from "react-native-vector-icons/EvilIcons";
+import FIcon from "react-native-vector-icons/FontAwesome";
 
 import renderIf from "~/utils/renderIf"
 import LightworkManager from "~/stores/LightworkManager";
@@ -56,6 +57,7 @@ class LightworkRow extends React.Component {
                 */}
                 <TouchableElement
                     onPress={this.props.onPress}
+                    onLongPress={this.props.onLongPress}
                     //onShowUnderlay={this.props.onHighlight}
                     //onHideUnderlay={this.props.onUnhighlight}
                     style={[styles.flex1,styles.flexRow]}
@@ -66,6 +68,13 @@ class LightworkRow extends React.Component {
                                 {this.props.lightwork.name}
                             </Text>
                         </View>
+                        {renderIf(this.props.showPublished && this.props.lightwork.published)(
+                            <FIcon
+                                name="globe"
+                                size={25}
+                                color="rgba(0,150,255,1)"
+                            />
+                        )}
                     </View>
                 </TouchableElement>
                 {renderIf(this.props.onDelete)(

@@ -5,6 +5,7 @@ import DiscoveryService from "~/services/DiscoveryService.js";
 import ActionTypes from "~/constants/ActionTypes.js";
 import LEDStrip from "~/models/LEDStrip.js";
 import FlickerstripDispatcher from "~/dispatcher/FlickerstripDispatcher.js";
+import LightworkManager from "~/stores/LightworkManager";
 
 class FlickerstripManager extends EventEmitter {
     constructor(props) {
@@ -40,6 +41,25 @@ class FlickerstripManager extends EventEmitter {
             } else if (e.type === ActionTypes.DELETE_PATTERN) {
                 var strip = this.getStrip(e.stripId);
                 strip.forgetPattern(e.patternId);
+            } else if (e.type === ActionTypes.CONFIGURE) {
+                var strip = this.getStrip(e.stripId);
+                _.each(e.opt,function(value,key) {
+                    if (key == "name") strip.setName(value);
+                    if (key == "group") strip.setGroup(value);
+                    if (key == "cycle") strip.setCycle(value);
+                    if (key == "length") strip.setLength(value);
+                    if (key == "start") strip.setStart(value);
+                    if (key == "end") strip.setEnd(value);
+                    if (key == "fade") strip.setFade(value);
+                    if (key == "reversed") strip.setReversed(value);
+                    if (key == "brightness") strip.setBrightness(value);
+                }.bind(this));
+            } else if (e.type === ActionTypes.DOWNLOAD_LIGHTWORK) {
+                var strip = this.getStrip(e.stripId);
+                strip.downloadLightwork(e.lightworkId,function(lw) {
+                    console.log("saving downloaded lightwork",lw);
+                    LightworkManager.saveLightwork(null,lw);
+                }.bind(this));
             }
         }.bind(this));
 
@@ -67,14 +87,9 @@ class FlickerstripManager extends EventEmitter {
         return apStrips[0];
     }
     configureImpl(ip,ssid,password) {
-        console.log("configure",ip);
         var opt = {
             method:"POST",
             body: "ssid="+ssid+"&password="+password,
-            //body:{
-                //"ssid":ssid,
-                //"password":password,
-            //}
         }
         fetch("http://"+ip+"/connect",opt);
     }
@@ -83,7 +98,6 @@ class FlickerstripManager extends EventEmitter {
         if (!master) return;
 
         master.getRegisteredStrips(function(registered) {
-            console.log("got registered..");
             _.each(registered,function(ip) {
                 this.configureImpl(ip,ssid,password);
             }.bind(this));

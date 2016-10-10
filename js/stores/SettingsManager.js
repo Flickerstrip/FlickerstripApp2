@@ -21,15 +21,6 @@ class SettingsManager extends EventEmitter {
 
         this.loadSettings();
 
-        /*
-        this.user = {
-            id: 2,
-            email: "julianh2o@gmail.com",
-            //password: "6ZUMm2TXrHmRuZd"
-            password: "dodongo"
-        };
-        */
-
         FlickerstripDispatcher.register(function(e) {
             if (e.type === ActionTypes.USER_LOGIN) {
                 UserService.validateUser(e.email,e.password,function(valid,user) {

@@ -23,12 +23,51 @@ class LightworkManager extends EventEmitter {
                 this.emit("LightworkUpdated",e.lightworkId);
             } else if (e.type === ActionTypes.LOAD_LIGHTWORK) {
                 this.getLightworkData(e.lightworkId);
+            } else if (e.type === ActionTypes.PUBLISH_LIGHTWORK) {
+                this.saveLightwork(e.lightworkId,{"published":e.state});
+            } else if (e.type === ActionTypes.EDIT_LIGHTWORK) {
+                this.saveLightwork(e.lightworkId,e.props);
+            } else if (e.type === ActionTypes.STAR_LIGHTWORK) {
+                //Implement starring.. xD should this be on the network? probably
+            } else if (e.type === ActionTypes.DELETE_LIGHTWORK) {
+                LightworkService.deleteLightwork(e.lightworkId,function() {
+                    this.lightworkDeleted(e.lightworkId);
+                }.bind(this));
+            } else if (e.type === ActionTypes.DUPLICATE_LIGHTWORK) {
+                var lightwork = this.getLightwork(e.lightworkId);
+
+                this.getLightworkData(e.lightworkId,function(lw) {
+                    var duplicate = _.cloneDeep(lw);
+                    duplicate.name = e.name;
+                    duplicate.published = false;
+                    duplicate.id = null;
+                    delete duplicate.owner;
+
+                    this.saveLightwork(null,duplicate);
+                }.bind(this));
             }
         }.bind(this));
 
         this.lightworksById = {};
         this.userLightworks = {};
         this.publicLightworks = null;
+    }
+    lightworkDeleted(lightworkId) {
+        delete this.lightworksById[lightworkId];
+
+        var index = _.findIndex(this.publicLightworks,lightworkId);
+        if (index != -1) {
+            this.publicLightworks.slice(index,1);
+            this.emit("PublicLightworkListUpdated");
+        }
+
+        _.each(this.userLightworks,function(info,userId) {
+            var index = _.indexOf(info.lightworks,lightworkId);
+            if (index == -1) return;
+            this.userLightworks[userId].lightworks.splice(index,1);
+            this.emit("UserLightworkListUpdated",userId);
+        }.bind(this));
+        this.emit("LightworkListUpdated"); //TODO do we need this? this is internal state, we dont necessarily need to let anyone knwo..
     }
     getLightworkData(id,cb) {
         var lw = this.getLightwork(id);
@@ -53,40 +92,34 @@ class LightworkManager extends EventEmitter {
     }
     saveLightwork(lightworkId,lw,cb) {
         LightworkService.saveLightwork(lightworkId,lw,function(data) {
-            console.log("saved lightwork, response",data);
             if (lightworkId == null) { //new lightwork created
-                data.pixelData = lw;
+                data.pixelData = lw.pixelData;
                 data.selected = false;
                 this.lightworksById[data.id] = data;
-                if (this.userLightworks[SettingsManager.getUser().id]) this.userLightworks[SettingsManager.getUser().id].lightworks.push(data);
-                cb(data.id,data);
-                this.emit("UserLightworksUpdated");
+                if (this.userLightworks[SettingsManager.getUser().id]) this.userLightworks[SettingsManager.getUser().id].lightworks.push(data.id);
+                if (cb) cb(data.id,data);
+                this.emit("UserLightworkListUpdated",SettingsManager.getUser().id);
+            } else {
+                _.extend(this.lightworksById[lightworkId],lw);
+                this.emit("LightworkUpdated",lightworkId);
             }
         }.bind(this));
     }
-    hasCachedUserLightworks(userId,page) {
+    hasCachedUserLightworks(userId) {
         if (!this.userLightworks[userId]) return false;
-
-        var pagesTotal = Math.ceil(this.userLightworks[userId].totalLightworks / pageSize);
-        var pagesLoaded = Math.ceil(this.userLightworks[userId].lightworks.length / pageSize);
-
-        if (page > pagesLoaded) return false;
 
         return true;
     }
-    getUserLightworks(userId,page,cb) {
-        if (this.hasCachedUserLightworks(userId,page)) {
-            var lightworks = _.chunk(this.userLightworks[userId].lightworks,pageSize)[page].map(function(lightworkId) {
+    getUserLightworks(userId,cb) {
+        if (this.hasCachedUserLightworks(userId)) {
+            var lightworks = this.userLightworks[userId].lightworks.map(function(lightworkId) {
                 return this.getLightwork(lightworkId);
             }.bind(this));
 
             return cb(lightworks);
         }
 
-        var pagesLoaded = !this.userLightworks[userId] ? 0 : Math.ceil(this.userLightworks[userId].lightworks.length / pageSize);
-        if (page != pagesLoaded) return console.log("ERROR: tried to load user lightwork pages out of order..!");
-
-        LightworkService.fetchUserLightworks(userId,this.page,function(result) { //TODO this currently doesnt paginate.. but it should
+        LightworkService.fetchUserLightworks(userId,function(result) { //TODO this currently doesnt paginate.. but it should
             this.userLightworks[userId] = {
                 totalLightworks: result.length,
                 lightworks: [],
@@ -96,7 +129,7 @@ class LightworkManager extends EventEmitter {
                 this.userLightworks[userId].lightworks.push(lw.id);
             }.bind(this));
 
-            this.getUserLightworks(userId,page,cb); //should be safe to call the original function now that we've filled the cache
+            this.getUserLightworks(userId,cb); //should be safe to call the original function now that we've filled the cache
         }.bind(this));
     }
     hasCachedPublicLightworks(page) {

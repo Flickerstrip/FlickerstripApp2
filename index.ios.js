@@ -38,9 +38,9 @@ class FlickerstripApp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            //selectedTab: 'strips',
+            selectedTab: 'strips',
             //selectedTab: 'lightworks',
-            selectedTab: 'editor',
+            //selectedTab: 'editor',
             //selectedTab: 'settings',
             activeLightwork: null,
             key: null,
@@ -92,6 +92,7 @@ class FlickerstripApp extends React.Component {
                     }}>
                     <View style={[layoutStyles.flexColumn, layoutStyles.marginBottomForTab]}>
                         <NavigatorIOS
+                            key={this.state.key}
                             ref={(c) => this._stripsNavigator = c}
                             initialRoute={{
                                 component: StripListing,
@@ -156,13 +157,24 @@ class FlickerstripApp extends React.Component {
                                 component: LightworkEditor,
                                 passProps: { lightwork: EditorManager.getActiveLightwork() },
                                 title: EditorManager.getActiveLightwork() ? EditorManager.getActiveLightwork().name : "Editor",
-                                leftButtonTitle: EditorManager.getActiveLightwork() ? "Close" : undefined, 
+                                leftButtonTitle: EditorManager.getActiveLightwork() ? "Save" : undefined, 
                                 onLeftButtonPress: EditorManager.getActiveLightwork() ? () => { 
-                                    EditorActions.closeLightwork(EditorManager.getActiveLightwork().id)
-                                } : undefined,
-                                rightButtonTitle: EditorManager.getActiveLightwork() ? "Save" : "Create", 
-                                onRightButtonPress: EditorManager.getActiveLightwork() ? () => { 
                                     EditorActions.saveLightwork(EditorManager.getActiveLightwork().id)
+                                } : undefined,
+                                rightButtonIcon: EditorManager.getActiveLightwork() ? this.state.navicon : undefined,
+                                rightButtonTitle: EditorManager.getActiveLightwork() ? undefined : "Create",
+                                onRightButtonPress: EditorManager.getActiveLightwork() ? () => { 
+                                    MenuButton.showMenu([
+                                        {"label":"Rename Lightwork", onPress:() => { AlertIOS.prompt(
+                                            "Rename Lightwork",
+                                            null,
+                                            value => EditorManager.lightworkEdited(EditorManager.getActiveLightwork().id,{name: value}),
+                                            "plain-text",
+                                            EditorManager.getActiveLightwork().name
+                                        )}},
+                                        {"label":"Close Lightwork", onPress:() => { EditorActions.closeLightwork(EditorManager.getActiveLightwork().id) }, destructive:true},
+                                        {"label":"Cancel", cancel:true},
+                                    ]);
                                 } : () => {
                                     EditorActions.createLightwork();
                                 },

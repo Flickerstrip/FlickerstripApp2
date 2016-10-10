@@ -20,5 +20,41 @@ export default {
             lightworkId: lightworkId,
         });
     },
+    publishLightwork: function(lightworkId, state) {
+        state = state === undefined ? true : state;
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.PUBLISH_LIGHTWORK,
+            lightworkId: lightworkId,
+            state: state,
+        });
+    },
+    editLightwork: function(lightworkId, props) {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.EDIT_LIGHTWORK,
+            lightworkId: lightworkId,
+            props: props,
+        });
+    },
+    starLightwork: function(lightworkId, state) {
+        state = state === undefined ? true : state;
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.STAR_LIGHTWORK,
+            lightworkId: lightworkId,
+            state: state,
+        });
+    },
+    deleteLightwork: function(lightworkId) {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.DELETE_LIGHTWORK,
+            lightworkId: lightworkId,
+        });
+    },
+    duplicateLightwork: function(lightworkId,duplicateName) {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.DUPLICATE_LIGHTWORK,
+            lightworkId: lightworkId,
+            name: duplicateName,
+        });
+    },
 };
 

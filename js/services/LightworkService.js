@@ -9,9 +9,7 @@ import Configuration from "~/constants/Configuration";
 import UserService from "~/services/UserService";
 
 class LightworkService extends EventEmitter {
-    static fetchUserLightworks(userId,page,cb) {
-        page = page || 0;
-
+    static fetchUserLightworks(userId,cb) {
         var opt = {
             method: "GET",
         };
@@ -19,7 +17,7 @@ class LightworkService extends EventEmitter {
         opt.headers = {};
         if (SettingsManager.getUser()) opt.headers["Authorization"] = UserService.getAuthorizationHeader(SettingsManager.getUser());
          
-         fetch(Configuration.LIGHTWORK_ENDPOINT+"/user/"+userId+"/patterns?size=20&page="+page,opt).then((response) => response.json()).then(function(data) {
+         fetch(Configuration.LIGHTWORK_ENDPOINT+"/user/"+userId+"/patterns",opt).then((response) => response.json()).then(function(data) {
              cb(data);
          }); 
     }
@@ -69,16 +67,30 @@ class LightworkService extends EventEmitter {
         opt.body=p.serializeToJSON();
 
         if (id == null) {
-            console.log("create",opt);
             fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern/create",opt).then((response) => response.json()).then(function(data) {
-                cb(data);
+                if (cb) cb(data);
             }); 
         } else {
-            console.log("update",opt);
             fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern/"+id+"/update",opt).then((response) => response.json()).then(function(data) {
-                cb(data);
+                if (cb) cb(data);
             }); 
         }
+    }
+    static deleteLightwork(id,cb) {
+        var opt = {
+            method: "POST",
+        };
+
+        opt.headers = {};
+        if (SettingsManager.getUser()) {
+            opt.headers["Authorization"] = UserService.getAuthorizationHeader(SettingsManager.getUser());
+        } else {
+            throw("Unauthorized");
+        }
+
+        fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern/"+id+"/delete",opt).then().then(function() {
+            if (cb) cb();
+        }); 
     }
 }
 

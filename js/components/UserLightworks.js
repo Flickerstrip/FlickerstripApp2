@@ -6,6 +6,7 @@ import {
     View,
     ListView,
     SegmentedControlIOS,
+    AlertIOS
 } from 'react-native';
 
 import LightworkRow from "~/components/LightworkRow.js";
@@ -19,12 +20,11 @@ import LightworkManager from "~/stores/LightworkManager.js";
 import LightworkActions from "~/actions/LightworkActions.js";
 import BulkActions from "~/actions/BulkActions.js";
 import SettingsManager from "~/stores/SettingsManager";
+import MenuButton from "~/components/MenuButton";
 
 class UserLightworks extends React.Component {
     constructor(props) {
         super(props);
-
-        this.page = 0;
 
         this.state = {
             key: null,
@@ -33,8 +33,14 @@ class UserLightworks extends React.Component {
             }).cloneWithRows([]),
         };
 
-        LightworkManager.on("UserLightworksUpdated",() => this.refreshUserLightworks());
+        this.refreshUserLightworks = this.refreshUserLightworks.bind(this);
+    }
+    componentWillMount() {
+        LightworkManager.on("UserLightworkListUpdated",this.refreshUserLightworks);
         this.refreshUserLightworks();
+    }
+    componentWillUnmount() {
+        LightworkManager.removeListener("UserLightworkListUpdated",this.refreshUserLightworks);
     }
     rowDrilldownPressed(lw) {
         EditorActions.openLightwork(lw.id);
@@ -43,17 +49,42 @@ class UserLightworks extends React.Component {
         return (
             <LightworkRow
                 lightwork     = {lightwork}
+                showPublished = {true}
                 selected      = {() => lightwork.selected || false}
                 onDrilldown   = {() => this.rowDrilldownPressed(lightwork)}
-                onPressTmp       = {() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
-                onPress    = {() => LightworkManager.getSelectedCount() == 0 ? BulkActions.previewLightworkOnSelectedStrips(lightwork.id) : lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
+                onPress       = {() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
+                onPressTmp    = {() => LightworkManager.getSelectedCount() == 0 ? BulkActions.previewLightworkOnSelectedStrips(lightwork.id) : lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
                 onSelectToggle= {() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
+                onLongPress   = {() => MenuButton.showMenu([
+                    {"label":"Duplicate Lightwork", onPress:() => { 
+                        AlertIOS.prompt(
+                            "Duplicate Lightwork",
+                            null,
+                            value => LightworkActions.duplicateLightwork(lightwork.id,value),
+                            "plain-text",
+                            lightwork.name+" Copy"
+                        );
+                    }},
+                    {"label":"Star Lightwork", onPress:() => { LightworkActions.starLightwork(lightwork.id,!lightwork.starred) }},
+                    {"label":(lightwork.published ? "Unpublish" : "Publish") + " Lightwork", onPress:() => { LightworkActions.publishLightwork(lightwork.id,!lightwork.published) }},
+                    {"label":"Rename Lightwork", onPress:() => { 
+                        AlertIOS.prompt(
+                            "Rename Lightwork",
+                            null,
+                            value => LightworkActions.editLightwork(lightwork.id,{name:value}),
+                            "plain-text",
+                            lightwork.name
+                        );
+                    }},
+                    {"label":"Delete Lightwork", destructive:true, onPress:() => { LightworkActions.deleteLightwork(lightwork.id) }},
+                    {"label":"Cancel", cancel:true},
+                ]) }
             />
         );
     }
     refreshUserLightworks() {
         this.loading = true;
-        LightworkManager.getUserLightworks(SettingsManager.getUserId(),this.page,function(result) {
+        LightworkManager.getUserLightworks(SettingsManager.getUserId(),function(result) {
             this.loading = false;
             this.updateDatasource(result);
         }.bind(this));
@@ -65,11 +96,6 @@ class UserLightworks extends React.Component {
             });
         }.bind(this),0)
     }
-    onEndReached() {
-        if (this.loading) return;
-        
-        this.page++;
-    }
     render() {
         return (
             <ListView
@@ -80,7 +106,6 @@ class UserLightworks extends React.Component {
                 enableEmptySections={true}
                 //renderFooter={this.renderFooter}
                 renderRow={this.renderRow.bind(this)}
-                onEndReached={this.onEndReached}
                 automaticallyAdjustContentInsets={false}
                 //keyboardDismissMode="on-drag"
                 //keyboardShouldPersistTaps={true}

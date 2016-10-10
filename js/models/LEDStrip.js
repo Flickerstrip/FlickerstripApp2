@@ -129,7 +129,7 @@ class LEDStrip extends EventEmitter {
         var opt = {};
         if (data) {
             opt.method = "POST";
-            opt.body = data;
+            opt.body = JSON.stringify(data);
         }
         //if (!notimeout) opt.timeout = 2000; TODO reimplement timeout? Does it exist?
         //For upload status: r.req.connection.socket._bytesDispatched
@@ -157,31 +157,47 @@ class LEDStrip extends EventEmitter {
     }
     setName(name) {
         this.sendCommand("config/name",null,{"name":name});
+        this.name = name;
+        this.emit("StripUpdated",this.id,["configuration"]);
     }
     setCycle(seconds) {
         if (seconds === false) seconds = 0;
         this.sendCommand("config/cycle?value="+parseInt(seconds));
+        this.cycle = cycle;
+        this.emit("StripUpdated",this.id,["configuration"]);
     }
     setLength(length) {
         this.sendCommand("config/length?value="+parseInt(length));
+        this.length = length;
+        this.emit("StripUpdated",this.id,["configuration"]);
     }
     setStart(value) {
         if (value === false) value = 0;
         this.sendCommand("config/start?value="+parseInt(value));
+        this.start = value;
+        this.emit("StripUpdated",this.id,["configuration"]);
     }
     setEnd(value) {
         if (value === false) value = -1;
         this.sendCommand("config/end?value="+parseInt(value));
+        this.end = value;
+        this.emit("StripUpdated",this.id,["configuration"]);
     }
     setFade(value) {
         if (value === false) value = 0;
         this.sendCommand("config/fade?value="+parseInt(value));
+        this.fade = value;
+        this.emit("StripUpdated",this.id,["configuration"]);
     }
     setReversed(value) {
         this.sendCommand("config/reversed?value="+(value ? 1 : 0));
+        this.reversed = value;
+        this.emit("StripUpdated",this.id,["configuration"]);
     }
     setGroup(name) {
         this.sendCommand("config/group",null,{"name":name});
+        this.group = name;
+        this.emit("StripUpdated",this.id,["configuration"]);
     }
     removeFromQueue(command) {
         var newQueue = [];
@@ -197,6 +213,8 @@ class LEDStrip extends EventEmitter {
         if (brightness > 100) brightness = 100;
         this.removeFromQueue("brightness");
         this.sendCommand("brightness?value="+brightness);
+        this.brightness = brightness;
+        this.emit("StripUpdated",this.id,["state"]);
     }
     toggle(value) {
         this.power = value;
@@ -223,6 +241,19 @@ class LEDStrip extends EventEmitter {
         });
 
         if (!isPreview) this.requestStatus();
+    }
+    downloadLightwork(patternId,cb) {
+        PatternLoader.download("http://"+this.ip+"/pattern/download?id="+patternId,function(err,res) {
+            var patternInfo = _.find(this.patterns,{id:patternId});
+            var lw = {
+                name: patternInfo.name,
+                frames: patternInfo.frames,
+                pixels: patternInfo.pixels,
+                fps: patternInfo.fps,
+                pixelData: res
+            }
+            if (cb) cb(lw);
+        }.bind(this));
     }
     selectPattern(id) {
         this.sendCommand("pattern/select?id="+id);

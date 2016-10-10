@@ -1,5 +1,8 @@
 #import "RCTBridgeModule.h"
  
-@interface PatternLoader : NSObject <RCTBridgeModule>
- 
+@interface PatternLoader : NSObject <RCTBridgeModule, NSURLConnectionDelegate> {
+    NSMutableData * responseData; 
+
+}
+
 @end
