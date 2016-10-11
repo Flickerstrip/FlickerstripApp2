@@ -21,6 +21,7 @@ import FIcon from "react-native-vector-icons/FontAwesome";
 import MenuButton from "~/components/MenuButton.js";
 import StripListing from "~/components/StripListing.js";
 import LightworkEditor from "~/components/LightworkEditor.js";
+import ConfigureNewStrip from "~/components/ConfigureNewStrip.js";
 import LightworksMain from "~/components/LightworksMain.js";
 import SettingsMain from "~/components/SettingsMain.js";
 import FlickerstripManager from "~/stores/FlickerstripManager.js";
@@ -64,21 +65,16 @@ class FlickerstripApp extends React.Component {
     }
 
     componentWillMount() {
-        FIcon.getImageSource('navicon', 30).then((source) => this.setState({ navicon: source }));
+        FIcon.getImageSource('navicon', 20).then((source) => this.setState({ navicon: source }));
+        FIcon.getImageSource('plus', 20).then((source) => this.setState({ plusicon: source }));
     }
 
     render() {
+        if (!this.state.plusicon) return false;
         if (!this.state.navicon) return false;
 
-        var rightButtonConfig = {
-            title: 'Next',
-            handler: function onNext() {
-                alert('hello!');
-            }
-        };
-
         return (
-            <TabBarIOS unselectedTintColor="yellow" tintColor="white" barTintColor="darkslateblue">
+            <TabBarIOS unselectedTintColor="#666666" tintColor="blue" barTintColor="#efefef">
                 <NIcon.TabBarItemIOS
                     title="Strips"
                     iconName="signal"
@@ -96,8 +92,20 @@ class FlickerstripApp extends React.Component {
                             ref={(c) => this._stripsNavigator = c}
                             initialRoute={{
                                 component: StripListing,
-                                title: 'Strips',
+                                title: 'Flickerstrip',
                                 wrapperStyle:layoutStyles.paddingTopForNavigation,
+                                leftButtonIcon: this.state.plusicon, 
+                                onLeftButtonPress:() => {
+                                    this._stripsNavigator.push({
+                                        component: ConfigureNewStrip,
+                                        title:"Add Flickerstrip",
+                                        wrapperStyle:layoutStyles.paddingTopForNavigation,
+                                        leftButtonTitle: "Back",
+                                        onLeftButtonPress:() => {
+                                            this._stripsNavigator.pop();
+                                        }
+                                    });
+                                },
                                 rightButtonIcon: this.state.navicon, 
                                 onRightButtonPress:() => {
                                     MenuButton.showMenu([

@@ -31,8 +31,15 @@ class StripListing extends React.Component {
             }).cloneWithRows(_.values(FlickerstripManager.strips)),
         };
 
-        FlickerstripManager.on("StripAdded",this.updateDatasource.bind(this));
-        FlickerstripManager.on("StripRemoved",this.updateDatasource.bind(this));
+        this.updateDatasource = this.updateDatasource.bind(this);
+    }
+    componentWillMount() {
+        FlickerstripManager.on("StripAdded",this.updateDatasource);
+        FlickerstripManager.on("StripRemoved",this.updateDatasource);
+    }
+    componentWillUnmount() {
+        FlickerstripManager.removeListener("StripAdded",this.updateDatasource);
+        FlickerstripManager.removeListener("StripRemoved",this.updateDatasource);
     }
     rowPressed(strip) {
         if (FlickerstripManager.getSelectedCount() != 0) {

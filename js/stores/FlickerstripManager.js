@@ -18,6 +18,12 @@ class FlickerstripManager extends EventEmitter {
         this.discover.on("Found",this.onStripDiscovered.bind(this));
         this.discover.on("Lost",this.onStripLost.bind(this));
 
+        /*
+        setInterval(function() {
+            console.log("strips: ",this.strips);
+        }.bind(this),3000);
+        */
+
         FlickerstripDispatcher.register(function(e) {
             if (e.type === ActionTypes.SELECT_STRIP) {
                 this.getStrip(e.stripId).selected = true;
@@ -77,6 +83,9 @@ class FlickerstripManager extends EventEmitter {
     getStrip(id) {
         return this.strips[id];
     }
+    getCount() {
+        return _.keys(this.strips).length;
+    }
     getSelectedCount() {
         return _.filter(this.strips,(strip) => {return strip.selected}).length;
     }
@@ -94,6 +103,8 @@ class FlickerstripManager extends EventEmitter {
             body: "ssid="+ssid+"&password="+password,
         }
         fetch("http://"+ip+"/connect",opt);
+
+        this.onStripLost(ip);
     }
     configureAll(ssid,password) {
         var master = this.getConfigurationMasterFlickerstrip()
@@ -126,6 +137,7 @@ class FlickerstripManager extends EventEmitter {
     }
     onStripDiscovered(ip) {
         LEDStrip.probeStrip(ip,function(strip) {
+            //console.log("probed srip..",strip);
             if (this.strips[strip.id]) {
                 //this.emit("StripConnected",strip);
             } else {
@@ -140,6 +152,7 @@ class FlickerstripManager extends EventEmitter {
         var strip = this.strips[id];
         if (!strip) return;
         console.log("removing strip",id);
+        this.discover.markLost(strip.ip);
         delete this.strips[id];
         this.emit("StripRemoved",id);
     }
@@ -151,6 +164,7 @@ class FlickerstripManager extends EventEmitter {
         console.log("removing strip",id);
         delete this.strips[id];
 
+        this.discover.markLost(ip);
         this.emit("StripRemoved",id);
     }
 }

@@ -19,7 +19,6 @@ import SettingsActions from "~/actions/SettingsActions";
 import SettingsList from "react-native-settings-list";
 import StripInformation from "~/components/StripInformation";
 import StripInformationPixels from "~/components/StripInformationPixels";
-import Button from 'react-native-button'
 
 class StripDetails extends React.Component {
     constructor(props) {
@@ -48,7 +47,7 @@ class StripDetails extends React.Component {
     }
     stripRemovedHandler(id) {
         if (this.props.strip.id != id) return;
-        this.props.navigator.pop();
+        this.props.navigator.popToTop();
     }
     refresh() {
         this.updateDatasource();
@@ -75,7 +74,7 @@ class StripDetails extends React.Component {
             dataSource: this.state.dataSource.cloneWithRows(this.props.strip.patterns.slice(0))
         });
     }
-    render() {
+    renderHeader() {
         var stripLengthString = ""+this.props.strip.length;
         var start = this.props.strip.start == -1 ? 0 : this.props.strip.start;
         var end = this.props.strip.end == -1 ? this.props.strip.length : this.props.strip.end;
@@ -86,7 +85,7 @@ class StripDetails extends React.Component {
         var stripName = this.props.strip.name == "" ? "Unknown Strip" : this.props.strip.name;
         return (
             <View style={layoutStyles.flexColumn}>
-                <SettingsList key={this.state.key}>
+                <SettingsList key={this.state.key} useScrollView={false}>
                     <SettingsList.Item
                         title="Info"
                         titleInfo={this.props.strip.ip}
@@ -182,28 +181,25 @@ class StripDetails extends React.Component {
                         }}
                     />
                 </SettingsList>
-
-                <Button
-                    style={{fontSize: 20}}
-                    onPress={() => StripActions.forgetNetwork(this.props.strip.id)}
-                >
-                    Forget Network
-                </Button>
-
                 <Text style={{flex: 0}}>Lightworks</Text>
-                <ListView
-                    style={{flex: 1}}
-                    enableEmptySections={true}
-                    renderRow={this.renderRow.bind(this)}
-                    dataSource={this.state.dataSource}
-                    automaticallyAdjustContentInsets={false}
-                    //renderSeparator={this.renderSeparator}
-                    //renderFooter={this.renderFooter}
-                    //keyboardDismissMode="on-drag"
-                    //keyboardShouldPersistTaps={true}
-                    //showsVerticalScrollIndicator={false}
-                />
             </View>
+        )
+    }
+    render() {
+        return (
+            <ListView
+                style={{flex: 1}}
+                enableEmptySections={true}
+                renderRow={this.renderRow.bind(this)}
+                renderHeader={this.renderHeader.bind(this)}
+                dataSource={this.state.dataSource}
+                automaticallyAdjustContentInsets={false}
+                //renderSeparator={this.renderSeparator}
+                //renderFooter={this.renderFooter}
+                //keyboardDismissMode="on-drag"
+                //keyboardShouldPersistTaps={true}
+                //showsVerticalScrollIndicator={false}
+            />
         )
     }
 }

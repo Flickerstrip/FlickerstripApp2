@@ -20,7 +20,7 @@ import renderIf from "~/utils/renderIf"
 import LightworkManager from "~/stores/LightworkManager";
 import skinStyles from "~/styles/skinStyles";
 import layoutStyles from "~/styles/layoutStyles";
-import CheckBox from 'react-native-checkbox';
+import Checkbox from "~/components/Checkbox";
 
 class LightworkRow extends React.Component {
     constructor(props) {
@@ -46,16 +46,12 @@ class LightworkRow extends React.Component {
         var selected = typeof this.props.selected == "function" ? this.props.selected() : this.props.selected;
         return (
             <View key = {this.state.key} style={[{padding: 5},layoutStyles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>
-                {/*TODO figure out why this generates an EXC_BAD_ACCESS ?? */}
-                {/*
                 {renderIf(!this.props.strip)(
-                    <CheckBox
-                        label=''
+                    <Checkbox
+                        onPress={() => this.props.onSelectToggle(this.props.lightwork)}
                         checked={selected}
-                        onChange={(checked) => this.props.onSelectToggle(this.props.lightwork)}
                     />
                 )}
-                */}
                 <TouchableElement
                     onPress={this.props.onPress}
                     onLongPress={this.props.onLongPress}

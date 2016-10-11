@@ -48,7 +48,6 @@ class SettingsManager extends EventEmitter {
     }
     loadSettings() {
         AsyncStorage.getItem(asyncStorageKey).then(function(jsonString) {
-            console.log("loaded settings",jsonString);
             if (!jsonString) return;
             var json = JSON.parse(jsonString);
             _.extend(this,json);

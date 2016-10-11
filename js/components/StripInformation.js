@@ -16,6 +16,7 @@ import FlickerstripManager from "~/stores/FlickerstripManager";
 import MenuButton from "~/components/MenuButton";
 import SettingsActions from "~/actions/SettingsActions";
 import SettingsList from 'react-native-settings-list';
+import Button from 'react-native-button'
 
 class StripInformation extends React.Component {
     constructor(props) {
@@ -67,6 +68,13 @@ class StripInformation extends React.Component {
                         hasNavArrow={false}
                     />
                 </SettingsList>
+                <Button
+                    style={{fontSize: 20}}
+                    onPress={() => StripActions.forgetNetwork(this.props.strip.id)}
+                >
+                    Forget Network
+                </Button>
+
             </View>
         )
     }

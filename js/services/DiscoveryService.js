@@ -40,6 +40,12 @@ extend(This.prototype,{
         //this.client.on("error", function() { console.log("err",arguments) });
         //this.client.on("close", function() { console.log("close",arguments) });
 
+        /*
+        setInterval(function() {
+            console.log("endpoints: ",this.endpoints);
+        }.bind(this),3000);
+        */
+
         this.client.on("listening",function() {
             setInterval(this.sendProbe.bind(this),2000);
             this.sendProbe();
@@ -75,6 +81,11 @@ extend(This.prototype,{
                 this.emit("Found",address);
             }
             this.endpoints[address] = new Date().getTime();
+        }
+    },
+    markLost:function(ip) {
+        if (this.endpoints[ip]) {
+            delete this.endpoints[ip];
         }
     }
 });

@@ -49,11 +49,13 @@ class WiFiNetworkPrompt extends React.Component {
             ],
             "plain-text",
         );
+        if (this.props.onDismiss) this.props.onDismiss();
     }
     configureWithSavedClicked() {
         console.log("configure with saved clicked");
         FlickerstripManager.configureAll(SettingsManager.getWiFi().ssid,SettingsManager.getWiFi().password);
         this.props.navigator.pop();
+        if (this.props.onDismiss) this.props.onDismiss();
     }
     render() {
         var TouchableElement = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableHighlight;
