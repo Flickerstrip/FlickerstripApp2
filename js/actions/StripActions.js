@@ -63,4 +63,10 @@ export default {
             lightworkId: lightworkId,
         });
     },
+    forgetNetwork: function(stripId) {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.FORGET_NETWORK,
+            stripId: stripId,
+        });
+    },
 };

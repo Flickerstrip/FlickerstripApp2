@@ -19,6 +19,7 @@ import FIcon from "react-native-vector-icons/FontAwesome";
 import renderIf from "~/utils/renderIf"
 import LightworkManager from "~/stores/LightworkManager";
 import skinStyles from "~/styles/skinStyles";
+import layoutStyles from "~/styles/layoutStyles";
 import CheckBox from 'react-native-checkbox';
 
 class LightworkRow extends React.Component {
@@ -44,7 +45,7 @@ class LightworkRow extends React.Component {
         var TouchableElement = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableHighlight;
         var selected = typeof this.props.selected == "function" ? this.props.selected() : this.props.selected;
         return (
-            <View key = {this.state.key} style={[styles.row,styles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>
+            <View key = {this.state.key} style={[{padding: 5},layoutStyles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>
                 {/*TODO figure out why this generates an EXC_BAD_ACCESS ?? */}
                 {/*
                 {renderIf(!this.props.strip)(
@@ -60,10 +61,10 @@ class LightworkRow extends React.Component {
                     onLongPress={this.props.onLongPress}
                     //onShowUnderlay={this.props.onHighlight}
                     //onHideUnderlay={this.props.onUnhighlight}
-                    style={[styles.flex1,styles.flexRow]}
+                    style={[layoutStyles.flex1,layoutStyles.flexRow]}
                 >
-                    <View style={[styles.flex1,styles.flexRow]}>
-                        <View style={styles.flex1}>
+                    <View style={[layoutStyles.flex1,layoutStyles.flexRow]}>
+                        <View style={layoutStyles.flex1}>
                             <Text numberOfLines={2}>
                                 {this.props.lightwork.name}
                             </Text>
@@ -97,22 +98,6 @@ class LightworkRow extends React.Component {
         );
     }
 }
-
-var styles = StyleSheet.create({
-    row: {
-        padding: 5,
-    },
-    flexRow: {
-        alignItems: 'center',
-        flexDirection: 'row',
-    },
-    flex0: {
-        flex: 0,
-    },
-    flex1: {
-        flex: 1,
-    },
-});
 
 export default LightworkRow;
 

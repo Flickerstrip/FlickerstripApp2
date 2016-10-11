@@ -48,12 +48,7 @@ class LEDStrip extends EventEmitter {
         }
 
         if (!visible && updated) {
-            console.log("Client disconnected: "+this.ip);
-            this.ip = null;
-            this._busy = false;
-            this._queue = [];
-            this.stopWatchdogTimer();
-            this.emit("Strip.StatusUpdated",{"visible":false});
+            this.disconnectClient();
         }
     }
     /*
@@ -67,9 +62,18 @@ class LEDStrip extends EventEmitter {
             },this));
         },this));
     }*/
+    disconnectClient() {
+        console.log("Client disconnected: "+this.ip);
+        this.ip = null;
+        this._busy = false;
+        this._queue = [];
+        this.stopWatchdogTimer();
+        this.emit("StripDisconnected",this.id);
+        //this.emit("Strip.StatusUpdated",{"visible":false});
+    }
     receivedStatus(status,err) {
         if (err) {
-            if (this.visible) this.setVisible(false);
+            if (this.visible) this.disconnectClient();
             return;
         }
         if (!status || status["type"] != "status") status = {};
@@ -111,6 +115,7 @@ class LEDStrip extends EventEmitter {
         if (!this.ip) {
             console.log("ERROR: sending command to disconnected strip");
             cb(null,"DISCONNECTED");
+            this.disconnectClient();
             return;
         }
         if (this._busy) {
@@ -137,7 +142,7 @@ class LEDStrip extends EventEmitter {
         fetch(url,opt)
             .catch(function(err) {
                 console.log("error",err);
-                this.setVisible(false);
+                this.disconnectClient();
                 if (err.code != "ETIMEDOUT") console.log("error!",err,command);
                 if (cb) cb(null,err.code);
                 return;
@@ -264,6 +269,7 @@ class LEDStrip extends EventEmitter {
     }
     disconnectStrip() {
         this.sendCommand("disconnect");
+        this.disconnectClient();
     }
     getName() {
         return this.name;

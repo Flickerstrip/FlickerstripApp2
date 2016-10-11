@@ -25,9 +25,16 @@ class SettingsMain extends React.Component {
 
         this.state={key: null};
 
-        SettingsManager.on("UserUpdated",function() {
-            this.refresh();
-        }.bind(this));
+        this.refresh = this.refresh.bind(this);
+    }
+    componentWillMount() {
+        console.log("settingsmanager listeings count",SettingsManager.listenerCount("UserUpdated"));
+        SettingsManager.on("UserUpdated",this.refresh);
+        SettingsManager.on("WiFiUpdated",this.refresh);
+    }
+    componentWillUnMount() {
+        SettingsManager.removeListener("UserUpdated",this.refresh);
+        SettingsManager.removeListener("WiFiUpdated",this.refresh);
     }
     refresh() {
         this.setState({key:Math.random()});
@@ -39,7 +46,7 @@ class SettingsMain extends React.Component {
                     {SettingsManager.isUserSet() ?
                         <SettingsList.Item
                             icon={
-                                <EIcon name="user" style={styles.imageIcon} size={50} color="rgba(0,136,204,1)" />
+                                <EIcon name="user" style={layoutStyles.imageIcon} size={50} color="rgba(0,136,204,1)" />
                             }
                             title={'Logged In As: '+SettingsManager.getUser().email}
                             hasNavArrow={false}
@@ -53,26 +60,63 @@ class SettingsMain extends React.Component {
                     :
                         <SettingsList.Item
                             icon={
-                                <EIcon name="user" style={styles.imageIcon} size={50} color="rgba(0,136,204,1)" />
+                                <EIcon name="user" style={layoutStyles.imageIcon} size={50} color="rgba(0,136,204,1)" />
                             }
                             isAuth={true}
-                            authPropsUser={{placeholder:'HOhmBody account E-mail', onChangeText:(value) => this.setState({"userEmail":value})}}
-                            authPropsPW={{placeholder:'Password', onChangeText:(value) => this.setState({"userPass":value})}}
+                            authPropsUser={{
+                                placeholder:'HOhmBody account E-mail',
+                                onChangeText:(value) => this.setState({"userEmail":value}),
+                                onSubmitEditing:() => this._hohmbodyPassword.focus(),
+                                clearButtonMode:"while-editing",
+                            }}
+                            authPropsPW={{
+                                placeholder:'Password',
+                                onChangeText:(value) => this.setState({"userPass":value}),
+                                ref:(c) => this._hohmbodyPassword = c,
+                                clearButtonMode:"while-editing",
+                            }}
                             onPress={() => UserService.validateUser(this.state.userEmail,this.state.userPass,(valid) => { if (valid) SettingsActions.userLogin(this.state.userEmail,this.state.userPass) } )}
                         />
                     }
 
 
                     <SettingsList.Header headerStyle={{marginTop:15}}/>
-                    <SettingsList.Item
-                        icon={
-                            <NIcon name="signal" style={styles.imageIcon} size={50} color="rgba(0,136,204,1)" />
-                        }
-                        isAuth={true}
-                        authPropsUser={{placeholder:'SSID', onChangeText:(value) => this.setState({"wifiSSID":value})}}
-                        authPropsPW={{placeholder:'Password', onChangeText:(value) => this.setState({"wifiPass":value})}}
-                        onPress={() => console.log("do wifi",this.state.userEmail,this.state.userPass)}
-                    />
+                    {SettingsManager.isWiFiSet() ?
+                        <SettingsList.Item
+                            icon={
+                                <NIcon name="signal" style={layoutStyles.imageIcon} size={40} color="rgba(0,136,204,1)" />
+                            }
+                            title={'Saved SSID: '+SettingsManager.getWiFi().ssid}
+                            hasNavArrow={false}
+                            onPress={() => {
+                                MenuButton.showMenu([
+                                    {"label":"Forget SSID", destructive:true, onPress:() => SettingsActions.saveWifi(null) },
+                                    {"label":"Cancel", cancel:true},
+                                ]);
+                            }}
+                        />
+
+                    :
+                        <SettingsList.Item
+                            icon={
+                                <NIcon name="signal" style={layoutStyles.imageIcon} size={40} color="rgba(0,136,204,1)" />
+                            }
+                            isAuth={true}
+                            authPropsUser={{
+                                placeholder:'SSID',
+                                onChangeText:(value) => this.setState({"wifiSSID":value}),
+                                onSubmitEditing:() => this._wifiPassword.focus(),
+                                clearButtonMode:"while-editing",
+                            }}
+                            authPropsPW={{
+                                placeholder:'Password',
+                                onChangeText:(value) => this.setState({"wifiPass":value}),
+                                ref:(c) => this._wifiPassword = c,
+                                clearButtonMode:"while-editing",
+                            }}
+                            onPress={() => SettingsActions.saveWifi(this.state.wifiSSID,this.state.wifiPass)}
+                        />
+                    }
                 </SettingsList>
             </View>
         )
@@ -80,13 +124,6 @@ class SettingsMain extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  imageIcon:{
-    marginTop: 10,
-    marginLeft:15,
-    alignSelf:'center',
-    height:50,
-    width:50
-  },
 });
 
 export default SettingsMain;

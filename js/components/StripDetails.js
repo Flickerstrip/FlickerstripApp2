@@ -19,6 +19,7 @@ import SettingsActions from "~/actions/SettingsActions";
 import SettingsList from "react-native-settings-list";
 import StripInformation from "~/components/StripInformation";
 import StripInformationPixels from "~/components/StripInformationPixels";
+import Button from 'react-native-button'
 
 class StripDetails extends React.Component {
     constructor(props) {
@@ -30,15 +31,24 @@ class StripDetails extends React.Component {
                 rowHasChanged: (row1, row2) => row1 !== row2,
             }).cloneWithRows(_.values(this.props.strip.patterns)),
         };
+
+        this.stripRemovedHandler = this.stripRemovedHandler.bind(this);
     }
     componentWillMount() {
-        this.listener = FlickerstripManager.addListener({
+        this.listener = FlickerstripManager.addStripListener({
             id:this.props.strip.id,
             events: ["patterns","state","configuration"],
         },this.refresh.bind(this));
+
+        FlickerstripManager.on("StripRemoved",this.stripRemovedHandler);
     }
     componentWillUnmount() {
-        FlickerstripManager.removeListener(this.listener);
+        FlickerstripManager.removeListener("StripRemoved",this.stripRemovedHandler);
+        FlickerstripManager.removeStripListener(this.listener);
+    }
+    stripRemovedHandler(id) {
+        if (this.props.strip.id != id) return;
+        this.props.navigator.pop();
     }
     refresh() {
         this.updateDatasource();
@@ -172,6 +182,13 @@ class StripDetails extends React.Component {
                         }}
                     />
                 </SettingsList>
+
+                <Button
+                    style={{fontSize: 20}}
+                    onPress={() => StripActions.forgetNetwork(this.props.strip.id)}
+                >
+                    Forget Network
+                </Button>
 
                 <Text style={{flex: 0}}>Lightworks</Text>
                 <ListView

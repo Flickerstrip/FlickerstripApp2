@@ -37,6 +37,9 @@ extend(This.prototype,{
         this.client.bind(1900);
         this.client.on("message", this.messageReceived.bind(this));
 
+        //this.client.on("error", function() { console.log("err",arguments) });
+        //this.client.on("close", function() { console.log("close",arguments) });
+
         this.client.on("listening",function() {
             setInterval(this.sendProbe.bind(this),2000);
             this.sendProbe();

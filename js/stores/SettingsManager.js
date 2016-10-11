@@ -35,6 +35,14 @@ class SettingsManager extends EventEmitter {
                 this.user = null;
                 this.saveSettings();
                 this.emit("UserUpdated",null);
+            } else if (e.type === ActionTypes.WIFI_SAVE) {
+                if (e.ssid == null) {
+                    this.wifi = null;
+                } else {
+                    this.wifi = {ssid:e.ssid,password:e.password};
+                }
+                this.saveSettings();
+                this.emit("WiFiUpdated",null);
             }
         }.bind(this));
     }

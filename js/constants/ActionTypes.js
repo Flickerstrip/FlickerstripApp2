@@ -9,6 +9,7 @@ export default keyMirror({
     DELETE_PATTERN: null, //care of duplicate name when refactoring "delete_lightwork" exists, disambiguate me
     CONFIGURE: null,
     DOWNLOAD_LIGHTWORK: null,
+    FORGET_NETWORK: null,
 
     SELECT_LIGHTWORK: null,
     DESELECT_LIGHTWORK: null,
@@ -26,4 +27,5 @@ export default keyMirror({
 
     USER_LOGIN: null,
     USER_LOGOUT: null,
+    WIFI_SAVE: null,
 });

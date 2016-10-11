@@ -14,5 +14,12 @@ export default {
             type: ActionTypes.USER_LOGOUT,
         });
     },
+    saveWifi:function(ssid,password) {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.WIFI_SAVE,
+            ssid: ssid,
+            password: password,
+        });
+    },
 };
 

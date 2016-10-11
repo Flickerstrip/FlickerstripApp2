@@ -57,9 +57,11 @@ class FlickerstripManager extends EventEmitter {
             } else if (e.type === ActionTypes.DOWNLOAD_LIGHTWORK) {
                 var strip = this.getStrip(e.stripId);
                 strip.downloadLightwork(e.lightworkId,function(lw) {
-                    console.log("saving downloaded lightwork",lw);
                     LightworkManager.saveLightwork(null,lw);
                 }.bind(this));
+            } else if (e.type === ActionTypes.FORGET_NETWORK) {
+                var strip = this.getStrip(e.stripId);
+                strip.disconnectStrip();
             }
         }.bind(this));
 
@@ -111,14 +113,14 @@ class FlickerstripManager extends EventEmitter {
             l.callback(id,events);
         });
     }
-    addListener(opt,cb) {
+    addStripListener(opt,cb) {
         var opt = _.extend({},opt);
         opt.lid = new Date().getTime();
         opt.callback = cb;
         this.listeners.push(opt);
         return opt.lid;
     }
-    removeListener(lid) {
+    removeStripListener(lid) {
         var index = _.findIndex(this.listeners,{lid:new Date().getTime()});
         this.listeners.splice(index,1);
     }
@@ -129,16 +131,27 @@ class FlickerstripManager extends EventEmitter {
             } else {
                 this.strips[strip.id] = strip;
                 this.emit("StripAdded",strip);
+                strip.on("StripDisconnected",this.onStripDisconnected.bind(this));
                 strip.on("StripUpdated",this.stripUpdateReceived.bind(this));
             }
         }.bind(this));
     }
+    onStripDisconnected(id) {
+        var strip = this.strips[id];
+        if (!strip) return;
+        console.log("removing strip",id);
+        delete this.strips[id];
+        this.emit("StripRemoved",id);
+    }
     onStripLost(ip) {
         var id = this.findStripIdByIp(ip);
+        if (id == null) return;
         var strip = this.strips[id];
+        if (!strip) return;
+        console.log("removing strip",id);
         delete this.strips[id];
 
-        this.emit("StripRemoved",strip);
+        this.emit("StripRemoved",id);
     }
 }
 

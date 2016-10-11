@@ -24,13 +24,13 @@ class StripInformation extends React.Component {
         this.state = { key: null };
     }
     componentWillMount() {
-        this.listener = FlickerstripManager.addListener({
+        this.listener = FlickerstripManager.addStripListener({
             id:this.props.strip.id,
             events: ["configuration","state"],
         },this.refresh.bind(this));
     }
     componentWillUnmount() {
-        FlickerstripManager.removeListener(this.listener);
+        FlickerstripManager.removeStripListener(this.listener);
     }
     refresh() {
         this.setState({key:Math.random()});
