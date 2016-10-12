@@ -29,6 +29,7 @@ class LEDStrip extends EventEmitter {
     startWatchdogTimer() {
         if (this._timer) return;
         this._timer = setInterval(_.bind(function() {
+            if (this._busy) return;
             if (new Date().getTime() - this._lastCommand < visibleTimeout*.3+500) return; //someone's running commands, skip the watch dog cycle
             this.requestStatus();
         },this),visibleTimeout*.3);

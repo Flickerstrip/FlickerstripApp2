@@ -16,7 +16,7 @@ class FlickerstripManager extends EventEmitter {
         this.listeners = [];
 
         this.discover.on("Found",this.onStripDiscovered.bind(this));
-        this.discover.on("Lost",this.onStripLost.bind(this));
+        //this.discover.on("Lost",this.onStripLost.bind(this));
 
         /*
         setInterval(function() {
@@ -92,6 +92,9 @@ class FlickerstripManager extends EventEmitter {
     getSelectedFlickerstrips() {
         return _.filter(this.strips,(strip) => {return strip.selected});
     }
+    countWhere(filter) {
+        return _.filter(this.strips,filter).length;
+    }
     getConfigurationMasterFlickerstrip() { //returns null if none
         var apStrips = _.filter(this.strips,{"ap":1});
         if (apStrips.length == 0) return null;
@@ -151,7 +154,7 @@ class FlickerstripManager extends EventEmitter {
     onStripDisconnected(id) {
         var strip = this.strips[id];
         if (!strip) return;
-        console.log("removing strip",id);
+        console.log("removing strip (dc/err)",id);
         this.discover.markLost(strip.ip);
         delete this.strips[id];
         this.emit("StripRemoved",id);
@@ -161,7 +164,7 @@ class FlickerstripManager extends EventEmitter {
         if (id == null) return;
         var strip = this.strips[id];
         if (!strip) return;
-        console.log("removing strip",id);
+        console.log("removing strip (lost)",id);
         delete this.strips[id];
 
         this.discover.markLost(ip);

@@ -28,7 +28,6 @@ class SettingsMain extends React.Component {
         this.refresh = this.refresh.bind(this);
     }
     componentWillMount() {
-        console.log("settingsmanager listeings count",SettingsManager.listenerCount("UserUpdated"));
         SettingsManager.on("UserUpdated",this.refresh);
         SettingsManager.on("WiFiUpdated",this.refresh);
     }

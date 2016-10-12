@@ -27,5 +27,11 @@ export default {
             });
         }.bind(this));
     },
+    selectedStripPowerToggle: function(power) {
+        var flickerstrips = FlickerstripManager.getSelectedFlickerstrips();
+        _.each(flickerstrips,function(fs) {
+            StripActions.togglePower(fs.id,power);
+        }.bind(this));
+    },
 };
 

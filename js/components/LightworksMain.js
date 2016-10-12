@@ -20,9 +20,17 @@ class LightworksMain extends React.Component {
     constructor(props) {
         super(props);
         this.state = {key: null, activeTab: 0 };
+
+        this.refresh = this.refresh.bind(this);
     }
     componentWillMount() {
-        SettingsManager.on("UserUpdated UserUpdated",() => this.setState({key:Math.random()}));
+        SettingsManager.on("UserUpdated", this.refresh);
+    }
+    componentWillUnmount() {
+        SettingsManager.on("UserUpdated", this.refresh);
+    }
+    refresh() {
+        this.setState({key:Math.random()});
     }
     render() {
         var user = SettingsManager.getUser();

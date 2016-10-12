@@ -29,18 +29,14 @@ class FlickerstripRow extends React.Component {
         if (id == this.props.strip.id) this.refresh();
     }
     componentWillMount() {
-        console.log("mounting.. and adding listener",FlickerstripManager.listenerCount("StripUpdated"));
         FlickerstripManager.on("StripUpdated",this.handleFlickerstripUpdate);
     }
     componentWillUnmount() {
-        console.log("component unmounting");
         FlickerstripManager.removeListener("StripUpdated",this.handleFlickerstripUpdate);
-        console.log("unmounting.. and removed listener",FlickerstripManager.listenerCount("StripUpdated"));
     }
     refresh() {
         this.setState({key:Math.random()});
     }
-    //<EIcon style={styles.flex0} name="navicon" size={30} color="rgba(0,136,204,1)" />
     render() {
         var TouchableElement = Platform.OS === "android" ? TouchableNativeFeedback : TouchableHighlight;
         return (

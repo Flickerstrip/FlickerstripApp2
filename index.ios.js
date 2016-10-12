@@ -44,41 +44,50 @@ class FlickerstripApp extends React.Component {
             //selectedTab: "editor",
             //selectedTab: "settings",
             activeLightwork: null,
-            key: null,
         }
 
-        FlickerstripManager.on("StripUpdated",function(id) {
-            this.refresh();
-        }.bind(this));
-
-        LightworkManager.on("LightworkUpdated",function(id) {
-            this.refresh();
-        }.bind(this));
-
-        EditorManager.on("ActiveLightworkChanged",function(id) {
-            this.setState({activeLightwork: id, selectedTab:"editor"});
-        }.bind(this));
+        this.onActiveLightworkChanged = this.onActiveLightworkChanged.bind(this);
+        this.updateSelectedStripCount = this.updateSelectedStripCount.bind(this);
+        this.updateSelectedLightworksCount = this.updateSelectedLightworksCount.bind(this);
     }
-
-    refresh() {
-        this.setState({key:Math.random()});
-    }
-
     componentWillMount() {
-        FIcon.getImageSource("navicon", 20).then((source) => this.setState({ navicon: source }));
-        FIcon.getImageSource("plus", 20).then((source) => this.setState({ plusicon: source }));
-    }
+        FIcon.getImageSource("ellipsis-v", 20).then((source) => this.setState({ stripMenuIcon: source }));
+        FIcon.getImageSource("th-list", 20).then((source) => this.setState({ lightworkMenuIcon: source }));
+        FIcon.getImageSource("plus", 20).then((source) => this.setState({ configureStripIcon: source }));
 
+        FlickerstripManager.on("StripUpdated",this.updateSelectedStripCount);
+        FlickerstripManager.on("StripAdded",this.updateSelectedStripCount);
+        FlickerstripManager.on("StripRemoved",this.updateSelectedStripCount);
+        LightworkManager.on("LightworkUpdated",this.updateSelectedLightworksCount);
+        EditorManager.on("ActiveLightworkChanged",this.onActiveLightworkChanged);
+    }
+    componentWillUnmount() {
+        FlickerstripManager.removeListener("StripUpdated",this.updateSelectedStripCount);
+        FlickerstripManager.removeListener("StripAdded",this.updateSelectedStripCount);
+        FlickerstripManager.removeListener("StripRemoved",this.updateSelectedStripCount);
+        LightworkManager.on("LightworkUpdated",this.updateSelectedLightworksCount);
+        EditorManager.removeListener("ActiveLightworkChanged",this.onActiveLightworkChanged);
+    }
+    onActiveLightworkChanged(id) {
+        this.setState({activeLightwork: id, selectedTab:"editor"});
+    }
+    updateSelectedStripCount() {
+        this.setState({selectedStrips: FlickerstripManager.getSelectedCount()});
+    }
+    updateSelectedLightworksCount() {
+        this.setState({selectedLightworks: LightworkManager.getSelectedCount()});
+    }
     render() {
-        if (!this.state.plusicon) return false;
-        if (!this.state.navicon) return false;
+        if (!this.state.configureStripIcon) return false;
+        if (!this.state.lightworkMenuIcon) return false;
+        if (!this.state.stripMenuIcon) return false;
 
         return (
             <TabBarIOS unselectedTintColor="#666666" tintColor="blue" barTintColor="#efefef">
                 <NIcon.TabBarItemIOS
                     title="Strips"
                     iconName="signal"
-                    badge={FlickerstripManager.getSelectedCount() || null}
+                    badge={this.state.selectedStrips || null}
                     selected={this.state.selectedTab === "strips"}
                     onPress={() => {
                         if (this.state.selectedTab == "strips") this._stripsNavigator.popToTop();
@@ -88,13 +97,12 @@ class FlickerstripApp extends React.Component {
                     }}>
                     <View style={[layoutStyles.flexColumn, layoutStyles.marginBottomForTab]}>
                         <NavigatorIOS
-                            key={this.state.key}
                             ref={(c) => this._stripsNavigator = c}
                             initialRoute={{
                                 component: StripListing,
                                 title: "Flickerstrip",
                                 wrapperStyle:layoutStyles.paddingTopForNavigation,
-                                leftButtonIcon: this.state.plusicon, 
+                                leftButtonIcon: this.state.configureStripIcon, 
                                 onLeftButtonPress:() => {
                                     this._stripsNavigator.push({
                                         component: ConfigureNewStrip,
@@ -106,11 +114,14 @@ class FlickerstripApp extends React.Component {
                                         }
                                     });
                                 },
-                                rightButtonIcon: this.state.navicon, 
+                                rightButtonIcon: this.state.stripMenuIcon, 
                                 onRightButtonPress:() => {
                                     MenuButton.showMenu([
-                                        {"label":"On", onPress:() => {console.log("on")}},
-                                        {"label":"Off", onPress:() => {console.log("off")}},
+                                        (
+                                            FlickerstripManager.countWhere({"power":1}) > 0
+                                                ? {"label":"Off", onPress:() => BulkActions.selectedStripPowerToggle(false)}
+                                                : {"label":"On", onPress:() => BulkActions.selectedStripPowerToggle(true)}
+                                        ),
                                         {"label":"Clear Patterns", destructive:true, onPress:() => { console.log("clearing patterns.."); }},
                                         {"label":"Cancel", cancel:true},
                                     ]);
@@ -137,7 +148,7 @@ class FlickerstripApp extends React.Component {
                                 component: LightworksMain,
                                 title: "Lightworks",
                                 wrapperStyle:layoutStyles.paddingTopForNavigation,
-                                rightButtonIcon: this.state.navicon, 
+                                rightButtonIcon: this.state.lightworkMenuIcon, 
                                 onRightButtonPress:() => { 
                                     MenuButton.showMenu([
                                         {"label":"Load Patterns", onPress:() => { BulkActions.loadSelectedLightworksToSelectedStrips() }},
@@ -169,7 +180,7 @@ class FlickerstripApp extends React.Component {
                                 onLeftButtonPress: EditorManager.getActiveLightwork() ? () => { 
                                     EditorActions.saveLightwork(EditorManager.getActiveLightwork().id)
                                 } : undefined,
-                                rightButtonIcon: EditorManager.getActiveLightwork() ? this.state.navicon : undefined,
+                                rightButtonIcon: EditorManager.getActiveLightwork() ? this.state.stripMenuIcon : undefined,
                                 rightButtonTitle: EditorManager.getActiveLightwork() ? undefined : "Create",
                                 onRightButtonPress: EditorManager.getActiveLightwork() ? () => { 
                                     MenuButton.showMenu([
