@@ -188,6 +188,7 @@ class StripDetails extends React.Component {
     render() {
         return (
             <ListView
+                key={this.state.key}
                 style={{flex: 1}}
                 enableEmptySections={true}
                 renderRow={this.renderRow.bind(this)}

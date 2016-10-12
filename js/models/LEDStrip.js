@@ -262,7 +262,9 @@ class LEDStrip extends EventEmitter {
         }.bind(this));
     }
     selectPattern(id) {
+        this.selectedPattern = id;
         this.sendCommand("pattern/select?id="+id);
+        this.emit("StripUpdated",this.id,["state"]);
     }
     forgetPattern(id) {
         this.sendCommand("pattern/forget?id="+id);

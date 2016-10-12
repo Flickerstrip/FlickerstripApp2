@@ -27,7 +27,7 @@ class LightworkRow extends React.Component {
         super(props);
         this.state = {key: null};
 
-        this.lightworkUpdated = this.lightworkUpdated.bind(this); //hmmmmm.. is this the right way of doing this?
+        this.lightworkUpdated = this.lightworkUpdated.bind(this);
     }
     componentWillMount() {
         LightworkManager.on("LightworkUpdated",this.lightworkUpdated);
@@ -45,12 +45,19 @@ class LightworkRow extends React.Component {
         var TouchableElement = Platform.OS === "android" ? TouchableNativeFeedback : TouchableHighlight;
         var selected = typeof this.props.selected == "function" ? this.props.selected() : this.props.selected;
         return (
-            <View key = {this.state.key} style={[{padding: 5},layoutStyles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>
+            <View key = {this.state.key} style={[layoutStyles.flexAlignStretch, layoutStyles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>
                 {renderIf(!this.props.strip)(
-                    <Checkbox
+                    <TouchableElement
+                        style={[layoutStyles.flexAlignCenter, layoutStyles.flexRow,{paddingLeft: 10, paddingRight: 0}]}
                         onPress={() => this.props.onSelectToggle(this.props.lightwork)}
-                        checked={selected}
-                    />
+                    >
+                        <View>
+                            <Checkbox
+                                
+                                checked={selected}
+                            />
+                        </View>
+                    </TouchableElement>
                 )}
                 <TouchableElement
                     onPress={this.props.onPress}
@@ -59,7 +66,7 @@ class LightworkRow extends React.Component {
                     //onHideUnderlay={this.props.onUnhighlight}
                     style={[layoutStyles.flex1,layoutStyles.flexRow]}
                 >
-                    <View style={[layoutStyles.flex1,layoutStyles.flexRow]}>
+                    <View style={[layoutStyles.flex1,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}>
                         <View style={layoutStyles.flex1}>
                             <Text numberOfLines={2}>
                                 {this.props.lightwork.name}
@@ -75,20 +82,28 @@ class LightworkRow extends React.Component {
                     </View>
                 </TouchableElement>
                 {renderIf(this.props.onDelete)(
-                    <EIcon
-                        name="close-o"
-                        size={30}
-                        color="rgba(255,0,0,1)"
+                    <TouchableElement
                         onPress={this.props.onDelete}
-                    />
+                        style={[layoutStyles.flex0,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}
+                    >
+                        <EIcon
+                            name="close-o"
+                            size={30}
+                            color="rgba(255,0,0,1)"
+                        />
+                    </TouchableElement>
                 )}
                 {renderIf(this.props.onDrilldown)(
-                    <EIcon
-                        name="chevron-right"
-                        size={30}
-                        color="rgba(55,150,255,1)"
+                    <TouchableElement
                         onPress={this.props.onDrilldown}
-                    />
+                        style={[layoutStyles.flex0,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}
+                    >
+                        <EIcon
+                            name="chevron-right"
+                            size={30}
+                            color="rgba(55,150,255,1)"
+                        />
+                    </TouchableElement>
                 )}
             </View>
         );

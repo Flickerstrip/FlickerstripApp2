@@ -15,8 +15,10 @@ const layoutStyles = StyleSheet.create({
     flexAlignCenter: {
         alignItems: "center",
     },
+    flexAlignStretch: {
+        alignItems: "stretch",
+    },
     flexRow: {
-        alignItems: "center",
         flexDirection: "row",
     },
     centerChildren:{
