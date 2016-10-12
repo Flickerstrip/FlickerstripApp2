@@ -45,6 +45,7 @@ class LightworkEditor extends React.Component {
             <View style={layoutStyles.flexColumn}>
                 {renderIf(this.props.lightwork)(
                     <WebViewBridge
+                        scrollEnabled={false}
                         ref="webview"
                         style={layoutStyles.flexColumn}
                         onBridgeMessage={this.onMessage.bind(this)}

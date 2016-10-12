@@ -15,6 +15,20 @@ const skinStyles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: "#e0e0e0",
     },
+    notePanel: {
+        margin: 10,
+        borderWidth: 1,
+        borderColor: "#ccc",
+        padding: 20,
+        borderRadius: 10,
+    },
+    noteText: {
+        textAlign: "center",
+        fontSize: 16,
+    },
+    button: {
+        fontSize: 20,
+    },
 });
 
 export default skinStyles;

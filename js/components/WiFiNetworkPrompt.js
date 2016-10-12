@@ -21,6 +21,7 @@ import SettingsManager from "~/stores/SettingsManager.js";
 import EIcon from "react-native-vector-icons/EvilIcons";
 import NIcon from "react-native-vector-icons/Entypo";
 import SettingsList from 'react-native-settings-list';
+import skinStyles from "~/styles/skinStyles";
 
 class WiFiNetworkPrompt extends React.Component {
     constructor(props) {
@@ -112,7 +113,7 @@ class WiFiNetworkPrompt extends React.Component {
                             onSubmitEditing={this.configureButtonClicked.bind(this)}
                         />
                         <Button
-                            style={{fontSize: 20}}
+                            style={skinStyles.button}
                             onPress={this.configureButtonClicked.bind(this)}
                         >
                             Configure Flickerstrips

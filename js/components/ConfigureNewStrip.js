@@ -23,6 +23,7 @@ import EIcon from "react-native-vector-icons/EvilIcons";
 import NIcon from "react-native-vector-icons/Entypo";
 import SettingsList from "react-native-settings-list";
 import WiFiNetworkPrompt from "~/components/WiFiNetworkPrompt";
+import skinStyles from "~/styles/skinStyles";
 
 class ConfigureNewStrip extends React.Component {
     constructor(props) {
@@ -37,7 +38,7 @@ class ConfigureNewStrip extends React.Component {
         FlickerstripManager.on("StripRemoved",this.refresh);
     }
     componentWillUnmount() {
-        FlickerstripManager.removeListener("StripUpdated",this.refresh);
+        FlickerstripManager.removeListener("StripAdded",this.refresh);
         FlickerstripManager.removeListener("StripRemoved",this.refresh);
     }
     refresh() {
@@ -52,7 +53,7 @@ class ConfigureNewStrip extends React.Component {
                     Found {FlickerstripManager.getCount()} strips ready to configure.
                 </Text>
                 <Button
-                    style={{fontSize: 20}}
+                    style={skinStyles.button}
                     onPress={() => {
                         this.props.navigator.push({
                             component: WiFiNetworkPrompt,

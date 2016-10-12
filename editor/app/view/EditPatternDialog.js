@@ -1,5 +1,5 @@
-define(["jquery","tinycolor2","ace/ace","view/util.js","view/LEDStripRenderer.js","view/CanvasPixelEditor.js","shared/Pattern.js","text!tmpl/editPatternDialog.html","text!tmpl/editPatternDialogMobile.html"],
-function($,tinycolor,ace,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop_template,mobile_template) {
+define(["jquery","tinycolor2","view/util.js","view/LEDStripRenderer.js","view/CanvasPixelEditor.js","shared/Pattern.js","text!tmpl/editPatternDialog.html","text!tmpl/editPatternDialogMobile.html"],
+function($,tinycolor,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop_template,mobile_template) {
     var This = function() {
         this.init.apply(this,arguments);
     }
@@ -152,17 +152,6 @@ function($,tinycolor,ace,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop
             } else {
                 $(document.body).append(this.$el);
                 this.$el.modal('show');
-
-                /*
-                if (this.pattern.type == "javascript") {
-                    this.editor = ace.edit(this.$el.find(".editorcontainer").get(0));
-                    this.editor.setValue(this.pattern.code || this.gui.clientData.defaultAdvanced);
-                    this.editor.setTheme("ace/theme/monokai");
-                    this.editor.getSession().setMode("ace/mode/javascript");
-                    this.editor.getSession().on('change',_.bind(this.doUpdateDelay,this));
-                    this.editor.gotoLine(0);
-                }
-                */
             }
             
             setTimeout(function() {

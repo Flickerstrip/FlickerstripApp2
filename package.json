@@ -20,7 +20,7 @@
     "react-native-settings-list": "git+https://github.com/Flickerstrip/react-native-settings-list.git",
     "react-native-swipeout": "git+https://github.com/nasal/react-native-swipeout.git",
     "react-native-tabs": "^1.0.9",
-    "react-native-udp": "^1.2.5",
+    "react-native-udp": "^1.2.6",
     "react-native-vector-icons": "^2.1.0",
     "react-native-webview-bridge": "git+https://github.com/alinz/react-native-webview-bridge.git",
     "tinycolor2": "^1.4.1"
