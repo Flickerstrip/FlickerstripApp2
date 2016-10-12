@@ -153,9 +153,9 @@ class StripDetails extends React.Component {
                                 "Cycle Frequency",
                                 "Automatically cycles through patterns (seconds)",
                                 [
-                                    {text: 'Disable', onPress: () => StripActions.configure(this.props.strip.id,{cycle:0})},
-                                    {text: 'Cancel'},
-                                    {text: 'Save', onPress: (value) => StripActions.configure(this.props.strip.id,{cycle:value})},
+                                    {text: "Disable", onPress: () => StripActions.configure(this.props.strip.id,{cycle:0})},
+                                    {text: "Cancel"},
+                                    {text: "Save", onPress: (value) => StripActions.configure(this.props.strip.id,{cycle:value})},
                                 ],
                                 "plain-text",
                                 ""+(this.props.strip.cycle == 0 ? "" : this.props.strip.cycle)
@@ -171,9 +171,9 @@ class StripDetails extends React.Component {
                                 "Transition duration",
                                 "Crossfades pattern transitions (milliseconds)",
                                 [
-                                    {text: 'Disable', onPress: () => StripActions.configure(this.props.strip.id,{fade:0})},
-                                    {text: 'Cancel'},
-                                    {text: 'Save', onPress: (value) => StripActions.configure(this.props.strip.id,{fade:value})},
+                                    {text: "Disable", onPress: () => StripActions.configure(this.props.strip.id,{fade:0})},
+                                    {text: "Cancel"},
+                                    {text: "Save", onPress: (value) => StripActions.configure(this.props.strip.id,{fade:value})},
                                 ],
                                 "plain-text",
                                 ""+(this.props.strip.fade == 0 ? "" : this.props.strip.fade)

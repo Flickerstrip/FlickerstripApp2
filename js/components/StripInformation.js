@@ -5,7 +5,7 @@ import {
     Text,
     View,
     ListView,
-} from 'react-native';
+} from "react-native";
 
 var _ = require("lodash");
 
@@ -15,8 +15,8 @@ import StripActions from "~/actions/StripActions";
 import FlickerstripManager from "~/stores/FlickerstripManager";
 import MenuButton from "~/components/MenuButton";
 import SettingsActions from "~/actions/SettingsActions";
-import SettingsList from 'react-native-settings-list';
-import Button from 'react-native-button'
+import SettingsList from "react-native-settings-list";
+import Button from "react-native-button"
 import skinStyles from "~/styles/skinStyles";
 
 class StripInformation extends React.Component {

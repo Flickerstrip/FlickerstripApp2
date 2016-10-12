@@ -1,6 +1,6 @@
 import {
     StyleSheet,
-} from 'react-native';
+} from "react-native";
 
 const menuCommonStyles = StyleSheet.create({
     navigationBarIconPadding: {

@@ -5,7 +5,7 @@ import {
     Text,
     View,
     ListView,
-} from 'react-native';
+} from "react-native";
 
 var _ = require("lodash");
 

@@ -5,14 +5,14 @@ import {
     Text,
     View,
     ListView,
-} from 'react-native';
+} from "react-native";
 
 var _ = require("lodash");
 
 import layoutStyles from "~/styles/layoutStyles";
 import EIcon from "react-native-vector-icons/EvilIcons";
 import NIcon from "react-native-vector-icons/Entypo";
-import SettingsList from 'react-native-settings-list';
+import SettingsList from "react-native-settings-list";
 import UserService from "~/services/UserService";
 import SettingsManager from "~/stores/SettingsManager";
 import renderIf from "~/utils/renderIf"
@@ -41,14 +41,14 @@ class SettingsMain extends React.Component {
     }
     render() {
         return (
-            <View style={[{backgroundColor:'#EFEFF4'},layoutStyles.flexColumn]}>
+            <View style={[{backgroundColor:"#EFEFF4"},layoutStyles.flexColumn]}>
                 <SettingsList key={this.state.key}>
                     {SettingsManager.isUserSet() ?
                         <SettingsList.Item
                             icon={
                                 <EIcon name="user" style={layoutStyles.imageIcon} size={50} color="rgba(0,136,204,1)" />
                             }
-                            title={'Logged In As: '+SettingsManager.getUser().email}
+                            title={"Logged In As: "+SettingsManager.getUser().email}
                             hasNavArrow={false}
                             onPress={() => {
                                 MenuButton.showMenu([
@@ -64,13 +64,13 @@ class SettingsMain extends React.Component {
                             }
                             isAuth={true}
                             authPropsUser={{
-                                placeholder:'HOhmBody account E-mail',
+                                placeholder:"HOhmBody account E-mail",
                                 onChangeText:(value) => this.setState({"userEmail":value}),
                                 onSubmitEditing:() => this._hohmbodyPassword.focus(),
                                 clearButtonMode:"while-editing",
                             }}
                             authPropsPW={{
-                                placeholder:'Password',
+                                placeholder:"Password",
                                 onChangeText:(value) => this.setState({"userPass":value}),
                                 ref:(c) => this._hohmbodyPassword = c,
                                 clearButtonMode:"while-editing",
@@ -86,7 +86,7 @@ class SettingsMain extends React.Component {
                             icon={
                                 <NIcon name="signal" style={layoutStyles.imageIcon} size={40} color="rgba(0,136,204,1)" />
                             }
-                            title={'Saved SSID: '+SettingsManager.getWiFi().ssid}
+                            title={"Saved SSID: "+SettingsManager.getWiFi().ssid}
                             hasNavArrow={false}
                             onPress={() => {
                                 MenuButton.showMenu([
@@ -103,13 +103,13 @@ class SettingsMain extends React.Component {
                             }
                             isAuth={true}
                             authPropsUser={{
-                                placeholder:'SSID',
+                                placeholder:"SSID",
                                 onChangeText:(value) => this.setState({"wifiSSID":value}),
                                 onSubmitEditing:() => this._wifiPassword.focus(),
                                 clearButtonMode:"while-editing",
                             }}
                             authPropsPW={{
-                                placeholder:'Password',
+                                placeholder:"Password",
                                 onChangeText:(value) => this.setState({"wifiPass":value}),
                                 ref:(c) => this._wifiPassword = c,
                                 clearButtonMode:"while-editing",

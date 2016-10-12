@@ -79,9 +79,9 @@ class StripInformationPixels extends React.Component {
                                 "Set end pixel",
                                 null,
                                 [
-                                    {text: 'Clear', onPress: () => StripActions.configure(this.props.strip.id,{end:-1})},
-                                    {text: 'Cancel'},
-                                    {text: 'Save', onPress: (value) => StripActions.configure(this.props.strip.id,{end:value})},
+                                    {text: "Clear", onPress: () => StripActions.configure(this.props.strip.id,{end:-1})},
+                                    {text: "Cancel"},
+                                    {text: "Save", onPress: (value) => StripActions.configure(this.props.strip.id,{end:value})},
                                 ],
                                 "plain-text",
                                 ""+(this.props.strip.end == -1 ? "" : this.props.strip.end),

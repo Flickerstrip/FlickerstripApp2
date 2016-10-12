@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var React = require("react");
 var ReactNative = require("react-native");
@@ -15,7 +15,7 @@ var {
 
 import EIcon from "react-native-vector-icons/EvilIcons";
 import FlickerstripManager from "~/stores/FlickerstripManager.js";
-import skinStyles from '~/styles/skinStyles';
+import skinStyles from "~/styles/skinStyles";
 import Checkbox from "~/components/Checkbox";
 
 class FlickerstripRow extends React.Component {
@@ -42,7 +42,7 @@ class FlickerstripRow extends React.Component {
     }
     //<EIcon style={styles.flex0} name="navicon" size={30} color="rgba(0,136,204,1)" />
     render() {
-        var TouchableElement = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableHighlight;
+        var TouchableElement = Platform.OS === "android" ? TouchableNativeFeedback : TouchableHighlight;
         return (
             <View key={this.state.key}>
                 <View style={[styles.row,styles.flexRow, this.props.strip.selected ? skinStyles.rowSelected : skinStyles.rowDeselected]}>
@@ -59,7 +59,7 @@ class FlickerstripRow extends React.Component {
                         <View style={[styles.flex1,styles.flexRow]}>
                             <View style={styles.flex1}>
                                 <Text style={styles.movieTitle} numberOfLines={2}>
-                                    {this.props.strip.name == '' ? 'Unknown Strip' : this.props.strip.name}
+                                    {this.props.strip.name == "" ? "Unknown Strip" : this.props.strip.name}
                                 </Text>
                             </View>
                         </View>
@@ -79,8 +79,8 @@ var styles = StyleSheet.create({
         padding: 5,
     },
     flexRow: {
-        alignItems: 'center',
-        flexDirection: 'row',
+        alignItems: "center",
+        flexDirection: "row",
     },
     flex0: {
         flex: 0,

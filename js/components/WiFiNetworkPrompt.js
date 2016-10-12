@@ -9,18 +9,18 @@ import {
     TouchableHighlight,
     TouchableNativeFeedback,
     AlertIOS,
-} from 'react-native';
+} from "react-native";
 
 var _ = require("lodash");
 
-import Button from 'react-native-button'
+import Button from "react-native-button"
 import renderIf from "~/utils/renderIf"
 import layoutStyles from "~/styles/layoutStyles"
 import FlickerstripManager from "~/stores/FlickerstripManager.js";
 import SettingsManager from "~/stores/SettingsManager.js";
 import EIcon from "react-native-vector-icons/EvilIcons";
 import NIcon from "react-native-vector-icons/Entypo";
-import SettingsList from 'react-native-settings-list';
+import SettingsList from "react-native-settings-list";
 import skinStyles from "~/styles/skinStyles";
 
 class WiFiNetworkPrompt extends React.Component {
@@ -45,8 +45,8 @@ class WiFiNetworkPrompt extends React.Component {
             "Save WiFi credentials?",
             null,
             [
-                {text: 'Cancel'},
-                {text: 'Save', onPress: () => SettingsActions.saveWifi(this.state.ssid,this.state.password) },
+                {text: "Cancel"},
+                {text: "Save", onPress: () => SettingsActions.saveWifi(this.state.ssid,this.state.password) },
             ],
             "plain-text",
         );
@@ -59,7 +59,7 @@ class WiFiNetworkPrompt extends React.Component {
         if (this.props.onDismiss) this.props.onDismiss();
     }
     render() {
-        var TouchableElement = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableHighlight;
+        var TouchableElement = Platform.OS === "android" ? TouchableNativeFeedback : TouchableHighlight;
         return (
             <View style={layoutStyles.flexColumn}>
                 {this.state.showChoice ?
@@ -88,7 +88,7 @@ class WiFiNetworkPrompt extends React.Component {
                         <TextInput
                             autoFocus={true}
                             ref={(c) => this._networkField = c}
-                            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                            style={{height: 40, borderColor: "gray", borderWidth: 1}}
                             onFocus={() => {if (this.state.ssid == this.initialState().ssid) this.setState({ssid:""}) }}
                             onBlur={() => {if (this.state.ssid == "") this.setState({ssid:this.initialState().ssid}) }}
                             clearButtonMode={"while-editing"}
@@ -102,7 +102,7 @@ class WiFiNetworkPrompt extends React.Component {
                         <Text>Password</Text>
                         <TextInput
                             ref={(c) => this._passwordField = c}
-                            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                            style={{height: 40, borderColor: "gray", borderWidth: 1}}
                             onFocus={() => {if (this.state.password == this.initialState().password) this.setState({password:""}) }}
                             onBlur={() => {if (this.state.password == "") this.setState({password:this.initialState().password}) }}
                             clearButtonMode={"while-editing"}

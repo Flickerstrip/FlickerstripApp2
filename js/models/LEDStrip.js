@@ -5,15 +5,15 @@ var _ = require("lodash");
 var Pattern = require("~/models/Pattern.js");
 var b64 = require("base64-js");
 
-import { NativeModules } from 'react-native';
+import { NativeModules } from "react-native";
 var PatternLoader = NativeModules.PatternLoader;
 
 var visibleTimeout = 9000;
 
 function param(params) {
     var query = Object.keys(params)
-        .map(function(k) { return params[k] == null ? encodeURIComponent(k) : encodeURIComponent(k) + '=' + encodeURIComponent(params[k]); })
-        .join('&');
+        .map(function(k) { return params[k] == null ? encodeURIComponent(k) : encodeURIComponent(k) + "=" + encodeURIComponent(params[k]); })
+        .join("&");
     return query;
 }
 
@@ -126,7 +126,7 @@ class LEDStrip extends EventEmitter {
         this._lastCommand = new Date().getTime();
         var url = "http://"+this.ip+"/"+command;
         /*
-        if (data && typeof data === 'object') {
+        if (data && typeof data === "object") {
             console.log("stringifying data..");
             data = JSON.stringify(data);
         }

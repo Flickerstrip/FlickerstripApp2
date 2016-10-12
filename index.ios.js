@@ -6,12 +6,12 @@ import {
     View,
     TabBarIOS,
     NavigatorIOS,
-} from 'react-native';
+} from "react-native";
 
 
 /*
 class DummyApp extends React.Component { render() { return (<Text>Foo</Text>) } }
-AppRegistry.registerComponent('FlickerstripApp', () => DummyApp);
+AppRegistry.registerComponent("FlickerstripApp", () => DummyApp);
 */
 
 import EIcon from "react-native-vector-icons/EvilIcons";
@@ -39,10 +39,10 @@ class FlickerstripApp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTab: 'strips',
-            //selectedTab: 'lightworks',
-            //selectedTab: 'editor',
-            //selectedTab: 'settings',
+            selectedTab: "strips",
+            //selectedTab: "lightworks",
+            //selectedTab: "editor",
+            //selectedTab: "settings",
             activeLightwork: null,
             key: null,
         }
@@ -65,8 +65,8 @@ class FlickerstripApp extends React.Component {
     }
 
     componentWillMount() {
-        FIcon.getImageSource('navicon', 20).then((source) => this.setState({ navicon: source }));
-        FIcon.getImageSource('plus', 20).then((source) => this.setState({ plusicon: source }));
+        FIcon.getImageSource("navicon", 20).then((source) => this.setState({ navicon: source }));
+        FIcon.getImageSource("plus", 20).then((source) => this.setState({ plusicon: source }));
     }
 
     render() {
@@ -79,11 +79,11 @@ class FlickerstripApp extends React.Component {
                     title="Strips"
                     iconName="signal"
                     badge={FlickerstripManager.getSelectedCount() || null}
-                    selected={this.state.selectedTab === 'strips'}
+                    selected={this.state.selectedTab === "strips"}
                     onPress={() => {
                         if (this.state.selectedTab == "strips") this._stripsNavigator.popToTop();
                         this.setState({
-                            selectedTab: 'strips',
+                            selectedTab: "strips",
                         });
                     }}>
                     <View style={[layoutStyles.flexColumn, layoutStyles.marginBottomForTab]}>
@@ -92,7 +92,7 @@ class FlickerstripApp extends React.Component {
                             ref={(c) => this._stripsNavigator = c}
                             initialRoute={{
                                 component: StripListing,
-                                title: 'Flickerstrip',
+                                title: "Flickerstrip",
                                 wrapperStyle:layoutStyles.paddingTopForNavigation,
                                 leftButtonIcon: this.state.plusicon, 
                                 onLeftButtonPress:() => {
@@ -124,18 +124,18 @@ class FlickerstripApp extends React.Component {
                 <FIcon.TabBarItemIOS
                     title="Lightworks"
                     iconName="cube"
-                    selected={this.state.selectedTab === 'lightworks'}
+                    selected={this.state.selectedTab === "lightworks"}
                     badge={LightworkManager.getSelectedCount() || null}
                     onPress={() => {
                         this.setState({
-                            selectedTab: 'lightworks',
+                            selectedTab: "lightworks",
                         });
                     }}>
                     <View style={[layoutStyles.flexColumn,layoutStyles.marginBottomForTab]}>
                         <NavigatorIOS
                             initialRoute={{
                                 component: LightworksMain,
-                                title: 'Lightworks',
+                                title: "Lightworks",
                                 wrapperStyle:layoutStyles.paddingTopForNavigation,
                                 rightButtonIcon: this.state.navicon, 
                                 onRightButtonPress:() => { 
@@ -152,10 +152,10 @@ class FlickerstripApp extends React.Component {
                 <FIcon.TabBarItemIOS
                     title="Editor"
                     iconName="pencil"
-                    selected={this.state.selectedTab === 'editor'}
+                    selected={this.state.selectedTab === "editor"}
                     onPress={() => {
                     this.setState({
-                        selectedTab: 'editor',
+                        selectedTab: "editor",
                     });
                     }}>
                     <View style={[layoutStyles.flexColumn, layoutStyles.marginBottomForTab]}>
@@ -195,17 +195,17 @@ class FlickerstripApp extends React.Component {
                 <FIcon.TabBarItemIOS
                     title="Settings"
                     iconName="cogs"
-                    selected={this.state.selectedTab === 'settings'}
+                    selected={this.state.selectedTab === "settings"}
                     onPress={() => {
                     this.setState({
-                        selectedTab: 'settings',
+                        selectedTab: "settings",
                     });
                     }}>
                     <View style={[layoutStyles.flexColumn, layoutStyles.marginBottomForTab]}>
                         <NavigatorIOS
                             initialRoute={{
                                 component: SettingsMain,
-                                title: 'Settings',
+                                title: "Settings",
                                 wrapperStyle:layoutStyles.paddingTopForNavigation,
                             }}
                             style={layoutStyles.flexColumn}
@@ -220,4 +220,4 @@ class FlickerstripApp extends React.Component {
 const styles = StyleSheet.create({
 });
 
-AppRegistry.registerComponent('FlickerstripApp', () => FlickerstripApp);
+AppRegistry.registerComponent("FlickerstripApp", () => FlickerstripApp);

@@ -6,7 +6,7 @@ import {
     View,
     ListView,
     SegmentedControlIOS,
-} from 'react-native';
+} from "react-native";
 
 import renderIf from "~/utils/renderIf"
 import UserLightworks from "~/components/UserLightworks.js";
@@ -31,7 +31,7 @@ class LightworksMain extends React.Component {
             <View style={layoutStyles.flexColumn}>
                 <SegmentedControlIOS
                     key={this.state.key}
-                    values={['My Lightworks','Lightwork Repository']}
+                    values={["My Lightworks","Lightwork Repository"]}
                     selectedIndex={activeTab}
                     onChange={(event) => this.setState({activeTab:event.nativeEvent.selectedSegmentIndex})}
                     enabled={user != null}

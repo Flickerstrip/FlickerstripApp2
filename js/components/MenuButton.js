@@ -5,7 +5,7 @@ import {
     ActionSheetIOS,
     Text,
     View,
-} from 'react-native';
+} from "react-native";
 
 import EIcon from "react-native-vector-icons/EvilIcons";
 import NIcon from "react-native-vector-icons/Entypo";

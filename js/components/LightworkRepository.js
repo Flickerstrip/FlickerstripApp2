@@ -6,7 +6,7 @@ import {
     View,
     ListView,
     SegmentedControlIOS,
-} from 'react-native';
+} from "react-native";
 
 import LightworkRow from "~/components/LightworkRow.js";
 import PaginatedListView from "~/components/PaginatedListView.js";

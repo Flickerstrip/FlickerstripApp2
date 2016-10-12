@@ -1,6 +1,6 @@
 import {
     AsyncStorage,
-} from 'react-native';
+} from "react-native";
 
 var EventEmitter = require("events").EventEmitter;
 var _ = require("lodash");

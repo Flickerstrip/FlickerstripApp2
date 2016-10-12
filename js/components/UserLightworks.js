@@ -7,7 +7,7 @@ import {
     ListView,
     SegmentedControlIOS,
     AlertIOS
-} from 'react-native';
+} from "react-native";
 
 import LightworkRow from "~/components/LightworkRow.js";
 import LightworkEditor from "~/components/LightworkEditor.js";

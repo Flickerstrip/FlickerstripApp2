@@ -1,4 +1,4 @@
-var keyMirror = require('keymirror');
+var keyMirror = require("keymirror");
 
 export default keyMirror({
     SELECT_STRIP: null,

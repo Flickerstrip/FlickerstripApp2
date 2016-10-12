@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var React = require("react");
 var ReactNative = require("react-native");
@@ -42,7 +42,7 @@ class LightworkRow extends React.Component {
         this.setState({key:Math.random()});
     }
     render() {
-        var TouchableElement = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableHighlight;
+        var TouchableElement = Platform.OS === "android" ? TouchableNativeFeedback : TouchableHighlight;
         var selected = typeof this.props.selected == "function" ? this.props.selected() : this.props.selected;
         return (
             <View key = {this.state.key} style={[{padding: 5},layoutStyles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>

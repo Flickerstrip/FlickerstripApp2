@@ -45,7 +45,7 @@ class ConfigureNewStrip extends React.Component {
         this.setState({key: Math.random()});
     }
     render() {
-        var width = Dimensions.get('window').width;
+        var width = Dimensions.get("window").width;
         return FlickerstripManager.getConfigurationMasterFlickerstrip() ? (
             <View key={this.state.key} style={{flex:1, flexDirection:"column", alignItems:"center"}}>
                 <Text style={{marginTop: 10, paddingLeft: 20, paddingRight: 20, fontWeight:"bold"}}>To configure a new Flickerstrip: </Text>

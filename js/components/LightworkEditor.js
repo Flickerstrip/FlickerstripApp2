@@ -5,10 +5,10 @@ import {
     Text,
     View,
     WebView,
-} from 'react-native';
+} from "react-native";
 
 import layoutStyles from "~/styles/layoutStyles";
-import WebViewBridge from 'react-native-webview-bridge';
+import WebViewBridge from "react-native-webview-bridge";
 import LightworkManager from "~/stores/LightworkManager.js";
 import EditorManager from "~/stores/EditorManager.js";
 import renderIf from "~/utils/renderIf"

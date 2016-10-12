@@ -5,7 +5,7 @@ import {
     Text,
     View,
     ListView,
-} from 'react-native';
+} from "react-native";
 
 var _ = require("lodash");
 
@@ -16,7 +16,7 @@ import StripActions from "~/actions/StripActions.js";
 import FlickerstripManager from "~/stores/FlickerstripManager.js";
 import MenuButton from "~/components/MenuButton.js";
 import StripDetails from "~/components/StripDetails.js";
-import Button from 'react-native-button'
+import Button from "react-native-button"
 import WiFiNetworkPrompt from "~/components/WiFiNetworkPrompt.js";
 import ConfigureNewStrip from "~/components/ConfigureNewStrip.js";
 import skinStyles from "~/styles/skinStyles";
@@ -50,7 +50,7 @@ class StripListing extends React.Component {
 
         this.props.navigator.push({
             component: StripDetails,
-            title:strip.name == '' ? 'Unknown Strip' : strip.name,
+            title:strip.name == "" ? "Unknown Strip" : strip.name,
             wrapperStyle:layoutStyles.paddingTopForNavigation,
             passProps: { strip: strip },
             leftButtonTitle: "Back",
