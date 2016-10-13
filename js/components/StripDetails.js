@@ -6,6 +6,7 @@ import {
     View,
     ListView,
     AlertIOS,
+    Slider,
 } from "react-native";
 
 var _ = require("lodash");
@@ -85,6 +86,17 @@ class StripDetails extends React.Component {
         var stripName = this.props.strip.name == "" ? "Unknown Strip" : this.props.strip.name;
         return (
             <View style={layoutStyles.flexColumn}>
+                <View style={[layoutStyles.flexRow, layoutStyles.flexAlignCenter]}>
+                    <Text style={{padding: 5}}>Brightness: </Text>
+                    <Slider
+                        style={{flex: 1}}
+                        minimumValue={1}
+                        maximumValue={100}
+                        step={1}
+                        value={this.props.strip.brightness}
+                        onSlidingComplete={(value) => StripActions.configure(this.props.strip.id,{brightness:value})}
+                    />
+                </View>
                 <SettingsList key={this.state.key} useScrollView={false}>
                     <SettingsList.Item
                         title="Info"
