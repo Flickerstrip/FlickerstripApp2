@@ -1,16 +1,25 @@
 define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html','hammer','jquery.spectrum'],function($,tinycolor,util,template,Hammer) {
     function plotLine(g,x0, y0, x1, y1) {
-       var dx =  Math.abs(x1-x0), sx = x0<x1 ? 1 : -1;
-       var dy = -Math.abs(y1-y0), sy = y0<y1 ? 1 : -1;
-       var err = dx+dy, e2;                                   /* error value e_xy */
+        var generatedHistory = [];
+        var dx =  Math.abs(x1-x0), sx = x0<x1 ? 1 : -1;
+        var dy = -Math.abs(y1-y0), sy = y0<y1 ? 1 : -1;
+        var err = dx+dy, e2;                                   /* error value e_xy */
 
-       for (;;){                                                          /* loop */
-          g.fillRect(x0,y0,1,1);
-          if (x0 == x1 && y0 == y1) break;
-          e2 = 2*err;
-          if (e2 >= dy) { err += dy; x0 += sx; }                        /* x step */
-          if (e2 <= dx) { err += dx; y0 += sy; }                        /* y step */
-       }
+        for (;;){                                                          /* loop */
+            var pixelData = g.getImageData(x0, y0, 1, 1).data;
+            generatedHistory.push({
+                previousColor:tinycolor({r:pixelData[0],g:pixelData[1],b:pixelData[2]}),
+                nextColor:tinycolor(g.fillStyle),
+                position:{x: x0, y: y0},
+            });
+            g.fillRect(x0,y0,1,1);
+            if (x0 == x1 && y0 == y1) break;
+            e2 = 2*err;
+            if (e2 >= dy) { err += dy; x0 += sx; }                        /* x step */
+            if (e2 <= dx) { err += dx; y0 += sy; }                        /* y step */
+        }
+
+        return generatedHistory;
     }
 
     function distance(x0,y0,x1,y1) {
@@ -35,6 +44,10 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
             this.palette = palette;
             this.$el = $(template);
             this.lastNonblackwhiteColor = null;
+
+            this.currentHistoryIndex = null;
+            this.history = [];
+            this.pendingHistory = [];
 
             this.$currentColorContainer = $currentColorContainer;
             this.$paletteContainer = $paletteContainer;
@@ -111,8 +124,6 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
                 }
 			},this));
             */
-
-
 
 			this.requestFrame();
             this.repaint();
@@ -223,6 +234,52 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
             this.$currentColorContainer.find(".bg").spectrum("set", this.bg.toHexString());
 
             this.updatePalette();
+        },
+        undo:function() {
+            if (this.currentHistoryIndex == 0 || this.history.length == 0) return;
+
+            // 0  1  2  3  len
+            //[a, b, c, d] INDEX
+
+            var historyIndex = this.currentHistoryIndex == null ? this.history.length : this.currentHistoryIndex;
+            historyIndex--;
+
+            var operation = this.history[historyIndex];
+
+            console.log("undoing hist",historyIndex,_.map(operation.affectedPixels,function(p) {return [p.position.x,p.position.y]; }))
+
+            var g = this.image.getContext("2d");
+            _.each(operation.affectedPixels,function(pixel) {
+                g.fillStyle = pixel.previousColor.toHexString();
+                plotLine(g,pixel.position.x, pixel.position.y,pixel.position.x, pixel.position.y);
+            }.bind(this));
+
+            this.currentHistoryIndex = historyIndex;
+
+            $(this).trigger("change");
+            this.requestFrame();
+        },
+        redo:function() {
+            if (this.currentHistoryIndex == null) return;
+
+            var historyIndex = this.currentHistoryIndex == null ? this.history.length : this.currentHistoryIndex;
+            var operation = this.history[historyIndex];
+
+            var g = this.image.getContext("2d");
+            g.fillStyle = operation.color.toHexString();
+            _.each(operation.affectedPixels,function(pixel) {
+                plotLine(g,pixel.position.x, pixel.position.y,pixel.position.x, pixel.position.y);
+            }.bind(this));
+
+            historyIndex++;
+            if (historyIndex >= this.history.length) historyIndex = null;
+            this.currentHistoryIndex = historyIndex;
+
+            $(this).trigger("change");
+            this.requestFrame();
+        },
+        getHistoryButtonState:function() {
+            return [this.history.length > 0 && this.currentHistoryIndex != 0, this.history.length > 0 && this.currentHistoryIndex != null];
         },
         colorChanged:function() {
             this.fg = tinycolor(this.$currentColorContainer.find(".fg").val());
@@ -386,7 +443,8 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
             if (ipos != null && i2pos != null) {
                 var g = this.image.getContext("2d");
                 g.fillStyle = useBgColor ? this.bg.toHexString() : this.fg.toHexString();
-                plotLine(g,Math.floor(ipos[0]),Math.floor(ipos[1]),Math.floor(i2pos[0]),Math.floor(i2pos[1]));
+                var generatedHistory = plotLine(g,Math.floor(ipos[0]),Math.floor(ipos[1]),Math.floor(i2pos[0]),Math.floor(i2pos[1]));
+                this.pendingHistory = this.pendingHistory.concat(generatedHistory);
                 $(this).trigger("change");
                 this.requestFrame();
             }
@@ -481,39 +539,63 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
             },this));
             ////////////////// MOUSE AND KEYBOARD CODE ///////////////////////////
         },
+        addHistory:function(pendingHistory) {
+            if (pendingHistory.length == 0) return;
+
+            var operation = {
+                type: "line",
+                color: pendingHistory[0].nextColor,
+                affectedPixels:[],
+            }
+            var affectedPixelMap = {};
+            _.each(pendingHistory,function(val) {
+                if (affectedPixelMap[val.position.x+"_"+val.position.y]) return;
+                affectedPixelMap[val.position.x+"_"+val.position.y] = val;
+            });
+            operation.affectedPixels = _.values(affectedPixelMap);
+
+            if (this.currentHistoryIndex != null) {
+                this.history.splice(this.currentHistoryIndex);
+                this.currentHistoryIndex = null;
+            }
+            this.history.push(operation);
+
+            console.log("history length: ",this.history.length,this.currentHistoryIndex);
+        },
         attachTouchListeners:function() {
 			this.pinch = null;
 			var hammer = new Hammer(this.drawingArea);
             hammer.on("tap",_.bind(function(e) {
                 var pos = util.getCursorPosition(this.drawingArea,e,this.displayMargins.left,this.displayMargins.top);
+                if (pos == null) return;
 
-                /*
-                var ipos = this.translateCanvasToImage(pos[0],pos[1],true);
-                console.log("pos",pos,ipos);
-                if (!this.tapList) this.tapList = [];
-                this.tapList.push(pos);
-                */
-
-
+                this.pendingHistory = [];
                 this.doLineDrawing(pos,pos,false);
+                this.addHistory(this.pendingHistory);
+                this.pendingHistory = [];
             },this));
 
             hammer.on("panstart",_.bind(function(e) {
                 var pos = util.getCursorPosition(this.drawingArea,e,this.displayMargins.left,this.displayMargins.top);
 
+                this.pendingHistory = [];
                 this.previousMousePosition = pos;
             },this));
 
             hammer.on("panmove",_.bind(function(e) {
                 var pos = util.getCursorPosition(this.drawingArea,e,this.displayMargins.left,this.displayMargins.top);
+                if (pos == null) return;
 
-                this.doLineDrawing(pos,this.previousMousePosition,false);
+                if (this.previousMousePosition != null) this.doLineDrawing(pos,this.previousMousePosition,false);
 
                 this.previousMousePosition = pos;
             },this));
 
             hammer.on("panend",_.bind(function(e) {
                 this.previousMousePosition = null;
+
+                this.addHistory(this.pendingHistory);
+                this.pendingHistory = [];
             },this));
 
             hammer.on("pinchstart",_.bind(function(e) {

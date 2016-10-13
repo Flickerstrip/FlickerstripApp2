@@ -33,8 +33,7 @@ class LightworksMain extends React.Component {
         this.setState({key:Math.random()});
     }
     render() {
-        var user = SettingsManager.getUser();
-        var activeTab = (user == null) ? 1 : this.state.activeTab;
+        var activeTab = !SettingsManager.isUserValid() ? 1 : this.state.activeTab;
         return (
             <View style={layoutStyles.flexColumn}>
                 <SegmentedControlIOS
@@ -42,7 +41,7 @@ class LightworksMain extends React.Component {
                     values={["My Lightworks","Lightwork Repository"]}
                     selectedIndex={activeTab}
                     onChange={(event) => this.setState({activeTab:event.nativeEvent.selectedSegmentIndex})}
-                    enabled={user != null}
+                    enabled={SettingsManager.isUserValid()}
                 />
                 {renderIf(activeTab == 0)(
                     <UserLightworks navigator={this.props.navigator} style={layoutStyles.flexColumn} />

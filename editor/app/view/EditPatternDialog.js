@@ -67,8 +67,23 @@ function($,tinycolor,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop_tem
                 this.$el.find(".metricsPanel").toggle();
             },this));
 
+            this.$metricsPanel = this.$el.find(".metricsPanel");
+
+            //fancytize
+            this.$metricsPanel.find("input").hide();
+            this.$metricsPanel.find("label").click(function(e) {
+                var $el = $(e.target).closest("label");
+                $el.find(".labelText").hide();
+                $el.find(".valueText").hide();
+                $el.find("input").show().focus().one("blur",function() {
+                    $el.find(".labelText").show();
+                    $el.find(".valueText").show();
+                    $el.find("input").hide();
+                });
+            }.bind(this));
+
             this.$el.find(".metricsPanel input").change(_.bind(function() {
-                this.pattern.fps = parseInt(this.$fps.val()); //TODO upgeade to float
+                this.pattern.fps = parseInt(this.$fps.val()); //TODO upgrade to float
                 this.pattern.frames = parseInt(this.$frames.val())
                 this.pattern.pixels = parseInt(this.$pixels.val());
                 if (!this.pattern.fps || this.pattern.fps < 1) this.pattern.fps = 1;
@@ -78,6 +93,13 @@ function($,tinycolor,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop_tem
                 this.updateEditor();
                 this.updatePattern();
             },this));
+
+            this.$undoButton = this.$el.find(".undoButton").click(function() {
+                this.editor.undo();
+            }.bind(this));
+            this.$redoButton = this.$el.find(".redoButton").click(function() {
+                this.editor.redo()
+            }.bind(this));
 
             $(this.editor).on("change",_.bind(function(e) {
                 this.doUpdateDelay();
@@ -109,10 +131,20 @@ function($,tinycolor,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop_tem
             this.updateEditor();
             this.updatePattern();
         },
+        updateHistoryButtons:function() {
+            var historyState = this.editor.getHistoryButtonState()
+            this.$undoButton.prop("disabled",!historyState[0]);
+            this.$redoButton.prop("disabled",!historyState[1]);
+        },
         updateEditor:function() {
             this.$frames.val(this.pattern.frames);
             this.$pixels.val(this.pattern.pixels);
             this.$fps.val(this.pattern.fps);
+
+            this.$metricsPanel.find(".fps_value").text(this.pattern.fps);
+            this.$metricsPanel.find(".frames_value").text(this.pattern.frames);
+            this.$metricsPanel.find(".pixels_value").text(this.pattern.pixels);
+
             this.editor.setFps(this.pattern.fps);
             this.editor.setCanvasSize(this.pattern.pixels,this.pattern.frames);
 
@@ -127,12 +159,7 @@ function($,tinycolor,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop_tem
             $(this).trigger("Save",this.pattern);
         },
         updatePattern:function() {
-            /*
-            if (this.pattern.type == "javascript") {
-                this.pattern.body = this.editor.getValue();
-            } else if (this.pattern.type == "bitmap") {
-            }
-            */
+            this.updateHistoryButtons();
 
             this.pattern.pixelData = util.canvasToBytes(this.canvas,false);
             $(this).trigger("PatternUpdated",[this.pattern]);

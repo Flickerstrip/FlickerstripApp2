@@ -54,8 +54,17 @@ class SettingsManager extends EventEmitter {
 
             if (json.user) {
                 UserService.validateUser(json.user.email,json.user.password,function(valid,user) {
+                    if (!valid) {
+                        this.user = {
+                            email: json.user.email,
+                            password: json.user.password,
+                            valid: false,
+                        }
+                        return;
+                    }
 
                     this.user = user;
+                    this.user.valid = true;
                     user.password = json.user.password;
 
                     this.emit("SettingsLoaded");
@@ -77,6 +86,9 @@ class SettingsManager extends EventEmitter {
     }
     getWiFi() {
         return this.wifi;
+    }
+    isUserValid() {
+        return this.isUserSet() && this.user.valid;
     }
     isUserSet() {
         return this.user != null;

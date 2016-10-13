@@ -42,7 +42,7 @@ class SettingsMain extends React.Component {
         return (
             <View style={[{backgroundColor:"#EFEFF4"},layoutStyles.flexColumn]}>
                 <SettingsList key={this.state.key}>
-                    {SettingsManager.isUserSet() ?
+                    {SettingsManager.isUserValid() ?
                         <SettingsList.Item
                             icon={
                                 <EIcon name="user" style={layoutStyles.imageIcon} size={50} color="rgba(0,136,204,1)" />
@@ -59,17 +59,19 @@ class SettingsMain extends React.Component {
                     :
                         <SettingsList.Item
                             icon={
-                                <EIcon name="user" style={layoutStyles.imageIcon} size={50} color="rgba(0,136,204,1)" />
+                                <EIcon name="user" style={layoutStyles.imageIcon} size={50} color={SettingsManager.isUserSet() ? "rgba(255,0,0,1)" : "rgba(0,136,204,1)"} />
                             }
                             isAuth={true}
                             authPropsUser={{
                                 placeholder:"HOhmBody account E-mail",
+                                value:SettingsManager.isUserSet() ? SettingsManager.getUser().email : null,
                                 onChangeText:(value) => this.setState({"userEmail":value}),
                                 onSubmitEditing:() => this._hohmbodyPassword.focus(),
                                 clearButtonMode:"while-editing",
                             }}
                             authPropsPW={{
                                 placeholder:"Password",
+                                value:SettingsManager.isUserSet() ? SettingsManager.getUser().password : null,
                                 onChangeText:(value) => this.setState({"userPass":value}),
                                 ref:(c) => this._hohmbodyPassword = c,
                                 clearButtonMode:"while-editing",

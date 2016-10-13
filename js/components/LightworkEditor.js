@@ -13,7 +13,8 @@ import LightworkManager from "~/stores/LightworkManager.js";
 import EditorManager from "~/stores/EditorManager.js";
 import renderIf from "~/utils/renderIf";
 import skinStyles from "~/styles/skinStyles";
-import Button from "react-native-button"
+import Button from "react-native-button";
+import EditorActions from "~/actions/EditorActions";
 
 var _ = require("lodash");
 
