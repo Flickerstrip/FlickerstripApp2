@@ -53,7 +53,7 @@ class LightworkRow extends React.Component {
                     >
                         <View>
                             <Checkbox
-                                
+                                onPress={() => this.props.onSelectToggle(this.props.lightwork)}
                                 checked={selected}
                             />
                         </View>

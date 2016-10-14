@@ -22,7 +22,7 @@ class LightworkRow extends React.Component {
                 size={20}
                 style={{marginRight:10}}
                 color="rgba(0,0,0,1)"
-                onPress={() => this.props.onPress(!this.props.selected)}
+                onPress={() => this.props.onPress ? this.props.onPress(!this.props.selected) : null}
             />
         ) : (
             <FIcon
@@ -30,7 +30,7 @@ class LightworkRow extends React.Component {
                 size={20}
                 style={{marginRight:10}}
                 color="rgba(0,0,0,1)"
-                onPress={() => this.props.onPress(!this.props.selected)}
+                onPress={() => this.props.onPress ? this.props.onPress(!this.props.selected) : null}
             />
         )
     }
