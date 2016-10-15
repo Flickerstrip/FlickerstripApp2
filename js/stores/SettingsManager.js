@@ -18,17 +18,23 @@ class SettingsManager extends EventEmitter {
 
         this.user = null;
         this.wifi = null;
+        this.userLightworks = null;
+        this.storedLightworksById = null;
+        this.queuedActions = null;
 
         this.loadSettings();
 
         FlickerstripDispatcher.register(function(e) {
             if (e.type === ActionTypes.USER_LOGIN) {
+                this.user = {email: e.email, password: e.password};
+                this.saveSettings();
                 UserService.validateUser(e.email,e.password,function(valid,user) {
-                    if (!valid) return;
+                    if (!valid) return this.emit("UserUpdated",this.user);
+;
 
                     this.user = user;
+                    this.user.valid = true;
                     user.password = e.password;
-                    this.saveSettings();
                     this.emit("UserUpdated",user);
                 }.bind(this))
             } else if (e.type === ActionTypes.USER_LOGOUT) {
@@ -74,10 +80,19 @@ class SettingsManager extends EventEmitter {
             }
         }.bind(this));
     }
+    storeLightworks(userLightworks,lightworksById, queuedActions) {
+        this.userLightworks = userLightworks;
+        this.storedLightworksById = lightworksById;
+        this.queuedActions = queuedActions;
+        this.saveSettings();
+    }
     saveSettings() {
         var save = {
             user: this.user ? {email:this.user.email,password:this.user.password} : null,
             wifi: this.wifi,
+            userLightworks:this.userLightworks,
+            storedLightworksById:this.storedLightworksById,
+            queuedActions: this.queuedActions,
         }
         AsyncStorage.setItem(asyncStorageKey,JSON.stringify(save)); //check for errors?
     }
@@ -88,7 +103,7 @@ class SettingsManager extends EventEmitter {
         return this.wifi;
     }
     isUserValid() {
-        return this.isUserSet() && this.user.valid;
+        return this.isUserSet() && this.user.valid == true;
     }
     isUserSet() {
         return this.user != null;

@@ -97,7 +97,7 @@ class LEDStrip extends EventEmitter {
 
         //Send events based on what changed
         var events = [];
-        if (_.contains(changedProperties,"patterns")) events.push("patterns");
+        if (_.includes(changedProperties,"patterns")) events.push("patterns");
         if (_.intersection(changedProperties,["name","group","length","start","end","fade","reversed","cycle"]).length) events.push("configuration");
         if (_.intersection(changedProperties,["brightness","selectedPattern","memory"]).length) events.push("state");
 

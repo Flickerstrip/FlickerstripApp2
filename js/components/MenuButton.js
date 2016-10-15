@@ -20,7 +20,7 @@ class MenuButton extends React.Component {
     }
     static showMenu(opt) {
         ActionSheetIOS.showActionSheetWithOptions({
-            options: _.pluck(opt,"label"),
+            options: _.map(opt,"label"),
             cancelButtonIndex: _.findIndex(opt, {"cancel":true}),
             destructiveButtonIndex: _.findIndex(opt, {"destructive":true}),
         },function(index) {

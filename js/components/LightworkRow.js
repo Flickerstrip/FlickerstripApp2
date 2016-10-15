@@ -72,6 +72,13 @@ class LightworkRow extends React.Component {
                                 {this.props.lightwork.name}
                             </Text>
                         </View>
+                        {renderIf(this.props.lightwork.pending)(
+                            <FIcon
+                                name="exclamation-triangle"
+                                size={15}
+                                color="rgba(150,150,150,1)"
+                            />
+                        )}
                         {renderIf(this.props.showPublished && this.props.lightwork.published)(
                             <FIcon
                                 name="globe"

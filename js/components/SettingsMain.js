@@ -19,11 +19,20 @@ import renderIf from "~/utils/renderIf"
 import SettingsActions from "~/actions/SettingsActions";
 import MenuButton from "~/components/MenuButton.js";
 
+var defaultUser = {email:null,password:null};
+
 class SettingsMain extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state={key: null};
+        this.state={
+            key: null,
+            key:Math.random(),
+            loggedIn: SettingsManager.isUserValid(),
+            invalidUser: SettingsManager.isUserSet() ? !SettingsManager.isUserValid() : false,
+            userEmail:SettingsManager.isUserSet() ? SettingsManager.getUser().email : defaultUser.email,
+            userPass:SettingsManager.isUserSet() ? SettingsManager.getUser().password : defaultUser.password,
+        };
 
         this.refresh = this.refresh.bind(this);
     }
@@ -36,13 +45,19 @@ class SettingsMain extends React.Component {
         SettingsManager.removeListener("WiFiUpdated",this.refresh);
     }
     refresh() {
-        this.setState({key:Math.random()});
+        this.setState({
+            key:Math.random(),
+            loggedIn: SettingsManager.isUserValid(),
+            invalidUser: SettingsManager.isUserSet() ? !SettingsManager.isUserValid() : false,
+            userEmail:SettingsManager.isUserSet() ? SettingsManager.getUser().email : defaultUser.email,
+            userPass:SettingsManager.isUserSet() ? SettingsManager.getUser().password : defaultUser.password,
+        });
     }
     render() {
         return (
             <View style={[{backgroundColor:"#EFEFF4"},layoutStyles.flexColumn]}>
                 <SettingsList key={this.state.key}>
-                    {SettingsManager.isUserValid() ?
+                    {this.state.loggedIn ?
                         <SettingsList.Item
                             icon={
                                 <EIcon name="user" style={layoutStyles.imageIcon} size={50} color="rgba(0,136,204,1)" />
@@ -59,24 +74,29 @@ class SettingsMain extends React.Component {
                     :
                         <SettingsList.Item
                             icon={
-                                <EIcon name="user" style={layoutStyles.imageIcon} size={50} color={SettingsManager.isUserSet() ? "rgba(255,0,0,1)" : "rgba(0,136,204,1)"} />
+                                <EIcon name="user" style={layoutStyles.imageIcon} size={50} color={this.state.invalidUser ? "rgba(255,0,0,1)" : "rgba(0,136,204,1)"} />
                             }
                             isAuth={true}
                             authPropsUser={{
                                 placeholder:"HOhmBody account E-mail",
-                                value:SettingsManager.isUserSet() ? SettingsManager.getUser().email : null,
+                                autoCapitalize:"none",
+                                autoCorrect:false,
+                                keyboardType:"email-address",
+                                value:this.state.userEmail,
                                 onChangeText:(value) => this.setState({"userEmail":value}),
                                 onSubmitEditing:() => this._hohmbodyPassword.focus(),
                                 clearButtonMode:"while-editing",
                             }}
                             authPropsPW={{
                                 placeholder:"Password",
-                                value:SettingsManager.isUserSet() ? SettingsManager.getUser().password : null,
+                                value:this.state.userPass,
+                                autoCapitalize:"none",
+                                autoCorrect:false,
                                 onChangeText:(value) => this.setState({"userPass":value}),
                                 ref:(c) => this._hohmbodyPassword = c,
                                 clearButtonMode:"while-editing",
                             }}
-                            onPress={() => UserService.validateUser(this.state.userEmail,this.state.userPass,(valid) => { if (valid) SettingsActions.userLogin(this.state.userEmail,this.state.userPass) } )}
+                            onPress={() => UserService.validateUser(this.state.userEmail,this.state.userPass,(valid) => { !valid ? this.setState({invalidUser:true}) : SettingsActions.userLogin(this.state.userEmail,this.state.userPass) } )}
                         />
                     }
 

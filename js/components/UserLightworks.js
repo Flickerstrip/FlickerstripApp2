@@ -9,13 +9,13 @@ import {
     AlertIOS
 } from "react-native";
 
+var _ = require("lodash");
+
 import LightworkRow from "~/components/LightworkRow.js";
 import LightworkEditor from "~/components/LightworkEditor.js";
 import EditorActions from "~/actions/EditorActions.js";
 import layoutStyles from "~/styles/layoutStyles";
-
-var _ = require("lodash");
-
+import skinStyles from "~/styles/skinStyles";
 import LightworkManager from "~/stores/LightworkManager.js";
 import LightworkActions from "~/actions/LightworkActions.js";
 import BulkActions from "~/actions/BulkActions.js";
@@ -37,10 +37,12 @@ class UserLightworks extends React.Component {
     }
     componentWillMount() {
         LightworkManager.on("UserLightworkListUpdated",this.refreshUserLightworks);
+        SettingsManager.on("UserUpdated",this.refreshUserLightworks);
         this.refreshUserLightworks();
     }
     componentWillUnmount() {
         LightworkManager.removeListener("UserLightworkListUpdated",this.refreshUserLightworks);
+        SettingsManager.removeListener("UserUpdated",this.refreshUserLightworks);
     }
     rowDrilldownPressed(lw) {
         EditorActions.openLightwork(lw.id);
@@ -85,6 +87,7 @@ class UserLightworks extends React.Component {
         this.loading = true;
         LightworkManager.getUserLightworks(SettingsManager.getUserId(),function(result) {
             this.loading = false;
+            if (result == null) return;
             this.updateDatasource(result);
         }.bind(this));
     }
@@ -95,20 +98,26 @@ class UserLightworks extends React.Component {
             });
         }.bind(this),0)
     }
+    renderHeader() {
+        return SettingsManager.isUserValid() ? null : (<Text>Note: You are not logged in, Lightworks are stored locally, log in to preserve them!</Text>);
+    }
     render() {
-        return (
+        return this.state.dataSource.getRowCount() == 0 ? (
+            <View style={layoutStyles.centerChildren}>
+                <View style={skinStyles.notePanel}>
+                    <Text style={[skinStyles.noteText]}>
+                        {SettingsManager.isUserValid() ? "Your Lightworks list is empty, create Lightworks in the editor to get started." : "You are not logged in, log in or create a Lightwork in the editor"}
+                    </Text>
+                </View>
+            </View>
+        ) : (
             <ListView
-                ref="userLightworks"
                 style={{flex: 1}}
-                //renderSeparator={this.renderSeparator}
                 dataSource={this.state.dataSource}
                 enableEmptySections={true}
-                //renderFooter={this.renderFooter}
                 renderRow={this.renderRow.bind(this)}
+                renderHeader={this.renderHeader.bind(this)}
                 automaticallyAdjustContentInsets={false}
-                //keyboardDismissMode="on-drag"
-                //keyboardShouldPersistTaps={true}
-                //showsVerticalScrollIndicator={false}
             />
         )
     }

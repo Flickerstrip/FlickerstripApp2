@@ -8,6 +8,8 @@ import Pattern from "~/models/Pattern";
 import Configuration from "~/constants/Configuration";
 import UserService from "~/services/UserService";
 
+var debugRequests = true;
+
 class LightworkService extends EventEmitter {
     static fetchUserLightworks(userId,cb) {
         var opt = {
@@ -17,9 +19,10 @@ class LightworkService extends EventEmitter {
         opt.headers = {};
         if (SettingsManager.getUser()) opt.headers["Authorization"] = UserService.getAuthorizationHeader(SettingsManager.getUser());
          
-         fetch(Configuration.LIGHTWORK_ENDPOINT+"/user/"+userId+"/patterns",opt).then((response) => response.json()).then(function(data) {
-             cb(data);
-         }); 
+        if (debugRequests) console.log("FETCH: userLightworks",userId);
+        fetch(Configuration.LIGHTWORK_ENDPOINT+"/user/"+userId+"/patterns",opt).catch(() => cb(null)).then((response) => response.json()).then(function(data) {
+            cb(data);
+        }); 
     }
     static fetchPublicLightworks(page,cb) {
         page = page || 0;
@@ -31,9 +34,10 @@ class LightworkService extends EventEmitter {
         opt.headers = {};
         if (SettingsManager.getUser()) opt.headers["Authorization"] = UserService.getAuthorizationHeader(SettingsManager.getUser());
          
-         fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern?size=20&page="+page,opt).then((response) => response.json()).then(function(data) {
-             cb(data);
-         }); 
+        if (debugRequests) console.log("FETCH: publicLightworks",page);
+        fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern?size=20&page="+page,opt).then((response) => response.json()).then(function(data) {
+            cb(data);
+        }); 
     }
     static fetchLightworkData(id,cb) {
         var opt = {
@@ -43,9 +47,10 @@ class LightworkService extends EventEmitter {
         opt.headers = {};
         if (SettingsManager.getUser()) opt.headers["Authorization"] = UserService.getAuthorizationHeader(SettingsManager.getUser());
          
-         fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern/"+id,opt).then((response) => response.json()).then(function(data) {
-             cb(data);
-         }); 
+        if (debugRequests) console.log("FETCH: lightworkData",id);
+        fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern/"+id,opt).then((response) => response.json()).then(function(data) {
+            cb(data);
+        }); 
     }
     static saveLightwork(id,lw,cb) {
         var opt = {
@@ -67,10 +72,12 @@ class LightworkService extends EventEmitter {
         opt.body=p.serializeToJSON();
 
         if (id == null) {
+            if (debugRequests) console.log("FETCH: create");
             fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern/create",opt).then((response) => response.json()).then(function(data) {
                 if (cb) cb(data);
             }); 
         } else {
+            if (debugRequests) console.log("FETCH: save",id);
             fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern/"+id+"/update",opt).then((response) => response.json()).then(function(data) {
                 if (cb) cb(data);
             }); 
@@ -88,6 +95,7 @@ class LightworkService extends EventEmitter {
             throw("Unauthorized");
         }
 
+        if (debugRequests) console.log("FETCH: delete",id);
         fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern/"+id+"/delete",opt).then().then(function() {
             if (cb) cb();
         }); 
