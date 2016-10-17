@@ -37,10 +37,10 @@ class FlickerstripManager extends EventEmitter {
                 this.emit("StripUpdated",e.stripId);
             } else if (e.type === ActionTypes.LOAD_PATTERN) {
                 var strip = this.getStrip(e.stripId);
-                strip.loadPattern(e.pattern,false);
+                strip.loadPattern(e.pattern,false,e.callback);
             } else if (e.type === ActionTypes.LOAD_PREVIEW) {
                 var strip = this.getStrip(e.stripId);
-                strip.loadPattern(e.pattern,true);
+                strip.loadPattern(e.pattern,true,e.callback);
             } else if (e.type === ActionTypes.SELECT_PATTERN) {
                 var strip = this.getStrip(e.stripId);
                 strip.selectPattern(e.patternId);

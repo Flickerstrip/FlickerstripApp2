@@ -12,6 +12,7 @@ import renderIf from "~/utils/renderIf"
 import UserLightworks from "~/components/UserLightworks.js";
 import LightworkRepository from "~/components/LightworkRepository.js";
 import SettingsManager from "~/stores/SettingsManager";
+import StatusBar from "~/components/StatusBar.js";
 
 import layoutStyles from "~/styles/layoutStyles.js";
 var _ = require("lodash");
@@ -47,6 +48,7 @@ class LightworksMain extends React.Component {
                 {renderIf(this.state.activeTab == 1)(
                     <LightworkRepository navigator={this.props.navigator} style={layoutStyles.flexColumn}/>
                 )}
+                <StatusBar />
             </View>
         )
     }

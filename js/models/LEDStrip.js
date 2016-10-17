@@ -140,6 +140,7 @@ class LEDStrip extends EventEmitter {
         //if (!notimeout) opt.timeout = 2000; TODO reimplement timeout? Does it exist?
         //For upload status: r.req.connection.socket._bytesDispatched
 
+        console.log("requesting: ",url);
         fetch(url,opt)
             .catch(function(err) {
                 console.log("error",err);
@@ -242,9 +243,12 @@ class LEDStrip extends EventEmitter {
         if (isPreview) p.preview = null;
 
         var url = "http://"+this.ip+"/pattern/create?"+param(p);
-        PatternLoader.upload(url,payload,function(err,res) {
-            //console.log("got result",arguments); //TODO implement this callback
-        });
+        this._busy = true;
+        this._lastCommand = new Date().getTime();
+        PatternLoader.upload(url,payload,function(err) {
+            this._busy = false;
+            if (callback) callback();
+        }.bind(this));
 
         if (!isPreview) this.requestStatus();
     }

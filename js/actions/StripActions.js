@@ -1,5 +1,6 @@
 import FlickerstripDispatcher from "~/dispatcher/FlickerstripDispatcher.js";
 import ActionTypes from "~/constants/ActionTypes.js";
+import TaskManager from "~/stores/TaskManager";
 
 export default {
     selectStrip: function(stripId) {
@@ -21,18 +22,28 @@ export default {
             power: power,
         });
     },
-    loadPattern: function(stripId, pattern) {
+    loadPattern: function(stripId, pattern,cb) {
+        var taskId = TaskManager.start(2,"upload",{ name:"Uploading Lightwork"});
         FlickerstripDispatcher.dispatch({
             type: ActionTypes.LOAD_PATTERN,
             stripId: stripId,
             pattern: pattern,
+            callback: function() {
+                TaskManager.complete(taskId);
+                if (cb) cb();
+            },
         });
     },
-    loadPreview: function(stripId, pattern) {
+    loadPreview: function(stripId, pattern,cb) {
+        var taskId = TaskManager.start(2,"upload",{ name:"Previewing Lightwork"});
         FlickerstripDispatcher.dispatch({
             type: ActionTypes.LOAD_PREVIEW,
             stripId: stripId,
             pattern: pattern,
+            callback: function() {
+                TaskManager.complete(taskId);
+                if (cb) cb();
+            },
         });
     },
     selectPattern: function(stripId, patternId) {

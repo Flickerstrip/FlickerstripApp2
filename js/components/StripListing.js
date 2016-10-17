@@ -19,6 +19,7 @@ import StripDetails from "~/components/StripDetails.js";
 import Button from "react-native-button"
 import WiFiNetworkPrompt from "~/components/WiFiNetworkPrompt.js";
 import ConfigureNewStrip from "~/components/ConfigureNewStrip.js";
+import StatusBar from "~/components/StatusBar.js";
 import skinStyles from "~/styles/skinStyles";
 
 var NavigationBar = require("react-native-navbar");
@@ -91,28 +92,31 @@ class StripListing extends React.Component {
     }
     render() {
         return FlickerstripManager.getCount() == 0 ? (
-            <View key={this.state.key} style={layoutStyles.centerChildren}>
-                <View style={skinStyles.notePanel}>
-                    <Text style={[skinStyles.noteText, {marginBottom: 20}]}>
-                        There are no visible strips, check that all configured Flickerstrips are plugged in or configure new strips below.
-                    </Text>
-                    <Button
-                        style={skinStyles.button}
-                        onPress={() => {
-                            this.props.navigator.push({
-                                component: ConfigureNewStrip,
-                                title:"Add Flickerstrip",
-                                wrapperStyle:layoutStyles.paddingTopForNavigation,
-                                leftButtonTitle: "Back",
-                                onLeftButtonPress:() => {
-                                    this.props.navigator.pop();
-                                }
-                            });
-                        }}
-                    >
-                    Configure new Flickerstrips
-                </Button>
+            <View style={layoutStyles.flexColumn}>
+                <View key={this.state.key} style={layoutStyles.centerChildren}>
+                    <View style={skinStyles.notePanel}>
+                        <Text style={[skinStyles.noteText, {marginBottom: 20}]}>
+                            There are no visible strips, check that all configured Flickerstrips are plugged in or configure new strips below.
+                        </Text>
+                        <Button
+                            style={skinStyles.button}
+                            onPress={() => {
+                                this.props.navigator.push({
+                                    component: ConfigureNewStrip,
+                                    title:"Add Flickerstrip",
+                                    wrapperStyle:layoutStyles.paddingTopForNavigation,
+                                    leftButtonTitle: "Back",
+                                    onLeftButtonPress:() => {
+                                        this.props.navigator.pop();
+                                    }
+                                });
+                            }}
+                        >
+                        Configure new Flickerstrips
+                    </Button>
+                    </View>
                 </View>
+                <StatusBar />
             </View>
         ) : (
             <View key={this.state.key} style={layoutStyles.flexColumn}>
@@ -141,6 +145,7 @@ class StripListing extends React.Component {
                     //keyboardShouldPersistTaps={true}
                     //showsVerticalScrollIndicator={false}
                 />
+                <StatusBar />
             </View>
         )
     }
