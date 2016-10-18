@@ -149,6 +149,9 @@ _.extend(This.BLANK_PATTERN,{name:"New Lightwork",palette:_.clone(defaultPalette
 This.DEFAULT_PATTERN = new This();
 _.extend(This.DEFAULT_PATTERN,This.BLANK_PATTERN,{pixels:7,fps:3,frames:7,pixelData:[0,0,0,0,0,0,0,0,0,251,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,251,255,0,255,170,0,251,255,0,0,0,0,0,0,0,0,0,0,251,255,0,255,170,0,255,0,0,255,170,0,251,255,0,0,0,0,251,255,0,255,170,0,255,0,0,255,255,255,255,0,0,255,170,0,251,255,0,0,0,0,251,255,0,255,170,0,255,0,0,255,170,0,251,255,0,0,0,0,0,0,0,0,0,0,251,255,0,255,170,0,251,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,251,255,0,0,0,0,0,0,0,0,0,0]});
 
+This.objectToPlainArray = function(obj) {
+    return Array.prototype.slice.call(obj);
+}
 
 
 module.exports = This;

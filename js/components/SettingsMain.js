@@ -10,6 +10,7 @@ import {
 var _ = require("lodash");
 
 import layoutStyles from "~/styles/layoutStyles";
+import skinStyles from "~/styles/skinStyles";
 import EIcon from "react-native-vector-icons/EvilIcons";
 import NIcon from "react-native-vector-icons/Entypo";
 import SettingsList from "react-native-settings-list";
@@ -18,6 +19,7 @@ import SettingsManager from "~/stores/SettingsManager";
 import renderIf from "~/utils/renderIf"
 import SettingsActions from "~/actions/SettingsActions";
 import MenuButton from "~/components/MenuButton.js";
+import Button from "react-native-button"
 
 var defaultUser = {email:null,password:null};
 
@@ -139,6 +141,13 @@ class SettingsMain extends React.Component {
                         />
                     }
                 </SettingsList>
+
+                <Button
+                    style={skinStyles.button}
+                    onPress={() => SettingsActions.purgeLightworkCache()}
+                >
+                    Purge Lightwork Caches
+                </Button>
             </View>
         )
     }

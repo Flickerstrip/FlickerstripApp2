@@ -28,4 +28,5 @@ export default keyMirror({
     USER_LOGIN: null,
     USER_LOGOUT: null,
     WIFI_SAVE: null,
+    PURGE_LIGHTWORK_CACHE: null,
 });

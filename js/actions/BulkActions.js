@@ -12,6 +12,7 @@ export default {
     loadSelectedLightworksToSelectedStrips: function() {
         var flickerstrips = FlickerstripManager.getSelectedFlickerstrips();
         var lightworks = LightworkManager.getSelectedLightworks();
+        if (flickerstrips.length == 0 || lightworks.length == 0) return;
 
         var taskId = TaskManager.start(1,"upload",{ name:"Uploading Lightworks", totalSteps:flickerstrips.length * lightworks.length});
         _.each(flickerstrips,function(fs) {
@@ -26,6 +27,7 @@ export default {
     },
     previewLightworkOnSelectedStrips: function(lightworkId) {
         var flickerstrips = FlickerstripManager.getSelectedFlickerstrips();
+        if (flickerstrips.length == 0) return;
         var taskId = TaskManager.start(1,"upload",{ name:"Previewing Lightwork", totalSteps:flickerstrips.length});
         _.each(flickerstrips,function(fs) {
             LightworkManager.getLightworkData(lightworkId,function(lw) {

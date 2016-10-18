@@ -40,6 +40,8 @@ class LightworkService extends EventEmitter {
         }); 
     }
     static fetchLightworkData(id,cb) {
+        if (Array.isArray(id)) return this.fetchLightworkDataMultiple(id,cb); //we have multiple ids now, use the correct method
+
         var opt = {
             method: "GET",
         };
@@ -49,6 +51,19 @@ class LightworkService extends EventEmitter {
          
         if (debugRequests) console.log("FETCH: lightworkData",id);
         fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern/"+id,opt).then((response) => response.json()).then(function(data) {
+            cb(data);
+        }); 
+    }
+    static fetchLightworkDataMultiple(ids,cb) {
+        var opt = {
+            method: "GET",
+        };
+
+        opt.headers = {};
+        if (SettingsManager.getUser()) opt.headers["Authorization"] = UserService.getAuthorizationHeader(SettingsManager.getUser());
+         
+        if (debugRequests) console.log("FETCH: lightworkData (multiple)",ids.join(","));
+        fetch(Configuration.LIGHTWORK_ENDPOINT+"/pattern/loadPatternData?ids="+ids.join(","),opt).then((response) => response.json()).then(function(data) {
             cb(data);
         }); 
     }

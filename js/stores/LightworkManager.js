@@ -1,6 +1,8 @@
 var EventEmitter = require("events").EventEmitter;
 var _ = require("lodash");
 
+var Pattern = require("~/models/Pattern.js");
+
 import ActionTypes from "~/constants/ActionTypes.js";
 import FlickerstripDispatcher from "~/dispatcher/FlickerstripDispatcher.js";
 import LightworkService from "~/services/LightworkService.js";
@@ -65,7 +67,6 @@ class LightworkManager extends EventEmitter {
     settingsLoaded() {
         if (SettingsManager.storedLightworksById) {
             this.lightworksById = SettingsManager.storedLightworksById;
-            console.log("Loaded lightwork data: "+_.map(this.lightworksById,"id").join(", "));
             this.emit("LightworkListUpdated");
         }
         if (SettingsManager.userLightworks) {
@@ -125,6 +126,12 @@ class LightworkManager extends EventEmitter {
         var lightworksById = _.pickBy(this.lightworksById,function(value,key) {
             var key = key.indexOf("tmp_") === 0 ? key : parseInt(key);
             return userLightworks == null ? false : _.includes(userLightworks.lightworks,key);
+        });
+        lightworksById = _.cloneDeep(lightworksById);
+
+        _.each(lightworksById,function(value,key) {
+            if (!value.pixelData) return;
+            lightworksById[key].pixelData = Pattern.objectToPlainArray(value.pixelData);
         });
 
         SettingsManager.storeLightworks(userLightworks,lightworksById,this.queuedActions);
@@ -196,14 +203,29 @@ class LightworkManager extends EventEmitter {
     }
     getUserLightworksCached(userId,cb) {
         if (this.userLightworks[userId]) {
-            var lightworks = this.userLightworks[userId].lightworks.map(function(lightworkId) {
-                return this.getLightwork(lightworkId);
-            }.bind(this));
+            var lightworks = this.userLightworks[userId].lightworks.map((lightworkId) => this.getLightwork(lightworkId));
 
             return cb(lightworks);
         } else {
             cb(null);
         }
+    }
+    loadMissingUserLightworkData(cb) {
+        if (!NetworkManager.isConnected() || !SettingsManager.isUserValid()) return;
+
+        var userId = SettingsManager.getUserId()
+        var userLightworks = this.userLightworks[userId].lightworks.map((lightworkId) => this.getLightwork(lightworkId));
+        var missingIds = _.map(_.reject(userLightworks,"pixelData"),"id");
+        if (missingIds.length == 0) return;
+        LightworkService.fetchLightworkData(missingIds,function(lightworks) {
+            _.each(lightworks,function(lwdata,id) {
+                var lw = this.lightworksById[lwdata.id];
+                _.extend(lw,lwdata);
+                lw.pixelData = b64.toByteArray(lw.pixelData);
+            }.bind(this));
+
+            this.persistLightworks();
+        }.bind(this));
     }
     getUserLightworks(userId,cb) {
         if (NetworkManager.isConnected() && this.userLightworkCacheStale(userId)) {
@@ -221,6 +243,8 @@ class LightworkManager extends EventEmitter {
 
                 this.persistLightworks();
                 this.getUserLightworksCached(userId,cb);
+
+                this.loadMissingUserLightworkData();
             }.bind(this));
         } else {
             this.getUserLightworksCached(userId,cb);

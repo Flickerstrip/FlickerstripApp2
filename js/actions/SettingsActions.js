@@ -21,5 +21,10 @@ export default {
             password: password,
         });
     },
+    purgeLightworkCache:function() {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.PURGE_LIGHTWORK_CACHE,
+        });
+    }
 };
 

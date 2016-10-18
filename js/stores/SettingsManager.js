@@ -28,7 +28,7 @@ class SettingsManager extends EventEmitter {
         FlickerstripDispatcher.register(function(e) {
             if (e.type === ActionTypes.USER_LOGIN) {
                 this.user = {email: e.email, password: e.password};
-                this.saveSettings();
+                this.persistSettings();
                 UserService.validateUser(e.email,e.password,function(valid,user) {
                     if (!valid) return this.emit("UserUpdated",this.user);
 ;
@@ -40,7 +40,7 @@ class SettingsManager extends EventEmitter {
                 }.bind(this))
             } else if (e.type === ActionTypes.USER_LOGOUT) {
                 this.user = null;
-                this.saveSettings();
+                this.persistSettings();
                 this.emit("UserUpdated",null);
             } else if (e.type === ActionTypes.WIFI_SAVE) {
                 if (e.ssid == null) {
@@ -48,8 +48,14 @@ class SettingsManager extends EventEmitter {
                 } else {
                     this.wifi = {ssid:e.ssid,password:e.password};
                 }
-                this.saveSettings();
+                this.persistSettings();
                 this.emit("WiFiUpdated",null);
+            } else if (e.type === ActionTypes.PURGE_LIGHTWORK_CACHE) {
+                this.userLightworks = null;
+                this.storedLightworksById = null;
+                this.queuedActions = null;
+                this.selectedStrips = null;
+                this.persistSettings();
             }
         }.bind(this));
     }
@@ -83,15 +89,15 @@ class SettingsManager extends EventEmitter {
     }
     storeStrips(selectedStrips) {
         this.selectedStrips = selectedStrips;
-        this.saveSettings();
+        this.persistSettings();
     }
     storeLightworks(userLightworks,lightworksById, queuedActions) {
         this.userLightworks = userLightworks;
         this.storedLightworksById = lightworksById;
         this.queuedActions = queuedActions;
-        this.saveSettings();
+        this.persistSettings();
     }
-    saveSettings() {
+    persistSettings() {
         var save = {
             user: this.user ? {email:this.user.email,password:this.user.password} : null,
             wifi: this.wifi,
