@@ -41,6 +41,11 @@ class EditorManager extends EventEmitter {
             }
         }.bind(this));
     }
+    getLightwork(lightworkId) {
+        var index = this.lightworkIndexById(lightworkId);
+        if (index === -1) return null;
+        return this.lightworks[index];
+    }
     lightworkEdited(lightworkId,lw) {
         _.extend(this.lightworks[this.lightworkIndexById(lightworkId)],lw);
     }

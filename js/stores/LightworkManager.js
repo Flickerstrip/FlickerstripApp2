@@ -6,6 +6,7 @@ import FlickerstripDispatcher from "~/dispatcher/FlickerstripDispatcher.js";
 import LightworkService from "~/services/LightworkService.js";
 import SettingsManager from "~/stores/SettingsManager.js";
 import NetworkManager from "~/stores/NetworkManager.js";
+import EditorManager from "~/stores/EditorManager.js";
 
 var pageSize = 20;
 var b64 = require("base64-js");
@@ -96,6 +97,9 @@ class LightworkManager extends EventEmitter {
     }
     getLightworkData(id,cb) {
         var lw = this.getLightwork(id);
+        if (!lw) lw = EditorManager.getLightwork(id);
+        if (!lw) return cb(null);
+
         if (lw.pixelData) {
             cb(lw);
         } else {

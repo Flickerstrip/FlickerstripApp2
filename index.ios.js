@@ -186,6 +186,7 @@ class FlickerstripApp extends React.Component {
                                 rightButtonTitle: EditorManager.getActiveLightwork() ? undefined : "Create",
                                 onRightButtonPress: EditorManager.getActiveLightwork() ? () => { 
                                     MenuButton.showMenu([
+                                        {"label":"Preview Lightwork", onPress:() => { BulkActions.previewLightworkOnSelectedStrips(EditorManager.getActiveLightwork().id) }},
                                         {"label":"Rename Lightwork", onPress:() => { AlertIOS.prompt(
                                             "Rename Lightwork",
                                             null,
