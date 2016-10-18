@@ -29,7 +29,7 @@ export default {
         var taskId = TaskManager.start(1,"upload",{ name:"Previewing Lightwork", totalSteps:flickerstrips.length});
         _.each(flickerstrips,function(fs) {
             LightworkManager.getLightworkData(lightworkId,function(lw) {
-                StripActions.loadPattern(fs.id,lw,function() {
+                StripActions.loadPreview(fs.id,lw,function() {
                     TaskManager.updateProgress(taskId,true,null,true);
                 }.bind(this));
             }.bind(this));
