@@ -1,10 +1,13 @@
-require(['jquery','shared/Pattern.js','view/EditPatternDialog.js','bootstrap'],function($,Pattern,EditPatternDialog) {
+require(['underscore','jquery','shared/Pattern.js','view/EditPatternDialog.js','bootstrap'],function(_,$,Pattern,EditPatternDialog) {
     $(document).ready(function() {
 
         window.platform = "mobile";
         window.isTablet = false;
         var This = function() {
-            this.editPatternDialog = new EditPatternDialog(this,null,null,$(".lightworkEditor"));
+            var p = new Pattern();
+            _.extend(p,injectedPattern);
+
+            this.editPatternDialog = new EditPatternDialog(this,null,p,$(".lightworkEditor"));
 
             setTimeout(function() {
                 if (WebViewBridge) {
@@ -24,7 +27,7 @@ require(['jquery','shared/Pattern.js','view/EditPatternDialog.js','bootstrap'],f
 
                     };
 
-                    WebViewBridge.send(JSON.stringify({"command":"ready"}));
+                    //WebViewBridge.send(JSON.stringify({"command":"ready"}));
                 }
             },100);
         }();

@@ -25,6 +25,7 @@ class LightworkEditor extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.sendLightwork(nextProps.lightwork);
     }
+    /*
     sendLightwork(lw) {
         var objectToSend = {
             command:"load",
@@ -32,24 +33,22 @@ class LightworkEditor extends React.Component {
         }
         this.refs.webview.sendToBridge(JSON.stringify(objectToSend));
     }
-    onReady() {
-        if (this.props.lightwork) this.sendLightwork(this.props.lightwork);
-    }
+    */
     onMessage(jsonString) {
         var json = JSON.parse(jsonString);
-        if (json.command == "ready") {
-            this.onReady();
-        } else if (json.command == "update") {
+        if (json.command == "update") {
             EditorManager.lightworkEdited(json.lightwork.id,json.lightwork);
         }
     }
     render() {
+        var patternDefinition = "var injectedPattern="+JSON.stringify(this.props.lightwork)+";";
         return (
             <View style={layoutStyles.flexColumn}>
                 {renderIf(this.props.lightwork)(
                     <WebViewBridge
                         scrollEnabled={false}
                         ref="webview"
+                        injectedJavaScript={patternDefinition}
                         style={layoutStyles.flexColumn}
                         onBridgeMessage={this.onMessage.bind(this)}
                         source={require("../../editor/build/editor.html")}
