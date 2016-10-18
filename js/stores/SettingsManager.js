@@ -21,6 +21,7 @@ class SettingsManager extends EventEmitter {
         this.userLightworks = null;
         this.storedLightworksById = null;
         this.queuedActions = null;
+        this.selectedStrips = null;
 
         this.loadSettings();
 
@@ -80,6 +81,10 @@ class SettingsManager extends EventEmitter {
             }
         }.bind(this));
     }
+    storeStrips(selectedStrips) {
+        this.selectedStrips = selectedStrips;
+        this.saveSettings();
+    }
     storeLightworks(userLightworks,lightworksById, queuedActions) {
         this.userLightworks = userLightworks;
         this.storedLightworksById = lightworksById;
@@ -93,6 +98,7 @@ class SettingsManager extends EventEmitter {
             userLightworks:this.userLightworks,
             storedLightworksById:this.storedLightworksById,
             queuedActions: this.queuedActions,
+            selectedStrips: this.selectedStrips,
         }
         AsyncStorage.setItem(asyncStorageKey,JSON.stringify(save)); //check for errors?
     }

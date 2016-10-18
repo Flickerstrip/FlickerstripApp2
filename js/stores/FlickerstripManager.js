@@ -6,6 +6,7 @@ import ActionTypes from "~/constants/ActionTypes.js";
 import LEDStrip from "~/models/LEDStrip.js";
 import FlickerstripDispatcher from "~/dispatcher/FlickerstripDispatcher.js";
 import LightworkManager from "~/stores/LightworkManager";
+import SettingsManager from "~/stores/SettingsManager";
 
 class FlickerstripManager extends EventEmitter {
     constructor(props) {
@@ -17,6 +18,7 @@ class FlickerstripManager extends EventEmitter {
 
         this.discover.on("Found",this.onStripDiscovered.bind(this));
         //this.discover.on("Lost",this.onStripLost.bind(this));
+        SettingsManager.on("SettingsLoaded",this.onSettingsLoaded.bind(this));
 
         /*
         setInterval(function() {
@@ -27,9 +29,11 @@ class FlickerstripManager extends EventEmitter {
         FlickerstripDispatcher.register(function(e) {
             if (e.type === ActionTypes.SELECT_STRIP) {
                 this.getStrip(e.stripId).selected = true;
+                this.persistStrips();
                 this.emit("StripUpdated",e.stripId);
             } else if (e.type === ActionTypes.DESELECT_STRIP) {
                 this.getStrip(e.stripId).selected = false;
+                this.persistStrips();
                 this.emit("StripUpdated",e.stripId);
             } else if (e.type === ActionTypes.TOGGLE_POWER) {
                 var strip = this.getStrip(e.stripId);
@@ -95,6 +99,15 @@ class FlickerstripManager extends EventEmitter {
     countWhere(filter) {
         return _.filter(this.strips,filter).length;
     }
+    onSettingsLoaded() {
+        _.each(SettingsManager.selectedStrips,function(id) {
+            if (this.strips[id]) this.strips[id].selected = true;
+        }.bind(this));
+    }
+    persistStrips() {
+        var selectedStrips = _.map(_.pickBy(this.strips,"selected"),"id");
+        SettingsManager.storeStrips(selectedStrips);
+    }
     getConfigurationMasterFlickerstrip() { //returns null if none
         var apStrips = _.filter(this.strips,{"ap":1});
         if (apStrips.length == 0) return null;
@@ -145,6 +158,7 @@ class FlickerstripManager extends EventEmitter {
                 //this.emit("StripConnected",strip);
             } else {
                 this.strips[strip.id] = strip;
+                if (_.includes(SettingsManager.selectedStrips,strip.id)) strip.selected = true;
                 this.emit("StripAdded",strip);
                 strip.on("StripDisconnected",this.onStripDisconnected.bind(this));
                 strip.on("StripUpdated",this.stripUpdateReceived.bind(this));

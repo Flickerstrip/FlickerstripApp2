@@ -33,7 +33,7 @@ class LightworkManager extends EventEmitter {
             } else if (e.type === ActionTypes.DELETE_LIGHTWORK) {
                 LightworkService.deleteLightwork(e.lightworkId,function() {
                     this.lightworkDeleted(e.lightworkId);
-                    this.saveLightworks();
+                    this.persistLightworks();
                 }.bind(this));
             } else if (e.type === ActionTypes.DUPLICATE_LIGHTWORK) {
                 var lightwork = this.getLightwork(e.lightworkId);
@@ -54,6 +54,7 @@ class LightworkManager extends EventEmitter {
         SettingsManager.on("UserUpdated",this.handleQueue.bind(this));
         SettingsManager.on("SettingsLoaded",this.settingsLoaded.bind(this));
 
+        this.selectedIds = {};
         this.queuedActions = [];
         this.busy = false;
         this.lightworksById = {};
@@ -115,15 +116,13 @@ class LightworkManager extends EventEmitter {
     getSelectedLightworks() {
         return _.filter(_.values(this.lightworksById),(lightwork) => {return lightwork.selected});
     }
-    saveLightworks() {
+    persistLightworks() {
         var userLightworks = this.userLightworks[SettingsManager.getUserId()] ? this.userLightworks[SettingsManager.getUserId()] : null;
-        console.log("user lightworks: "+userLightworks.lightworks.join(", "));
         var lightworksById = _.pickBy(this.lightworksById,function(value,key) {
             var key = key.indexOf("tmp_") === 0 ? key : parseInt(key);
             return userLightworks == null ? false : _.includes(userLightworks.lightworks,key);
         });
 
-        console.log("Saving lightwork data: "+_.map(lightworksById,"id").join(", "));
         SettingsManager.storeLightworks(userLightworks,lightworksById,this.queuedActions);
     }
     handleQueue() {
@@ -131,7 +130,6 @@ class LightworkManager extends EventEmitter {
 
         this.busy = true;
         var nextAction = this.queuedActions.pop();
-        console.log("excuting action",nextAction.type);
         if (nextAction.type == "save") {
             this.saveLightworkImpl(nextAction.lightworkId,nextAction.lightwork,function() {
                 console.log("save complete!");
@@ -156,7 +154,7 @@ class LightworkManager extends EventEmitter {
             this.lightworkDeleted(lw.id,true); //delete any temporary ids that we have kicking around
             this.userLightworks[userId].lightworks.push(tempId);
             this.lightworksById[tempId] = lw;
-            this.saveLightworks();
+            this.persistLightworks();
             this.emit("UserLightworkListUpdated",userId);
         }
         this.handleQueue();
@@ -171,11 +169,11 @@ class LightworkManager extends EventEmitter {
                 this.lightworksById[data.id] = data;
                 if (this.userLightworks[SettingsManager.getUser().id]) this.userLightworks[SettingsManager.getUser().id].lightworks.push(data.id);
                 if (cb) cb(data.id,data);
-                this.saveLightworks();
+                this.persistLightworks();
                 this.emit("UserLightworkListUpdated",SettingsManager.getUser().id);
             } else {
                 _.extend(this.lightworksById[lightworkId],lw);
-                this.saveLightworks();
+                this.persistLightworks();
                 this.emit("LightworkUpdated",lightworkId);
             }
         }.bind(this));
@@ -217,7 +215,7 @@ class LightworkManager extends EventEmitter {
 
                 this.userLightworks[userId].lightworks = _.uniq(this.userLightworks[userId].lightworks);
 
-                this.saveLightworks();
+                this.persistLightworks();
                 this.getUserLightworksCached(userId,cb);
             }.bind(this));
         } else {
