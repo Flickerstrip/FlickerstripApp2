@@ -31,8 +31,9 @@ class EditorManager extends EventEmitter {
             } else if (e.type === ActionTypes.EDITOR_SAVE_LIGHTWORK) {
                 var i = this.lightworkIndexById(e.lightworkId);
                 var id = e.lightworkId;
-                if (id.indexOf("tmp_") == 0) id = null;
+                if ((""+id).indexOf("tmp_") == 0) id = null;
                 LightworkManager.saveLightwork(id,this.lightworks[i],function(saveId,lw) {
+                    console.log("saved lightwork");
                     if (id == null) {
                         this.activeLightwork = saveId;
                         this.lightworks[i].id = saveId;
