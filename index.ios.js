@@ -206,6 +206,7 @@ class FlickerstripApp extends React.Component {
                                             "plain-text",
                                             EditorManager.getActiveLightwork().name
                                         )}},
+                                        {"label":"New Lightwork", onPress:() => { EditorActions.createLightwork() } },
                                         {"label":"Close Lightwork", onPress:() => { EditorActions.closeLightwork(EditorManager.getActiveLightwork().id) }, destructive:true},
                                         {"label":"Cancel", cancel:true},
                                     ]);

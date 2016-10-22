@@ -171,8 +171,39 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
                 e.preventDefault();
                 return false;
             },this);
+            var dblHandler = _.bind(function(e) {
+                this.pendingHistory = [];
+                var g = this.image.getContext("2d");
+                g.fillStyle = c.toHexString();
+                for (var i=0; i<this.image.width; i++) {
+                    var generatedHistory = plotLine(g,i,0,i,this.image.height);
+                    this.pendingHistory = this.pendingHistory.concat(generatedHistory);
+                }
+                this.addHistory(this.pendingHistory);
+                this.pendingHistory = [];
+
+                $(this).trigger("change");
+                this.requestFrame();
+
+                e.preventDefault();
+                return false;
+            },this);
             if (platform == "desktop") $panel.on("click contextmenu",handler);
-            if (platform == "mobile") new Hammer($panel.get(0)).on("tap press",handler);
+            if (platform == "mobile") {
+
+                var mc = new Hammer.Manager($panel.get(0));
+                mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
+                mc.add( new Hammer.Tap({ event: 'singletap' }) );
+
+                mc.get('doubletap').recognizeWith('singletap');
+                mc.get('singletap').requireFailure('doubletap');
+                
+                mc.on("singletap",handler);
+                mc.on("press",handler);
+                mc.on("doubletap",dblHandler);
+                
+                //new Hammer($panel.get(0)).on("tap doubletap press",handler);
+            }
 
             return $panel;
         },
