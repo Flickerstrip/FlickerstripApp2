@@ -10,6 +10,7 @@ import {
 var _ = require("lodash");
 
 import TaskManager from "~/stores/TaskManager";
+import NetworkManager from "~/stores/NetworkManager";
 import layoutStyles from "~/styles/layoutStyles";
 
 class StatusBar extends React.Component {
@@ -22,8 +23,13 @@ class StatusBar extends React.Component {
     }
     componentWillMount() {
         TaskManager.on("StatusUpdated",this.refresh);
+        NetworkManager.on("ConnectionStatus",this.refresh);
 
         //this.startTestTask();
+    }
+    componentWillUnmount() {
+        TaskManager.removeListener("StatusUpdated",this.refresh);
+        NetworkManager.removeListener("ConnectionStatus",this.refresh);
     }
     startTestTask() {
         var taskId = TaskManager.start(1,"test",{ name:"test", totalSteps:10});
@@ -33,9 +39,6 @@ class StatusBar extends React.Component {
             }
         },500);
     }
-    componentWillUnmount() {
-        TaskManager.removeListener("StatusUpdated",this.refresh);
-    }
     refresh() {
         this.setState({key:Math.random});
     }
@@ -43,6 +46,11 @@ class StatusBar extends React.Component {
         var task = TaskManager.getActiveTask();
         var activeTaskText = task == null ? "" : task.name + (task.text ? " ["+task.text+"]" : "") + (task.currentStep ? " "+task.currentStep+"/"+task.totalSteps : "");
         var fill = task == null ? 0 : task.progress / 100.0;
+        if (!task && !NetworkManager.hasInternet()) {
+            task = true;
+            activeTaskText = "Offline";
+            fill = 1;
+        }
         return (
             <View key={this.state.key} style={[{height: task ? 15 : 0},layoutStyles.flexRow, layoutStyles.flexAlignStretch]}>
                 <View style={{flex: fill, backgroundColor:"#c4daff"}}></View>

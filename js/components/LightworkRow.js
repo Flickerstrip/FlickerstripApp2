@@ -22,6 +22,8 @@ import skinStyles from "~/styles/skinStyles";
 import layoutStyles from "~/styles/layoutStyles";
 import Checkbox from "~/components/Checkbox";
 
+var renderId = false;
+
 class LightworkRow extends React.Component {
     constructor(props) {
         super(props);
@@ -45,7 +47,7 @@ class LightworkRow extends React.Component {
         var TouchableElement = Platform.OS === "android" ? TouchableNativeFeedback : TouchableHighlight;
         var selected = typeof this.props.selected == "function" ? this.props.selected() : this.props.selected;
         return (
-            <View key = {this.state.key} style={[layoutStyles.flexAlignStretch, layoutStyles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>
+            <View key={this.state.key} style={[layoutStyles.flexAlignStretch, layoutStyles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>
                 {renderIf(!this.props.strip)(
                     <TouchableElement
                         style={[layoutStyles.flexAlignCenter, layoutStyles.flexRow,{paddingLeft: 10, paddingRight: 0}]}
@@ -69,6 +71,7 @@ class LightworkRow extends React.Component {
                     <View style={[layoutStyles.flex1,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}>
                         <View style={layoutStyles.flex1}>
                             <Text numberOfLines={2}>
+                                {renderId ? "["+this.props.lightwork.id+"]" : ""}
                                 {this.props.lightwork.name}
                             </Text>
                         </View>

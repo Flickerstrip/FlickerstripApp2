@@ -85,7 +85,9 @@ class UserLightworks extends React.Component {
     }
     refreshUserLightworks() {
         this.loading = true;
+        console.log("refreshing user lightworks..",SettingsManager.getUserId());
         LightworkManager.getUserLightworks(SettingsManager.getUserId(),function(result) {
+            //console.log("got results",result.length,result);
             this.loading = false;
             if (result == null) return;
             this.updateDatasource(result);

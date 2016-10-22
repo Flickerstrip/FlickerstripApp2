@@ -28,30 +28,51 @@ var This = function() {
     this.init.apply(this,arguments);
 }
 
+import NetworkManager from "~/stores/NetworkManager";
+
 util.inherits(This, EventEmitter);
 extend(This.prototype,{
     init:function() {
         this.endpoints = {};
 
+        this.startListening();
+
+        NetworkManager.on("ConnectionStatus",function() {
+            this.stopListening();
+        }.bind(this));
+
+        this.timer = setInterval(this.sendProbe.bind(this),2000);
+    },
+    stopListening: function(cb) {
+        if (!this.client) return cb ? cb() : null;
+        this.client.once("close",function() {
+            if (cb) cb();
+            this.client = null;
+        }.bind(this));
+        this.client.close();
+    },
+    startListening: function() {
         this.client = dgram.createSocket("udp4");
         this.client.bind(1900);
         this.client.on("message", this.messageReceived.bind(this));
+        this.ready = false;
 
-        //this.client.on("error", function() { console.log("err",arguments) });
-        //this.client.on("close", function() { console.log("close",arguments) });
-
-        /*
-        setInterval(function() {
-            console.log("endpoints: ",this.endpoints);
-        }.bind(this),3000);
-        */
+        this.client.on("error",function() {
+            this.stopListening()
+        }.bind(this));
 
         this.client.on("listening",function() {
-            setInterval(this.sendProbe.bind(this),2000);
+            this.ready = true;
             this.sendProbe();
         }.bind(this));
     },
     sendProbe: function() {
+        if (!this.client) {
+            this.startListening();
+        }
+
+        if (!this.ready) return;
+
         this.client.send(discoveryProbe, 0, discoveryProbe.length, 1900, "239.255.255.250");
 
         var currentTime = new Date().getTime();

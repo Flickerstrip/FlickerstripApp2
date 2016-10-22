@@ -26,17 +26,15 @@ class EditorManager extends EventEmitter {
                 }
             } else if (e.type === ActionTypes.EDITOR_CREATE_LIGHTWORK) {
                 var lw = _.cloneDeep(Pattern.DEFAULT_PATTERN);
-                lw.id = this.createLightworkId();
+                lw.id = LightworkManager.createLightworkId();
                 this.addLightwork(lw);
             } else if (e.type === ActionTypes.EDITOR_SAVE_LIGHTWORK) {
                 var i = this.lightworkIndexById(e.lightworkId);
                 var id = e.lightworkId;
                 if ((""+id).indexOf("tmp_") == 0) id = null;
                 LightworkManager.saveLightwork(id,this.lightworks[i],function(saveId,lw) {
-                    console.log("saved lightwork");
-                    if (id == null) {
+                    if (id == null && this.activeLightork == id) {
                         this.activeLightwork = saveId;
-                        this.lightworks[i].id = saveId;
                     }
                 }.bind(this));
             }
@@ -49,13 +47,11 @@ class EditorManager extends EventEmitter {
     }
     lightworkEdited(lightworkId,lw) {
         _.extend(this.lightworks[this.lightworkIndexById(lightworkId)],lw);
-    }
-    createLightworkId() {
-        var id = null;
-        while(!id || _.find(this.lightworks,{id:id})) {
-            id = "tmp_"+Math.ceil(Math.random()*100000);
+
+        var parametersChanged = _.without(_.keys(lw),"pixelData").length;
+        if (parametersChanged > 0 && lightworkId == this.activeLightwork) {
+            this.emit("ActiveLightworkUpdated");
         }
-        return id;
     }
     addLightwork(lw) {
         this.lightworks.push(lw);

@@ -9,6 +9,7 @@ import ActionTypes from "~/constants/ActionTypes.js";
 import FlickerstripDispatcher from "~/dispatcher/FlickerstripDispatcher.js";
 import LightworkService from "~/services/LightworkService.js";
 import UserService from "~/services/UserService";
+import NetworkManager from "~/stores/NetworkManager.js";
 
 var asyncStorageKey = "flickerstripSettingsKey";
 
@@ -23,21 +24,15 @@ class SettingsManager extends EventEmitter {
         this.queuedActions = null;
         this.selectedStrips = null;
 
+        NetworkManager.on("ConnectionStatus",this.retryLogin.bind(this));
+
         this.loadSettings();
 
         FlickerstripDispatcher.register(function(e) {
             if (e.type === ActionTypes.USER_LOGIN) {
                 this.user = {email: e.email, password: e.password};
                 this.persistSettings();
-                UserService.validateUser(e.email,e.password,function(valid,user) {
-                    if (!valid) return this.emit("UserUpdated",this.user);
-;
-
-                    this.user = user;
-                    this.user.valid = true;
-                    user.password = e.password;
-                    this.emit("UserUpdated",user);
-                }.bind(this))
+                this.doLogin(e.email,e.password);
             } else if (e.type === ActionTypes.USER_LOGOUT) {
                 this.user = null;
                 this.persistSettings();
@@ -55,9 +50,24 @@ class SettingsManager extends EventEmitter {
                 this.storedLightworksById = null;
                 this.queuedActions = null;
                 this.selectedStrips = null;
+                this.publicLightworks = null;
                 this.persistSettings();
             }
         }.bind(this));
+    }
+    retryLogin() {
+        if (!this.user) return;
+
+        this.doLogin(this.user.email,this.user.password);
+    }
+    doLogin(email,password) {
+        UserService.validateUser(email,password,function(valid,user) {
+            if (!valid) return this.emit("UserUpdated",this.user);
+            this.user = user;
+            this.user.valid = true;
+            user.password = password;
+            this.emit("UserUpdated",user);
+        }.bind(this))
     }
     loadSettings() {
         AsyncStorage.getItem(asyncStorageKey).then(function(jsonString) {
@@ -65,14 +75,14 @@ class SettingsManager extends EventEmitter {
             var json = JSON.parse(jsonString);
             _.extend(this,json);
 
-            if (json.user) {
+            if (json.user && NetworkManager.hasInternet()) {
                 UserService.validateUser(json.user.email,json.user.password,function(valid,user) {
                     if (!valid) {
-                        this.user = {
-                            email: json.user.email,
-                            password: json.user.password,
-                            valid: false,
-                        }
+                        this.user = json.user;
+                        this.user.valid = false;
+
+                        this.emit("SettingsLoaded");
+
                         return;
                     }
 
@@ -91,20 +101,22 @@ class SettingsManager extends EventEmitter {
         this.selectedStrips = selectedStrips;
         this.persistSettings();
     }
-    storeLightworks(userLightworks,lightworksById, queuedActions) {
+    storeLightworks(userLightworks,lightworksById, queuedActions, publicLightworks) {
         this.userLightworks = userLightworks;
         this.storedLightworksById = lightworksById;
         this.queuedActions = queuedActions;
+        this.publicLightworks = publicLightworks;
         this.persistSettings();
     }
     persistSettings() {
         var save = {
-            user: this.user ? {email:this.user.email,password:this.user.password} : null,
+            user: this.user ? {email:this.user.email,password:this.user.password,id:this.user.id} : null,
             wifi: this.wifi,
             userLightworks:this.userLightworks,
             storedLightworksById:this.storedLightworksById,
             queuedActions: this.queuedActions,
             selectedStrips: this.selectedStrips,
+            publicLightworks: this.publicLightworks,
         }
         AsyncStorage.setItem(asyncStorageKey,JSON.stringify(save)); //check for errors?
     }
@@ -124,7 +136,7 @@ class SettingsManager extends EventEmitter {
         return this.user;
     }
     getUserId() {
-        return this.user ? this.user.id : null;
+        return this.user  && this.user.id ? this.user.id : null;
     }
 }
 

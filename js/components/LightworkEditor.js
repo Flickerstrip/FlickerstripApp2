@@ -37,7 +37,7 @@ class LightworkEditor extends React.Component {
     onMessage(jsonString) {
         var json = JSON.parse(jsonString);
         if (json.command == "update") {
-            EditorManager.lightworkEdited(json.lightwork.id,json.lightwork);
+            EditorManager.lightworkEdited(json.lightwork.id,{pixelData:json.lightwork.pixelData});
         }
     }
     render() {

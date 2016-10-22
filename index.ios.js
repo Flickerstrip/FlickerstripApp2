@@ -46,11 +46,14 @@ class FlickerstripApp extends React.Component {
             //selectedTab: "editor",
             //selectedTab: "settings",
             activeLightwork: null,
+            activeLightworkVersion: null,
         }
 
         this.onActiveLightworkChanged = this.onActiveLightworkChanged.bind(this);
         this.updateSelectedStripCount = this.updateSelectedStripCount.bind(this);
         this.updateSelectedLightworksCount = this.updateSelectedLightworksCount.bind(this);
+        this.onLightworkUpdated = this.onLightworkUpdated.bind(this);
+        this.onActiveLightworkUpdated = this.onActiveLightworkUpdated.bind(this);
     }
     componentWillMount() {
         FIcon.getImageSource("ellipsis-v", 20).then((source) => this.setState({ stripMenuIcon: source }));
@@ -60,18 +63,26 @@ class FlickerstripApp extends React.Component {
         FlickerstripManager.on("StripUpdated",this.updateSelectedStripCount);
         FlickerstripManager.on("StripAdded",this.updateSelectedStripCount);
         FlickerstripManager.on("StripRemoved",this.updateSelectedStripCount);
-        LightworkManager.on("LightworkUpdated",this.updateSelectedLightworksCount);
+        LightworkManager.on("LightworkUpdated",this.onLightworkUpdated);
         EditorManager.on("ActiveLightworkChanged",this.onActiveLightworkChanged);
+        EditorManager.on("ActiveLightworkUpdated",this.onActiveLightworkUpdated);
     }
     componentWillUnmount() {
         FlickerstripManager.removeListener("StripUpdated",this.updateSelectedStripCount);
         FlickerstripManager.removeListener("StripAdded",this.updateSelectedStripCount);
         FlickerstripManager.removeListener("StripRemoved",this.updateSelectedStripCount);
-        LightworkManager.on("LightworkUpdated",this.updateSelectedLightworksCount);
+        LightworkManager.on("LightworkUpdated",this.onLightworkUpdated);
         EditorManager.removeListener("ActiveLightworkChanged",this.onActiveLightworkChanged);
     }
     onActiveLightworkChanged(id) {
         this.setState({activeLightwork: id, selectedTab:"editor"});
+    }
+    onActiveLightworkUpdated() {
+        console.log("active lightwork updated!");
+        this.setState({activeLightworkVersion: Math.random()});
+    }
+    onLightworkUpdated(id) {
+        this.updateSelectedLightworksCount();
     }
     updateSelectedStripCount() {
         this.setState({selectedStrips: FlickerstripManager.getSelectedCount()});
@@ -173,7 +184,7 @@ class FlickerstripApp extends React.Component {
                     }}>
                     <View style={[layoutStyles.flexColumn, layoutStyles.marginBottomForTab]}>
                         <NavigatorIOS
-                            key={this.state.activeLightwork}
+                            key={this.state.activeLightwork+this.state.activeLightworkVersion}
                             initialRoute={{
                                 component: LightworkEditor,
                                 passProps: { lightwork: EditorManager.getActiveLightwork() },
@@ -187,6 +198,7 @@ class FlickerstripApp extends React.Component {
                                 onRightButtonPress: EditorManager.getActiveLightwork() ? () => { 
                                     MenuButton.showMenu([
                                         {"label":"Preview Lightwork", onPress:() => { BulkActions.previewLightworkOnSelectedStrips(EditorManager.getActiveLightwork().id) }},
+                                        {"label":"Load Lightwork", onPress:() => { BulkActions.previewLightworkOnSelectedStrips(EditorManager.getActiveLightwork().id) }},
                                         {"label":"Rename Lightwork", onPress:() => { AlertIOS.prompt(
                                             "Rename Lightwork",
                                             null,

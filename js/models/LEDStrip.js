@@ -140,17 +140,30 @@ class LEDStrip extends EventEmitter {
         //if (!notimeout) opt.timeout = 2000; TODO reimplement timeout? Does it exist?
         //For upload status: r.req.connection.socket._bytesDispatched
 
+        var timeoutTriggered = false;
+        var timeouttimer = null;
+        if (!notimeout) timeouttimer = setTimeout(function() {
+            timeoutTriggered = true;
+            this.disconnectClient();
+            cb(null,"timeout!");
+        }.bind(this),2000);
+
         console.log("requesting: ",url);
         fetch(url,opt)
             .catch(function(err) {
-                console.log("error",err);
+                if (timeoutTriggered) return;
+
                 this.disconnectClient();
                 if (err.code != "ETIMEDOUT") console.log("error!",err,command);
                 if (cb) cb(null,err.code);
+                clearInterval(timeouttimer);
                 return;
             }.bind(this))
             .then((response) => response ? response.json() : null)
             .then(function(responseJson) {
+                if (timeoutTriggered) return;
+                clearInterval(timeouttimer);
+
                 this.startWatchdogTimer();
                 this._busy = false;
 

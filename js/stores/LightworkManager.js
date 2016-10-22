@@ -9,6 +9,7 @@ import LightworkService from "~/services/LightworkService.js";
 import SettingsManager from "~/stores/SettingsManager.js";
 import NetworkManager from "~/stores/NetworkManager.js";
 import EditorManager from "~/stores/EditorManager.js";
+import TaskManager from "~/stores/TaskManager";
 
 var pageSize = 20;
 var b64 = require("base64-js");
@@ -30,14 +31,12 @@ class LightworkManager extends EventEmitter {
             } else if (e.type === ActionTypes.PUBLISH_LIGHTWORK) {
                 this.saveLightwork(e.lightworkId,{"published":e.state});
             } else if (e.type === ActionTypes.EDIT_LIGHTWORK) {
+                console.log("lightwork updated",e.lightworkId);
                 this.saveLightwork(e.lightworkId,e.props);
             } else if (e.type === ActionTypes.STAR_LIGHTWORK) {
                 //Implement starring.. xD should this be on the network? probably
             } else if (e.type === ActionTypes.DELETE_LIGHTWORK) {
-                LightworkService.deleteLightwork(e.lightworkId,function() {
-                    this.lightworkDeleted(e.lightworkId);
-                    this.persistLightworks();
-                }.bind(this));
+                this.deleteLightwork(e.lightworkId);
             } else if (e.type === ActionTypes.DUPLICATE_LIGHTWORK) {
                 var lightwork = this.getLightwork(e.lightworkId);
 
@@ -76,7 +75,12 @@ class LightworkManager extends EventEmitter {
 
         if (SettingsManager.queuedActions) {
             this.queuedActions = SettingsManager.queuedActions;
+            console.log("queue",_.each(_.cloneDeep(this.queuedActions),(item) => item.lightwork ? delete item.lightwork["pixelData"] : null));
             this.handleQueue();
+        }
+
+        if (SettingsManager.publicLightworks) {
+            this.publicLightworks = SettingsManager.publicLightworks;
         }
     }
     lightworkDeleted(lightworkId,silent) {
@@ -87,6 +91,11 @@ class LightworkManager extends EventEmitter {
             this.publicLightworks.slice(index,1);
             if (!silent) this.emit("PublicLightworkListUpdated");
         }
+
+        this.queuedActions = _.filter(this.queuedActions,function(action) {
+            if (action.lightwork) return action.lightwork.id !== lightworkId;
+            return true;
+        });
 
         _.each(this.userLightworks,function(info,userId) {
             var index = _.indexOf(info.lightworks,lightworkId);
@@ -104,13 +113,20 @@ class LightworkManager extends EventEmitter {
         if (lw.pixelData) {
             cb(lw);
         } else {
-            if (!NetworkManager.isConnected()) return cb(null);
+            if (!NetworkManager.hasInternet()) return cb(null);
             LightworkService.fetchLightworkData(lw.id,function(lwdata) {
                 _.extend(lw,lwdata);
                 lw.pixelData = b64.toByteArray(lw.pixelData);
                 cb(lw);
             }.bind(this));
         }
+    }
+    createLightworkId() {
+        var id = null;
+        while(!id || _.find(this.lightworks,{id:id})) {
+            id = "tmp_"+Math.ceil(Math.random()*100000);
+        }
+        return id;
     }
     getLightwork(id) {
         return this.lightworksById[id];
@@ -122,33 +138,72 @@ class LightworkManager extends EventEmitter {
         return _.filter(_.values(this.lightworksById),(lightwork) => {return lightwork.selected});
     }
     persistLightworks() {
+        var publicLightworks = this.publicLightworks;
+        //console.log("public lightworks",publicLightworks);
         var userLightworks = this.userLightworks[SettingsManager.getUserId()] ? this.userLightworks[SettingsManager.getUserId()] : null;
+        //console.log("lwbyid: ",_.keys(this.lightworksById).join(","));
         var lightworksById = _.pickBy(this.lightworksById,function(value,key) {
             var key = key.indexOf("tmp_") === 0 ? key : parseInt(key);
-            return userLightworks == null ? false : _.includes(userLightworks.lightworks,key);
+            if (userLightworks && _.includes(userLightworks.lightworks,key)) return true;
+            if (publicLightworks && _.includes(publicLightworks.lightworks,key)) return true;
+            return false;
         });
         lightworksById = _.cloneDeep(lightworksById);
+        //console.log("persisting lightworks: ",_.map(lightworksById,"id").join(","));
 
         _.each(lightworksById,function(value,key) {
             if (!value.pixelData) return;
             lightworksById[key].pixelData = Pattern.objectToPlainArray(value.pixelData);
         });
 
-        SettingsManager.storeLightworks(userLightworks,lightworksById,this.queuedActions);
+        SettingsManager.storeLightworks(userLightworks,lightworksById,this.queuedActions,this.publicLightworks);
+    }
+    nextQueue() {
+        console.log("next called");
+        if (this.taskId) this.taskId = TaskManager.updateProgress(this.taskId,true,null,true) ? null : this.taskId;
+        this.busy = false;
+        if (this.actionCallback) this.actionCallback.apply(null,arguments); //TODO gross, dont use a instance var 
+        this.persistLightworks();
+        this.handleQueue();
     }
     handleQueue() {
-        if (!SettingsManager.isUserValid() || !NetworkManager.isConnected() || this.busy || !this.queuedActions.length) return;
+        if (!SettingsManager.isUserValid() || !NetworkManager.hasInternet() || this.busy || !this.queuedActions.length) return;
+
+        if (!this.taskId) {
+            console.log("Starting task",this.queuedActions.length);
+            this.taskId = TaskManager.start(1,"network",{ name:"Syncing", totalSteps:this.queuedActions.length });
+        }
+
+        var nextAction = this.queuedActions.pop();
+        this.actionCallback = nextAction.callback;
 
         this.busy = true;
-        var nextAction = this.queuedActions.pop();
         if (nextAction.type == "save") {
-            this.saveLightworkImpl(nextAction.lightworkId,nextAction.lightwork,function() {
-                console.log("save complete!");
-                this.busy = false;
-                if (nextAction.callback) nextAction.callback.apply(null,arguments);
-                this.handleQueue();
-            }.bind(this));
+            this.saveLightworkImpl(nextAction.lightworkId,nextAction.lightwork,this.nextQueue.bind(this));
+        } else if (nextAction.type == "delete") {
+            console.log("deleting lightwork from server",nextAction.lightworkId);
+            LightworkService.deleteLightwork(nextAction.lightworkId,this.nextQueue.bind(this));
         }
+    }
+    deleteLightwork(lightworkId,cb) {
+        var isPersisted = typeof lightworkId != "string" || lightworkId.indexOf("tmp_") == -1;
+        console.log("delete lightwork",isPersisted);
+
+        this.lightworkDeleted(lightworkId);
+
+        if (isPersisted) {
+            this.queuedActions.push({
+                type:"delete",
+                lightworkId: lightworkId,
+                callback: cb,
+            });
+        }
+
+        this.persistLightworks();
+
+        this.handleQueue();
+
+        if (!isPersisted && cb) cb();
     }
     saveLightwork(lightworkId,lw,cb) {
         this.queuedActions.push({
@@ -159,14 +214,18 @@ class LightworkManager extends EventEmitter {
         });
         if (lightworkId == null) { //we'll put a pending lightwork in here
             var userId = SettingsManager.getUserId();
-            var tempId = lw.id;
+            var tempId = lw.id ? lw.id : this.createLightworkId();
+            lw.id = tempId;
             lw.pending = true;
             if (!this.userLightworks[userId]) this.userLightworks[userId] = {lightworks: [], lastRefresh: null};
-            this.lightworkDeleted(lw.id,true); //delete any temporary ids that we have kicking around
+            if (lw.id) this.lightworkDeleted(lw.id,true); //delete any temporary ids that we have kicking around
             this.userLightworks[userId].lightworks.push(tempId);
             this.lightworksById[tempId] = lw;
             this.persistLightworks();
             this.emit("UserLightworkListUpdated",userId);
+        } else {
+            _.extend(this.lightworksById[lightworkId],lw);
+            this.emit("LightworkUpdated",lightworkId);
         }
         this.handleQueue();
 
@@ -186,6 +245,7 @@ class LightworkManager extends EventEmitter {
                 _.extend(this.lightworksById[lightworkId],lw);
                 this.persistLightworks();
                 this.emit("LightworkUpdated",lightworkId);
+                if (cb) cb(data.id,data);
             }
         }.bind(this));
     }
@@ -211,13 +271,25 @@ class LightworkManager extends EventEmitter {
         }
     }
     loadMissingUserLightworkData(cb) {
-        if (!NetworkManager.isConnected() || !SettingsManager.isUserValid()) return;
+        if (!NetworkManager.hasInternet() || !SettingsManager.isUserValid()) return;
 
         var userId = SettingsManager.getUserId()
         var userLightworks = this.userLightworks[userId].lightworks.map((lightworkId) => this.getLightwork(lightworkId));
         var missingIds = _.map(_.reject(userLightworks,"pixelData"),"id");
         if (missingIds.length == 0) return;
-        LightworkService.fetchLightworkData(missingIds,function(lightworks) {
+        this.downloadLightworks(missingIds);
+    }
+    loadMissingRepostiroyLightworks(cb) {
+        if (!NetworkManager.hasInternet() || !SettingsManager.isUserValid()) return;
+
+        var publicLightworks = this.publicLightworks.lightworks.map((lightworkId) => this.getLightwork(lightworkId));
+        var missingIds = _.map(_.reject(publicLightworks,"pixelData"),"id");
+        if (missingIds.length == 0) return;
+        this.downloadLightworks(missingIds);
+    }
+    downloadLightworks(ids) {
+        console.log("Downloading lightworks: ",ids.join(", "));
+        LightworkService.fetchLightworkData(ids,function(lightworks) {
             _.each(lightworks,function(lwdata,id) {
                 var lw = this.lightworksById[lwdata.id];
                 _.extend(lw,lwdata);
@@ -228,7 +300,7 @@ class LightworkManager extends EventEmitter {
         }.bind(this));
     }
     getUserLightworks(userId,cb) {
-        if (NetworkManager.isConnected() && this.userLightworkCacheStale(userId)) {
+        if (NetworkManager.hasInternet() && this.userLightworkCacheStale(userId)) {
             LightworkService.fetchUserLightworks(userId,function(result) {
                 if (!this.userLightworks[userId]) this.userLightworks[userId] = {lightworks: [], lastRefresh: null}
 
@@ -262,10 +334,14 @@ class LightworkManager extends EventEmitter {
         return true;
     }
     getPublicLightworks(page,cb) { //DRY this up a bit (with user lightworks)
+        //console.log("page",page);
         if (this.hasCachedPublicLightworks(page)) {
+            //console.log("before",this.publicLightworks.lightworks.join(", "));
             var lightworks = _.chunk(this.publicLightworks.lightworks,pageSize)[page].map(function(lightworkId) {
                 return this.getLightwork(lightworkId);
             }.bind(this));
+            //console.log("lw by id",_.map(this.lightworksById,"id").join(", "));
+            //console.log("afterm",_.map(lightworks,"id").join(", "));
 
             return cb(Math.ceil(this.publicLightworks.totalLightworks / pageSize),lightworks);
         }
@@ -280,6 +356,9 @@ class LightworkManager extends EventEmitter {
                 this.lightworksById[lw.id] = lw;
                 this.publicLightworks.lightworks.push(lw.id);
             }.bind(this));
+
+            this.persistLightworks();
+            this.loadMissingRepostiroyLightworks();
 
             this.getPublicLightworks(page,cb);
         }.bind(this));
