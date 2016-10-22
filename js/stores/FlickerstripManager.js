@@ -153,7 +153,7 @@ class FlickerstripManager extends EventEmitter {
     }
     onStripDiscovered(ip) {
         LEDStrip.probeStrip(ip,function(strip) {
-            //console.log("probed srip..",strip);
+            console.log("probed srip..",strip);
             if (this.strips[strip.id]) {
                 //this.emit("StripConnected",strip);
             } else {

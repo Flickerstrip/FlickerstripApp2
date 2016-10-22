@@ -31,7 +31,6 @@ class LightworkManager extends EventEmitter {
             } else if (e.type === ActionTypes.PUBLISH_LIGHTWORK) {
                 this.saveLightwork(e.lightworkId,{"published":e.state});
             } else if (e.type === ActionTypes.EDIT_LIGHTWORK) {
-                console.log("lightwork updated",e.lightworkId);
                 this.saveLightwork(e.lightworkId,e.props);
             } else if (e.type === ActionTypes.STAR_LIGHTWORK) {
                 //Implement starring.. xD should this be on the network? probably
@@ -75,7 +74,6 @@ class LightworkManager extends EventEmitter {
 
         if (SettingsManager.queuedActions) {
             this.queuedActions = SettingsManager.queuedActions;
-            console.log("queue",_.each(_.cloneDeep(this.queuedActions),(item) => item.lightwork ? delete item.lightwork["pixelData"] : null));
             this.handleQueue();
         }
 
@@ -156,6 +154,8 @@ class LightworkManager extends EventEmitter {
             lightworksById[key].pixelData = Pattern.objectToPlainArray(value.pixelData);
         });
 
+        //console.log("queue",this.queuedActions.length,_.each(_.cloneDeep(this.queuedActions),(item) => item.lightwork ? delete item.lightwork["pixelData"] : null));
+
         SettingsManager.storeLightworks(userLightworks,lightworksById,this.queuedActions,this.publicLightworks);
     }
     nextQueue() {
@@ -170,7 +170,6 @@ class LightworkManager extends EventEmitter {
         if (!SettingsManager.isUserValid() || !NetworkManager.hasInternet() || this.busy || !this.queuedActions.length) return;
 
         if (!this.taskId) {
-            console.log("Starting task",this.queuedActions.length);
             this.taskId = TaskManager.start(1,"network",{ name:"Syncing", totalSteps:this.queuedActions.length });
         }
 
@@ -181,13 +180,11 @@ class LightworkManager extends EventEmitter {
         if (nextAction.type == "save") {
             this.saveLightworkImpl(nextAction.lightworkId,nextAction.lightwork,this.nextQueue.bind(this));
         } else if (nextAction.type == "delete") {
-            console.log("deleting lightwork from server",nextAction.lightworkId);
             LightworkService.deleteLightwork(nextAction.lightworkId,this.nextQueue.bind(this));
         }
     }
     deleteLightwork(lightworkId,cb) {
         var isPersisted = typeof lightworkId != "string" || lightworkId.indexOf("tmp_") == -1;
-        console.log("delete lightwork",isPersisted);
 
         this.lightworkDeleted(lightworkId);
 
@@ -206,12 +203,6 @@ class LightworkManager extends EventEmitter {
         if (!isPersisted && cb) cb();
     }
     saveLightwork(lightworkId,lw,cb) {
-        this.queuedActions.push({
-            type:"save",
-            lightwork: lw,
-            lightworkId: lightworkId,
-            callback: cb,
-        });
         if (lightworkId == null) { //we'll put a pending lightwork in here
             var userId = SettingsManager.getUserId();
             var tempId = lw.id ? lw.id : this.createLightworkId();
@@ -221,12 +212,18 @@ class LightworkManager extends EventEmitter {
             if (lw.id) this.lightworkDeleted(lw.id,true); //delete any temporary ids that we have kicking around
             this.userLightworks[userId].lightworks.push(tempId);
             this.lightworksById[tempId] = lw;
-            this.persistLightworks();
             this.emit("UserLightworkListUpdated",userId);
         } else {
             _.extend(this.lightworksById[lightworkId],lw);
             this.emit("LightworkUpdated",lightworkId);
         }
+        this.queuedActions.push({
+            type:"save",
+            lightwork: lw,
+            lightworkId: lightworkId,
+            callback: cb,
+        });
+        this.persistLightworks();
         this.handleQueue();
 
     }
@@ -288,7 +285,6 @@ class LightworkManager extends EventEmitter {
         this.downloadLightworks(missingIds);
     }
     downloadLightworks(ids) {
-        console.log("Downloading lightworks: ",ids.join(", "));
         LightworkService.fetchLightworkData(ids,function(lightworks) {
             _.each(lightworks,function(lwdata,id) {
                 var lw = this.lightworksById[lwdata.id];

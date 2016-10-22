@@ -33,7 +33,6 @@ class NetworkManager extends EventEmitter {
             if (this.connected == connected && this.internet == up) return;
             this.connected = connected;
             this.internet = up;
-            console.log("CONNECTED: ",this.connected,this.internet);
             this.emit("ConnectionStatus",this.connected,this.internet);
         }.bind(this));
     }
@@ -54,17 +53,13 @@ class NetworkManager extends EventEmitter {
         };
 
         var t = setTimeout(function() {
-            console.log("timeout, false");
             cb(false);
         },2000);
-        console.log("sending ping");
         fetch(Configuration.LIGHTWORK_ENDPOINT,opt).then(function(res) {
             clearTimeout(t);
-            console.log("response, true");
             if (cb) cb(true);
         }).catch(function(res) {
             clearTimeout(t);
-            console.log("error, false");
             if (cb) cb(false);
         });
     }

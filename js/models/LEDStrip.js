@@ -148,7 +148,6 @@ class LEDStrip extends EventEmitter {
             cb(null,"timeout!");
         }.bind(this),2000);
 
-        console.log("requesting: ",url);
         fetch(url,opt)
             .catch(function(err) {
                 if (timeoutTriggered) return;
