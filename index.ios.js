@@ -32,6 +32,7 @@ import EditorManager from "~/stores/EditorManager.js";
 import layoutStyles from "~/styles/layoutStyles";
 import BulkActions from "~/actions/BulkActions.js";
 import EditorActions from "~/actions/EditorActions.js";
+import UpdateManager from "~/stores/UpdateManager.js";
 
 var Tabs = require("react-native-tabs");
 var NavigationBar = require("react-native-navbar");

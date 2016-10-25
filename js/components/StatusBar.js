@@ -44,7 +44,8 @@ class StatusBar extends React.Component {
     }
     render() {
         var task = TaskManager.getActiveTask();
-        var activeTaskText = task == null ? "" : task.name + (task.text ? " ["+task.text+"]" : "") + (task.currentStep ? " "+task.currentStep+"/"+task.totalSteps : "");
+        var activeTaskText = "";
+        if (task != null) activeTaskText = task.name + (task.text ? " ["+task.text+"]" : "") + (task.currentStep ? " "+task.currentStep+"/"+task.totalSteps : "");
         var fill = task == null ? 0 : task.progress / 100.0;
         if (!task && !NetworkManager.hasInternet()) {
             task = true;

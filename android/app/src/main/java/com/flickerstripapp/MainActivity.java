@@ -1,6 +1,7 @@
 package com.flickerstripapp;
 
 import com.facebook.react.ReactActivity;
+import com.rnfs.RNFSPackage;
 import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.tradle.react.UdpSocketsModule;

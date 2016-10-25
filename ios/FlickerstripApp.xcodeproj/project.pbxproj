@@ -35,6 +35,7 @@
 		B9E8F9E61DB80A940063619F /* logo_transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = B9E8F9E51DB80A940063619F /* logo_transparent.png */; };
 		BC966DA2A60A4283B6F32A63 /* libUdpSockets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F677F88658414F8D0F8429 /* libUdpSockets.a */; };
 		DF16E86AEE4A48C7AF581130 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B17BE8D6FC3B4B4DA6063E22 /* Ionicons.ttf */; };
+		ECAA92AED98647D7800C9C4E /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F7FA8A2F28C54374BE63EB64 /* libRNFS.a */; };
 		F5D8B2F896034FEBBFD99362 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F2EAF33154743C69BC8D245 /* libRNVectorIcons.a */; };
 		FBDFE50994044AFEB1E1F5EC /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 24AE765AF9E14651B7BFA8C7 /* MaterialIcons.ttf */; };
 /* End PBXBuildFile section */
@@ -117,6 +118,13 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
+		B9B9E0261DBFEB1500A81AEF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0C62A17EB0844C1ABFFC6C9B /* RNFS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
+			remoteInfo = RNFS;
+		};
 		B9E910331DAEB210000245D2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 30DAA7641FB04902ACF0BD49 /* RNVectorIcons.xcodeproj */;
@@ -151,6 +159,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* FlickerstripAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlickerstripAppTests.m; sourceTree = "<group>"; };
 		06AD183023814421976B8380 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		0C62A17EB0844C1ABFFC6C9B /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* FlickerstripApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickerstripApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -180,6 +189,7 @@
 		E26DBE08C8B742A0BE9DAA0B /* React-Native-Webview-Bridge.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = "React-Native-Webview-Bridge.xcodeproj"; path = "../node_modules/react-native-webview-bridge/ios/React-Native-Webview-Bridge.xcodeproj"; sourceTree = "<group>"; };
 		EF962DD7444F44DCA3D29319 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		F2AD2FDD03A0436D970F09FD /* libReact-Native-Webview-Bridge.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libReact-Native-Webview-Bridge.a"; sourceTree = "<group>"; };
+		F7FA8A2F28C54374BE63EB64 /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,6 +218,7 @@
 				BC966DA2A60A4283B6F32A63 /* libUdpSockets.a in Frameworks */,
 				F5D8B2F896034FEBBFD99362 /* libRNVectorIcons.a in Frameworks */,
 				A75A58114DBB4152B7E5ADA2 /* libReact-Native-Webview-Bridge.a in Frameworks */,
+				ECAA92AED98647D7800C9C4E /* libRNFS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,6 +348,7 @@
 				34D3283D9A3844ED9F125DC8 /* UdpSockets.xcodeproj */,
 				30DAA7641FB04902ACF0BD49 /* RNVectorIcons.xcodeproj */,
 				E26DBE08C8B742A0BE9DAA0B /* React-Native-Webview-Bridge.xcodeproj */,
+				0C62A17EB0844C1ABFFC6C9B /* RNFS.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -367,6 +379,14 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* FlickerstripApp.app */,
 				00E356EE1AD99517003FC87E /* FlickerstripAppTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B9B9E0181DBFEB1400A81AEF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B9B9E0271DBFEB1500A81AEF /* libRNFS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -525,6 +545,10 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
+					ProductGroup = B9B9E0181DBFEB1400A81AEF /* Products */;
+					ProjectRef = 0C62A17EB0844C1ABFFC6C9B /* RNFS.xcodeproj */;
+				},
+				{
 					ProductGroup = B9E910261DAEB210000245D2 /* Products */;
 					ProjectRef = 30DAA7641FB04902ACF0BD49 /* RNVectorIcons.xcodeproj */;
 				},
@@ -610,6 +634,13 @@
 			fileType = archive.ar;
 			path = libRCTText.a;
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B9B9E0271DBFEB1500A81AEF /* libRNFS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFS.a;
+			remoteRef = B9B9E0261DBFEB1500A81AEF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		B9E910341DAEB210000245D2 /* libRNVectorIcons.a */ = {
@@ -739,6 +770,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -756,6 +788,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -779,6 +812,7 @@
 					"$(SRCROOT)/../node_modules/react-native-udp/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
 				);
 				INFOPLIST_FILE = FlickerstripApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -804,6 +838,7 @@
 					"$(SRCROOT)/../node_modules/react-native-udp/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
 				);
 				INFOPLIST_FILE = FlickerstripApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -864,6 +899,7 @@
 					"$(SRCROOT)/../node_modules/react-native-udp/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -912,6 +948,7 @@
 					"$(SRCROOT)/../node_modules/react-native-udp/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

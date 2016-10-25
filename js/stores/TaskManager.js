@@ -44,7 +44,7 @@ class TaskManager extends EventEmitter {
         var task = this.taskList[id];
         if (step === true) step = task.currentStep+1;
 
-        if (autocomplete && task.totalSteps >= step) {
+        if (autocomplete && step >= task.totalSteps) {
             this.complete(id);
             return true;
         }

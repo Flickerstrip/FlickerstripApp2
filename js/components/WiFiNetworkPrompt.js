@@ -18,6 +18,7 @@ import renderIf from "~/utils/renderIf"
 import layoutStyles from "~/styles/layoutStyles"
 import FlickerstripManager from "~/stores/FlickerstripManager.js";
 import SettingsManager from "~/stores/SettingsManager.js";
+import SettingsActions from "~/actions/SettingsActions.js";
 import EIcon from "react-native-vector-icons/EvilIcons";
 import NIcon from "react-native-vector-icons/Entypo";
 import SettingsList from "react-native-settings-list";
@@ -37,23 +38,20 @@ class WiFiNetworkPrompt extends React.Component {
         }
     }
     configureButtonClicked() {
-        console.log("configure with new");
         FlickerstripManager.configureAll(this.state.ssid,this.state.password);
         this.props.navigator.pop();
 
-        AlertIOS.prompt(
+        AlertIOS.alert(
             "Save WiFi credentials?",
             null,
             [
                 {text: "Cancel"},
                 {text: "Save", onPress: () => SettingsActions.saveWifi(this.state.ssid,this.state.password) },
-            ],
-            "plain-text",
+            ]
         );
         if (this.props.onDismiss) this.props.onDismiss();
     }
     configureWithSavedClicked() {
-        console.log("configure with saved clicked");
         FlickerstripManager.configureAll(SettingsManager.getWiFi().ssid,SettingsManager.getWiFi().password);
         this.props.navigator.pop();
         if (this.props.onDismiss) this.props.onDismiss();

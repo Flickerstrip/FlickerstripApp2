@@ -17,6 +17,7 @@
     "react-native": "^0.33.0",
     "react-native-button": "^1.7.1",
     "react-native-checkbox": "^1.0.15",
+    "react-native-fs": "^2.0.1-rc.2",
     "react-native-navbar": "^1.5.0",
     "react-native-settings-list": "git+https://github.com/Flickerstrip/react-native-settings-list.git",
     "react-native-swipeout": "git+https://github.com/nasal/react-native-swipeout.git",
