@@ -10,6 +10,7 @@ export default keyMirror({
     CONFIGURE: null,
     DOWNLOAD_LIGHTWORK: null,
     FORGET_NETWORK: null,
+    UPDATE_FIRMWARE: null,
 
     SELECT_LIGHTWORK: null,
     DESELECT_LIGHTWORK: null,

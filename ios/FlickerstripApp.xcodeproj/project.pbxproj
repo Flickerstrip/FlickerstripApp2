@@ -821,7 +821,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hohmbody.Flickerstrip;
+				PRODUCT_BUNDLE_IDENTIFIER = com.HOhmBody.Flickerstrip;
 				PRODUCT_NAME = FlickerstripApp;
 			};
 			name = Debug;
@@ -847,7 +847,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hohmbody.Flickerstrip;
+				PRODUCT_BUNDLE_IDENTIFIER = com.HOhmBody.Flickerstrip;
 				PRODUCT_NAME = FlickerstripApp;
 			};
 			name = Release;

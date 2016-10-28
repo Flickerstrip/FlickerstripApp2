@@ -15,6 +15,8 @@ class DummyApp extends React.Component { render() { return (<Text>Foo</Text>) } 
 AppRegistry.registerComponent("FlickerstripApp", () => DummyApp);
 */
 
+import TabNavigator from 'react-native-tab-navigator';
+
 import EIcon from "react-native-vector-icons/EvilIcons";
 import NIcon from "react-native-vector-icons/Entypo";
 import FIcon from "react-native-vector-icons/FontAwesome";
@@ -32,7 +34,6 @@ import EditorManager from "~/stores/EditorManager.js";
 import layoutStyles from "~/styles/layoutStyles";
 import BulkActions from "~/actions/BulkActions.js";
 import EditorActions from "~/actions/EditorActions.js";
-import UpdateManager from "~/stores/UpdateManager.js";
 
 var Tabs = require("react-native-tabs");
 var NavigationBar = require("react-native-navbar");

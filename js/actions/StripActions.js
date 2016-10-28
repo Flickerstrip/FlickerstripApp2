@@ -80,4 +80,10 @@ export default {
             stripId: stripId,
         });
     },
+    updateFirmware:function(stripId) {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.UPDATE_FIRMWARE,
+            stripId: stripId,
+        });
+    },
 };

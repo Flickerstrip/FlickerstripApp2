@@ -7,6 +7,7 @@ import LEDStrip from "~/models/LEDStrip.js";
 import FlickerstripDispatcher from "~/dispatcher/FlickerstripDispatcher.js";
 import LightworkManager from "~/stores/LightworkManager";
 import SettingsManager from "~/stores/SettingsManager";
+import UpdateManager from "~/stores/UpdateManager";
 
 class FlickerstripManager extends EventEmitter {
     constructor(props) {
@@ -72,6 +73,9 @@ class FlickerstripManager extends EventEmitter {
             } else if (e.type === ActionTypes.FORGET_NETWORK) {
                 var strip = this.getStrip(e.stripId);
                 strip.disconnectStrip();
+            } else if (e.type === ActionTypes.UPDATE_FIRMWARE) {
+                var strip = this.getStrip(e.stripId);
+                strip.uploadFirmware(UpdateManager.getLatestVersion());
             }
         }.bind(this));
 

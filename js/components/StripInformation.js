@@ -18,6 +18,8 @@ import SettingsActions from "~/actions/SettingsActions";
 import SettingsList from "react-native-settings-list";
 import Button from "react-native-button"
 import skinStyles from "~/styles/skinStyles";
+import UpdateManager from "~/stores/UpdateManager.js";
+import renderIf from "~/utils/renderIf"
 
 class StripInformation extends React.Component {
     constructor(props) {
@@ -69,6 +71,15 @@ class StripInformation extends React.Component {
                         hasNavArrow={false}
                     />
                 </SettingsList>
+                
+                {renderIf(UpdateManager.compareLatestVersion(this.props.strip.firmware))(
+                    <Button
+                        style={skinStyles.button}
+                        onPress={() => StripActions.updateFirmware(this.props.strip.id)}
+                    >
+                        Firmware update to {UpdateManager.getLatestVersion()}
+                    </Button>
+                )}
                 <Button
                     style={skinStyles.button}
                     onPress={() => StripActions.forgetNetwork(this.props.strip.id)}

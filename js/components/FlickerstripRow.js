@@ -17,6 +17,9 @@ import EIcon from "react-native-vector-icons/EvilIcons";
 import FlickerstripManager from "~/stores/FlickerstripManager.js";
 import skinStyles from "~/styles/skinStyles";
 import Checkbox from "~/components/Checkbox";
+import UpdateManager from "~/stores/UpdateManager.js";
+import FIcon from "react-native-vector-icons/FontAwesome";
+import renderIf from "~/utils/renderIf"
 
 class FlickerstripRow extends React.Component {
     constructor(props) {
@@ -24,21 +27,25 @@ class FlickerstripRow extends React.Component {
         this.state = {key: null};
 
         this.handleFlickerstripUpdate = this.handleFlickerstripUpdate.bind(this);
+        this.refresh = this.refresh.bind(this);
     }
     handleFlickerstripUpdate(id) {
         if (id == this.props.strip.id) this.refresh();
     }
     componentWillMount() {
         FlickerstripManager.on("StripUpdated",this.handleFlickerstripUpdate);
+        UpdateManager.on("LatestReleaseUpdated",this.refresh);
     }
     componentWillUnmount() {
         FlickerstripManager.removeListener("StripUpdated",this.handleFlickerstripUpdate);
+        UpdateManager.removeListener("LatestReleaseUpdated",this.refresh);
     }
     refresh() {
         this.setState({key:Math.random()});
     }
     render() {
         var TouchableElement = Platform.OS === "android" ? TouchableNativeFeedback : TouchableHighlight;
+        console.log("update manager",this.props.strip.firmware,UpdateManager.getLatestVersion(),UpdateManager.compareLatestVersion(this.props.strip.firmware));
         return (
             <View key={this.state.key}>
                 <View style={[styles.row,styles.flexRow, this.props.strip.selected ? skinStyles.rowSelected : skinStyles.rowDeselected]}>
@@ -58,6 +65,13 @@ class FlickerstripRow extends React.Component {
                                     {this.props.strip.name == "" ? "Unknown Strip" : this.props.strip.name}
                                 </Text>
                             </View>
+                            {renderIf(UpdateManager.compareLatestVersion(this.props.strip.firmware) == -1)(
+                                <FIcon
+                                    name="cloud-download"
+                                    size={25}
+                                    color="rgba(0,150,255,1)"
+                                />
+                            )}
                         </View>
                     </TouchableElement>
                     <Switch

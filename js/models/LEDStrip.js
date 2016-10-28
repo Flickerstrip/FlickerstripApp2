@@ -6,6 +6,9 @@ var Pattern = require("~/models/Pattern.js");
 var b64 = require("base64-js");
 
 import { NativeModules } from "react-native";
+
+var RNFS = require('react-native-fs');
+
 var PatternLoader = NativeModules.PatternLoader;
 
 var visibleTimeout = 9000;
@@ -52,17 +55,28 @@ class LEDStrip extends EventEmitter {
             this.disconnectClient();
         }
     }
-    /*
-    uploadFirmware(path) {
+    uploadFirmware(version) {
         clearInterval(this._timer); this._timer = null;
-        fs.readFile(path,_.bind(function(err,data) {
-            var hexSize = data.length
-            console.log("Uploading Firmware: ",path,hexSize);
-            request.put({uri:"http://"+this.ip+"/update",body:data}).on("end",_.bind(function(error, response, body) {
-                console.log("upload complete!");
-            },this));
-        },this));
-    }*/
+        RNFS.uploadFiles({
+            toUrl: "http://"+this.ip+"/update",
+            files: [{
+                filepath: RNFS.DocumentDirectoryPath + "/firmware/"+version+".bin",
+                filetype: "application/octet-stream",
+            }],
+            method: "POST",
+        }).promise.then((response) => {
+            if (response.statusCode == 200) {
+                console.log("UPLOAD SUCCESS!"); // response.statusCode, response.headers, response.body
+            } else {
+                console.log("SERVER ERROR");
+            }
+        }).catch((err) => {
+            if(err.description === "cancelled") {
+                // cancelled by user
+            }
+            console.log(err);
+        });
+    }
     disconnectClient() {
         console.log("Client disconnected: "+this.ip);
         this.ip = null;

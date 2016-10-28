@@ -21,6 +21,7 @@
     "react-native-navbar": "^1.5.0",
     "react-native-settings-list": "git+https://github.com/Flickerstrip/react-native-settings-list.git",
     "react-native-swipeout": "git+https://github.com/nasal/react-native-swipeout.git",
+    "react-native-tab-navigator": "^0.3.3",
     "react-native-tabs": "^1.0.9",
     "react-native-udp": "^1.2.6",
     "react-native-vector-icons": "^2.1.0",
