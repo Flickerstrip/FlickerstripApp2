@@ -15,6 +15,7 @@ AppRegistry.registerComponent("FlickerstripApp", () => DummyApp);
 
 import TabNavigator from 'react-native-tab-navigator';
 import Prompt from 'react-native-prompt';
+import ActionSheet from '@exponent/react-native-action-sheet';
 
 import EIcon from "react-native-vector-icons/EvilIcons";
 import NIcon from "react-native-vector-icons/Entypo";
@@ -33,6 +34,7 @@ import EditorManager from "~/stores/EditorManager.js";
 import layoutStyles from "~/styles/layoutStyles";
 import BulkActions from "~/actions/BulkActions.js";
 import EditorActions from "~/actions/EditorActions.js";
+import ComponentManager from "~/stores/ComponentManager.js";
 
 var flattenStyle = require('flattenStyle')
 
@@ -102,6 +104,7 @@ class FlickerstripApp extends React.Component {
         var tabBarIconSize = 20;
 
         return (
+            <ActionSheet ref={component => ComponentManager.actionSheet = component}>
             <TabNavigator tabBar={styles.tabBar}>
                 <TabNavigator.Item
                     title="Strips"
@@ -265,6 +268,7 @@ class FlickerstripApp extends React.Component {
                     </View>
                 </TabNavigator.Item>
             </TabNavigator>
+            </ActionSheet>
         );
     }
 }

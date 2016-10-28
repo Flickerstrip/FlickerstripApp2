@@ -5,7 +5,6 @@ import {
     Text,
     View,
     ListView,
-    SegmentedControlIOS,
 } from "react-native";
 
 var _ = require("lodash");
