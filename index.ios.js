@@ -4,7 +4,6 @@ import {
     StyleSheet,
     Text,
     View,
-    TabBarIOS,
     NavigatorIOS,
     AlertIOS,
 } from "react-native";
@@ -34,6 +33,8 @@ import EditorManager from "~/stores/EditorManager.js";
 import layoutStyles from "~/styles/layoutStyles";
 import BulkActions from "~/actions/BulkActions.js";
 import EditorActions from "~/actions/EditorActions.js";
+
+var flattenStyle = require('flattenStyle')
 
 var Tabs = require("react-native-tabs");
 var NavigationBar = require("react-native-navbar");
@@ -97,12 +98,17 @@ class FlickerstripApp extends React.Component {
         if (!this.state.lightworkMenuIcon) return false;
         if (!this.state.stripMenuIcon) return false;
 
+        var tabBarIconSize = 20;
+
         return (
-            <TabBarIOS unselectedTintColor="#666666" tintColor="blue" barTintColor="#efefef">
-                <NIcon.TabBarItemIOS
+            <TabNavigator tabBar={styles.tabBar}>
+                <TabNavigator.Item
                     title="Strips"
-                    iconName="signal"
-                    badge={this.state.selectedStrips || null}
+                    titleStyle={styles.tabTitle}
+                    selectedTitleStyle={styles.tabTitleSelected}
+                    renderIcon={() => <NIcon name="signal" color={flattenStyle(styles.tabTitle).color} size={tabBarIconSize} />}
+                    renderSelectedIcon={() => <NIcon name="signal" color={flattenStyle(styles.tabTitleSelected).color} size={tabBarIconSize} />}
+                    badgeText={this.state.selectedStrips || null}
                     selected={this.state.selectedTab === "strips"}
                     onPress={() => {
                         if (this.state.selectedTab == "strips") this._stripsNavigator.popToTop();
@@ -145,13 +151,16 @@ class FlickerstripApp extends React.Component {
                             style={layoutStyles.flexColumn}
                         />
                     </View>
-                </NIcon.TabBarItemIOS>
+                </TabNavigator.Item>
 
-                <FIcon.TabBarItemIOS
+                <TabNavigator.Item
                     title="Lightworks"
-                    iconName="cube"
+                    titleStyle={styles.tabTitle}
+                    selectedTitleStyle={styles.tabTitleSelected}
+                    renderIcon={() => <FIcon name="cube" color={flattenStyle(styles.tabTitle).color} size={tabBarIconSize} />}
+                    renderSelectedIcon={() => <FIcon name="cube" color={flattenStyle(styles.tabTitleSelected).color} size={tabBarIconSize} />}
                     selected={this.state.selectedTab === "lightworks"}
-                    badge={LightworkManager.getSelectedCount() || null}
+                    badgeText={LightworkManager.getSelectedCount() || null}
                     onPress={() => {
                         this.setState({
                             selectedTab: "lightworks",
@@ -174,10 +183,13 @@ class FlickerstripApp extends React.Component {
                             style={layoutStyles.flexColumn}
                         />
                     </View>
-                </FIcon.TabBarItemIOS>
-                <FIcon.TabBarItemIOS
+                </TabNavigator.Item>
+                <TabNavigator.Item
                     title="Editor"
-                    iconName="pencil"
+                    titleStyle={styles.tabTitle}
+                    selectedTitleStyle={styles.tabTitleSelected}
+                    renderIcon={() => <FIcon name="pencil" color={flattenStyle(styles.tabTitle).color} size={tabBarIconSize} />}
+                    renderSelectedIcon={() => <FIcon name="pencil" color={flattenStyle(styles.tabTitleSelected).color} size={tabBarIconSize} />}
                     selected={this.state.selectedTab === "editor"}
                     onPress={() => {
                     this.setState({
@@ -219,11 +231,14 @@ class FlickerstripApp extends React.Component {
                             style={layoutStyles.flexColumn}
                         />
                     </View>
-                </FIcon.TabBarItemIOS>
+                </TabNavigator.Item>
 
-                <FIcon.TabBarItemIOS
+                <TabNavigator.Item
                     title="Settings"
-                    iconName="cogs"
+                    titleStyle={styles.tabTitle}
+                    selectedTitleStyle={styles.tabTitleSelected}
+                    renderIcon={() => <FIcon name="cogs" color={flattenStyle(styles.tabTitle).color} size={tabBarIconSize} />}
+                    renderSelectedIcon={() => <FIcon name="cogs" color={flattenStyle(styles.tabTitleSelected).color} size={tabBarIconSize} />}
                     selected={this.state.selectedTab === "settings"}
                     onPress={() => {
                     this.setState({
@@ -240,13 +255,22 @@ class FlickerstripApp extends React.Component {
                             style={layoutStyles.flexColumn}
                         />
                     </View>
-                </FIcon.TabBarItemIOS>
-            </TabBarIOS>
+                </TabNavigator.Item>
+            </TabNavigator>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    tabBar: {
+        backgroundColor:"#eee",
+    },
+    tabTitle: {
+        color: "#666666",
+    },
+    tabTitleSelected: {
+        color: "#00f",
+    }
 });
 
 AppRegistry.registerComponent("FlickerstripApp", () => FlickerstripApp);
