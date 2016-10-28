@@ -76,7 +76,7 @@ class FlickerstripRow extends React.Component {
                     </TouchableElement>
                     <Switch
                         onValueChange={() => { this.props.onToggle(this.props.strip) }}
-                        style={styles.flex0}
+                        style={[styles.flex0]}
                         value={this.props.strip.power == 1} />
                 </View>
             </View>

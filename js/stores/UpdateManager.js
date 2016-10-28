@@ -20,7 +20,6 @@ class UpdateManager extends EventEmitter {
 
         this.latestRelease = null;
         this.prepareFirmwareFolder().then(function() {
-            console.log("preparing firmware folder complete, checking updates");
             this.checkForUpdates();
         }.bind(this));
 

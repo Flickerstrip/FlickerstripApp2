@@ -41,7 +41,7 @@ class StripInformation extends React.Component {
     }
     render() {
         var memory = this.props.strip.memory;
-        var memoryString = memory.used + " / " + memory.total + " blocks used (" + memory.free +" available)";
+        var memoryString = memory.used + " / " + memory.total + " (" + memory.free +" free)";
         return (
             <View style={layoutStyles.flexColumn}>
                 <SettingsList key={this.state.key}>

@@ -5,12 +5,14 @@ import {
     Text,
     View,
     ListView,
-    AlertIOS,
     Slider,
+    Platform,
+    AlertIOS,
 } from "react-native";
 
 var _ = require("lodash");
 
+import Prompt from 'react-native-prompt';
 import layoutStyles from "~/styles/layoutStyles";
 import LightworkRow from "~/components/LightworkRow";
 import StripActions from "~/actions/StripActions";
@@ -30,6 +32,11 @@ class StripDetails extends React.Component {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2,
             }).cloneWithRows(_.values(this.props.strip.patterns)),
+            promptName:"",
+            promptPlaceholder:"",
+            promptValue:"",
+            showPrompt:false,
+            promptCallback:(value) => {},
         };
 
         this.stripRemovedHandler = this.stripRemovedHandler.bind(this);
@@ -118,13 +125,13 @@ class StripDetails extends React.Component {
                         titleInfo={stripName}
                         hasNavArrow={false}
                         onPress={() => {
-                            AlertIOS.prompt(
-                                "Rename strip",
-                                null,
-                                value => StripActions.configure(this.props.strip.id,{name:value}),
-                                "plain-text",
-                                this.props.strip.name
-                            );
+                            this.setState({
+                                promptName:"Rename strip",
+                                promptPlaceholder:"Strip name",
+                                promptValue:this.props.strip.name,
+                                showPrompt:true,
+                                promptCallback:(value) => StripActions.configure(this.props.strip.id,{name:value}),
+                            });
                         }}
                     />
                     <SettingsList.Item
@@ -132,13 +139,13 @@ class StripDetails extends React.Component {
                         titleInfo={this.props.strip.group.length ? this.props.strip.group : "None"}
                         hasNavArrow={false}
                         onPress={() => {
-                            AlertIOS.prompt(
-                                "Set group",
-                                null,
-                                value => StripActions.configure(this.props.strip.id,{group:value}),
-                                "plain-text",
-                                this.props.strip.group
-                            );
+                            this.setState({
+                                promptName:"Set group",
+                                promptPlaceholder:"Group name",
+                                promptValue:this.props.strip.group,
+                                showPrompt:true,
+                                promptCallback:(value) => StripActions.configure(this.props.strip.id,{group:value}),
+                            });
                         }}
                     />
                     <SettingsList.Item
@@ -161,17 +168,27 @@ class StripDetails extends React.Component {
                         titleInfo={""+(this.props.strip.cycle == 0 ? "Disabled" : this.props.strip.cycle)}
                         hasNavArrow={false}
                         onPress={() => {
-                            AlertIOS.prompt(
-                                "Cycle Frequency",
-                                "Automatically cycles through patterns (seconds)",
-                                [
-                                    {text: "Disable", onPress: () => StripActions.configure(this.props.strip.id,{cycle:0})},
-                                    {text: "Cancel"},
-                                    {text: "Save", onPress: (value) => StripActions.configure(this.props.strip.id,{cycle:value})},
-                                ],
-                                "plain-text",
-                                ""+(this.props.strip.cycle == 0 ? "" : this.props.strip.cycle)
-                            );
+                            if (Platform.OS === 'ios') {
+                                AlertIOS.prompt(
+                                    "Cycle Frequency",
+                                    "Automatically cycles through patterns (seconds)",
+                                    [
+                                        {text: "Disable", onPress: () => StripActions.configure(this.props.strip.id,{cycle:0})},
+                                        {text: "Cancel"},
+                                        {text: "Save", onPress: (value) => StripActions.configure(this.props.strip.id,{cycle:value})},
+                                    ],
+                                    "plain-text",
+                                    ""+(this.props.strip.cycle == 0 ? "" : this.props.strip.cycle)
+                                );
+                            } else {
+                                this.setState({
+                                    promptName:"Cycle Frequency (seconds)",
+                                    promptPlaceholder:"seconds",
+                                    promptValue:""+(this.props.strip.cycle == 0 ? "" : this.props.strip.cycle),
+                                    showPrompt:true,
+                                    promptCallback:(value) => StripActions.configure(this.props.strip.id,{cycle:parseInt(value)}),
+                                });
+                            }
                         }}
                     />
                     <SettingsList.Item
@@ -179,20 +196,41 @@ class StripDetails extends React.Component {
                         titleInfo={""+(this.props.strip.fade == 0 ? "Disabled" : this.props.strip.fade)}
                         hasNavArrow={false}
                         onPress={() => {
-                            AlertIOS.prompt(
-                                "Transition duration",
-                                "Crossfades pattern transitions (milliseconds)",
-                                [
-                                    {text: "Disable", onPress: () => StripActions.configure(this.props.strip.id,{fade:0})},
-                                    {text: "Cancel"},
-                                    {text: "Save", onPress: (value) => StripActions.configure(this.props.strip.id,{fade:value})},
-                                ],
-                                "plain-text",
-                                ""+(this.props.strip.fade == 0 ? "" : this.props.strip.fade)
-                            );
+                            if (Platform.OS === 'ios') {
+                                AlertIOS.prompt(
+                                    "Transition duration",
+                                    "Crossfades pattern transitions (milliseconds)",
+                                    [
+                                        {text: "Disable", onPress: () => StripActions.configure(this.props.strip.id,{fade:0})},
+                                        {text: "Cancel"},
+                                        {text: "Save", onPress: (value) => StripActions.configure(this.props.strip.id,{fade:value})},
+                                    ],
+                                    "plain-text",
+                                    ""+(this.props.strip.fade == 0 ? "" : this.props.strip.fade)
+                                );
+                            } else {
+                                this.setState({
+                                    promptName:"Transition duration (millis)",
+                                    promptPlaceholder:"millis",
+                                    promptValue:""+(this.props.strip.fade == 0 ? "" : this.props.strip.fade),
+                                    showPrompt:true,
+                                    promptCallback:(value) => StripActions.configure(this.props.strip.id,{fade:parseInt(value)}),
+                                });
+                            }
                         }}
                     />
                 </SettingsList>
+                <Prompt
+                    title={this.state.promptName}
+                    placeholder={this.state.promptPlaceholder}
+                    defaultValue={this.state.promptValue}
+                    visible={ this.state.showPrompt }
+                    onCancel={ () => this.setState({showPrompt:false}) }
+                    onSubmit={(value) => {
+                        this.setState({showPrompt: false});
+                        this.state.promptCallback(value);
+                    }}
+                />
                 <Text style={{flex: 0}}>Lightworks</Text>
             </View>
         )

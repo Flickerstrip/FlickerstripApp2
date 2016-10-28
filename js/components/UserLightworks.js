@@ -6,11 +6,11 @@ import {
     View,
     ListView,
     SegmentedControlIOS,
-    AlertIOS
 } from "react-native";
 
 var _ = require("lodash");
 
+import Prompt from 'react-native-prompt';
 import LightworkRow from "~/components/LightworkRow.js";
 import LightworkEditor from "~/components/LightworkEditor.js";
 import EditorActions from "~/actions/EditorActions.js";
@@ -31,6 +31,11 @@ class UserLightworks extends React.Component {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2,
             }).cloneWithRows([]),
+            promptName:"",
+            promptPlaceholder:"",
+            promptValue:"",
+            showPrompt:false,
+            promptCallback:(value) => {},
         };
 
         this.refreshUserLightworks = this.refreshUserLightworks.bind(this);
@@ -58,24 +63,24 @@ class UserLightworks extends React.Component {
                 onSelectToggle= {() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
                 onLongPress   = {() => MenuButton.showMenu([
                     {"label":"Duplicate Lightwork", onPress:() => { 
-                        AlertIOS.prompt(
-                            "Duplicate Lightwork",
-                            null,
-                            value => LightworkActions.duplicateLightwork(lightwork.id,value),
-                            "plain-text",
-                            lightwork.name+" Copy"
-                        );
+                        this.setState({
+                            promptName:"Duplicate Lightwork",
+                            promptPlaceholder:"Lightwork name",
+                            promptValue:lightwork.name+" Copy",
+                            showPrompt:true,
+                            promptCallback:(value) => LightworkActions.duplicateLightwork(lightwork.id,value),
+                        });
                     }},
                     {"label":"Star Lightwork", onPress:() => { LightworkActions.starLightwork(lightwork.id,!lightwork.starred) }},
                     {"label":(lightwork.published ? "Unpublish" : "Publish") + " Lightwork", onPress:() => { LightworkActions.publishLightwork(lightwork.id,!lightwork.published) }},
                     {"label":"Rename Lightwork", onPress:() => { 
-                        AlertIOS.prompt(
-                            "Rename Lightwork",
-                            null,
-                            value => LightworkActions.editLightwork(lightwork.id,{name:value}),
-                            "plain-text",
-                            lightwork.name
-                        );
+                        this.setState({
+                            promptName:"Rename Lightwork",
+                            promptPlaceholder:"Lightwork name",
+                            promptValue:lightwork.name,
+                            showPrompt:true,
+                            promptCallback:(value) => LightworkActions.editLightwork(lightwork.id,{name:value}),
+                        });
                     }},
                     {"label":"Delete Lightwork", destructive:true, onPress:() => { LightworkActions.deleteLightwork(lightwork.id) }},
                     {"label":"Cancel", cancel:true},
@@ -101,7 +106,22 @@ class UserLightworks extends React.Component {
         }.bind(this),0)
     }
     renderHeader() {
-        return SettingsManager.isUserValid() ? null : (<Text>Note: You are not logged in, Lightworks are stored locally, log in to preserve them!</Text>);
+        return (
+            <View>
+                {SettingsManager.isUserValid() ? null : (<Text>Note: You are not logged in, Lightworks are stored locally, log in to preserve them!</Text>)}
+                <Prompt
+                    title={this.state.promptName}
+                    placeholder={this.state.promptPlaceholder}
+                    defaultValue={this.state.promptValue}
+                    visible={ this.state.showPrompt }
+                    onCancel={ () => this.setState({showPrompt:false}) }
+                    onSubmit={(value) => {
+                        this.setState({showPrompt: false});
+                        this.state.promptCallback(value);
+                    }}
+                />
+            </View>
+        )
     }
     render() {
         return this.state.dataSource.getRowCount() == 0 ? (

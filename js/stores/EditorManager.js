@@ -46,10 +46,18 @@ class EditorManager extends EventEmitter {
         return this.lightworks[index];
     }
     lightworkEdited(lightworkId,lw) {
+        console.log("lw edited");
+        var parametersChanged = _.without(_.keys(lw),"pixelData");
+        console.log("params",parametersChanged);
+        parametersChanged = _.filter(parametersChanged,function(param) {
+            console.log("change",param,lw[param],this.lightworks[this.lightworkIndexById(lightworkId)][param],lw[param] == this.lightworks[this.lightworkIndexById(lightworkId)][param]);
+            return lw[param] != this.lightworks[this.lightworkIndexById(lightworkId)][param];
+        }.bind(this));
+        console.log("parametersChanged",parametersChanged);
+
         _.extend(this.lightworks[this.lightworkIndexById(lightworkId)],lw);
 
-        var parametersChanged = _.without(_.keys(lw),"pixelData").length;
-        if (parametersChanged > 0 && lightworkId == this.activeLightwork) {
+        if (parametersChanged.length > 0 && lightworkId == this.activeLightwork) {
             this.emit("ActiveLightworkUpdated");
         }
     }

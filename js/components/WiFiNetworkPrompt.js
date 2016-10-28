@@ -8,7 +8,7 @@ import {
     Platform,
     TouchableHighlight,
     TouchableNativeFeedback,
-    AlertIOS,
+    Alert,
 } from "react-native";
 
 var _ = require("lodash");
@@ -41,11 +41,11 @@ class WiFiNetworkPrompt extends React.Component {
         FlickerstripManager.configureAll(this.state.ssid,this.state.password);
         this.props.navigator.pop();
 
-        AlertIOS.alert(
+        Alert.alert(
             "Save WiFi credentials?",
             null,
             [
-                {text: "Cancel"},
+                {text: "Cancel", style: "cancel"},
                 {text: "Save", onPress: () => SettingsActions.saveWifi(this.state.ssid,this.state.password) },
             ]
         );

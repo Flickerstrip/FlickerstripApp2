@@ -5,7 +5,6 @@ import {
     Text,
     View,
     NavigatorIOS,
-    AlertIOS,
 } from "react-native";
 
 
@@ -15,6 +14,7 @@ AppRegistry.registerComponent("FlickerstripApp", () => DummyApp);
 */
 
 import TabNavigator from 'react-native-tab-navigator';
+import Prompt from 'react-native-prompt';
 
 import EIcon from "react-native-vector-icons/EvilIcons";
 import NIcon from "react-native-vector-icons/Entypo";
@@ -50,6 +50,7 @@ class FlickerstripApp extends React.Component {
             //selectedTab: "settings",
             activeLightwork: null,
             activeLightworkVersion: null,
+            showRenamePrompt: false,
         }
 
         this.onActiveLightworkChanged = this.onActiveLightworkChanged.bind(this);
@@ -213,13 +214,9 @@ class FlickerstripApp extends React.Component {
                                     MenuButton.showMenu([
                                         {"label":"Preview Lightwork", onPress:() => { BulkActions.previewLightworkOnSelectedStrips(EditorManager.getActiveLightwork().id) }},
                                         {"label":"Load Lightwork", onPress:() => { BulkActions.previewLightworkOnSelectedStrips(EditorManager.getActiveLightwork().id) }},
-                                        {"label":"Rename Lightwork", onPress:() => { AlertIOS.prompt(
-                                            "Rename Lightwork",
-                                            null,
-                                            value => EditorManager.lightworkEdited(EditorManager.getActiveLightwork().id,{name: value}),
-                                            "plain-text",
-                                            EditorManager.getActiveLightwork().name
-                                        )}},
+                                        {"label":"Rename Lightwork", onPress:() => {
+                                            this.setState({showRenamePrompt:true});
+                                        }},
                                         {"label":"New Lightwork", onPress:() => { EditorActions.createLightwork() } },
                                         {"label":"Close Lightwork", onPress:() => { EditorActions.closeLightwork(EditorManager.getActiveLightwork().id) }, destructive:true},
                                         {"label":"Cancel", cancel:true},
@@ -229,6 +226,17 @@ class FlickerstripApp extends React.Component {
                                 },
                             }}
                             style={layoutStyles.flexColumn}
+                        />
+                        <Prompt
+                            title="Rename Lightwork"
+                            placeholder="Lightwork name"
+                            defaultValue={EditorManager.getActiveLightwork().name}
+                            visible={ this.state.showRenamePrompt }
+                            onCancel={ () => this.setState({showRenamePrompt:false}) }
+                            onSubmit={(value) => {
+                                this.setState({showRenamePrompt: false});
+                                EditorManager.lightworkEdited(EditorManager.getActiveLightwork().id,{name: value})
+                            }}
                         />
                     </View>
                 </TabNavigator.Item>
