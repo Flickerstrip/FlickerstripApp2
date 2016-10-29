@@ -33,9 +33,6 @@ const layoutStyles = StyleSheet.create({
     flex1: {
         flex: 1,
     },
-    marginBottomForTab:{
-        marginBottom: 50
-    },
     paddingTopForNavigation:{
         paddingTop: 64
     },

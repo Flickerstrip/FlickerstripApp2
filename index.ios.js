@@ -120,7 +120,7 @@ class FlickerstripApp extends React.Component {
                             selectedTab: "strips",
                         });
                     }}>
-                    <View style={[layoutStyles.flexColumn, layoutStyles.marginBottomForTab]}>
+                    <View style={[layoutStyles.flexColumn]}>
                         <NavigatorIOS
                             ref={(c) => this._stripsNavigator = c}
                             initialRoute={{
@@ -170,7 +170,7 @@ class FlickerstripApp extends React.Component {
                             selectedTab: "lightworks",
                         });
                     }}>
-                    <View style={[layoutStyles.flexColumn,layoutStyles.marginBottomForTab]}>
+                    <View style={[layoutStyles.flexColumn]}>
                         <NavigatorIOS
                             initialRoute={{
                                 component: LightworksMain,
@@ -200,7 +200,7 @@ class FlickerstripApp extends React.Component {
                         selectedTab: "editor",
                     });
                     }}>
-                    <View style={[layoutStyles.flexColumn, layoutStyles.marginBottomForTab]}>
+                    <View style={[layoutStyles.flexColumn]}>
                         <NavigatorIOS
                             key={this.state.activeLightwork+this.state.activeLightworkVersion}
                             initialRoute={{
@@ -256,7 +256,7 @@ class FlickerstripApp extends React.Component {
                         selectedTab: "settings",
                     });
                     }}>
-                    <View style={[layoutStyles.flexColumn, layoutStyles.marginBottomForTab]}>
+                    <View style={[layoutStyles.flexColumn]}>
                         <NavigatorIOS
                             initialRoute={{
                                 component: SettingsMain,

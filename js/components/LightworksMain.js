@@ -5,14 +5,14 @@ import {
     Text,
     View,
     ListView,
-    SegmentedControlIOS,
 } from "react-native";
 
 import renderIf from "~/utils/renderIf"
-import UserLightworks from "~/components/UserLightworks.js";
-import LightworkRepository from "~/components/LightworkRepository.js";
+import UserLightworks from "~/components/UserLightworks";
+import LightworkRepository from "~/components/LightworkRepository";
 import SettingsManager from "~/stores/SettingsManager";
-import StatusBar from "~/components/StatusBar.js";
+import StatusBar from "~/components/StatusBar";
+import SimpleSegmentedControl from "~/components/SimpleSegmentedControl";
 
 import layoutStyles from "~/styles/layoutStyles.js";
 var _ = require("lodash");
@@ -36,11 +36,11 @@ class LightworksMain extends React.Component {
     render() {
         return (
             <View style={layoutStyles.flexColumn}>
-                <SegmentedControlIOS
+                <SimpleSegmentedControl
                     key={this.state.key}
                     values={["My Lightworks","Lightwork Repository"]}
                     selectedIndex={this.state.activeTab}
-                    onChange={(event) => this.setState({activeTab:event.nativeEvent.selectedSegmentIndex})}
+                    onChange={(index) => this.setState({activeTab:index})}
                 />
                 {renderIf(this.state.activeTab == 0)(
                     <UserLightworks navigator={this.props.navigator} style={layoutStyles.flexColumn} />
