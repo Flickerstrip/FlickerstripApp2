@@ -4,9 +4,11 @@ import {
     StyleSheet,
     Text,
     View,
-    NavigatorIOS,
+    Navigator,
+    Platform,
+    TouchableHighlight,
+    TouchableNativeFeedback,
 } from "react-native";
-
 
 /*
 class DummyApp extends React.Component { render() { return (<Text>Foo</Text>) } }
@@ -32,6 +34,7 @@ import FlickerstripManager from "~/stores/FlickerstripManager.js";
 import LightworkManager from "~/stores/LightworkManager.js";
 import EditorManager from "~/stores/EditorManager.js";
 import layoutStyles from "~/styles/layoutStyles";
+import skinStyles from "~/styles/skinStyles";
 import BulkActions from "~/actions/BulkActions.js";
 import EditorActions from "~/actions/EditorActions.js";
 import ComponentManager from "~/stores/ComponentManager.js";
@@ -62,10 +65,6 @@ class FlickerstripApp extends React.Component {
         this.onActiveLightworkUpdated = this.onActiveLightworkUpdated.bind(this);
     }
     componentWillMount() {
-        FIcon.getImageSource("ellipsis-v", 20).then((source) => this.setState({ stripMenuIcon: source }));
-        FIcon.getImageSource("th-list", 20).then((source) => this.setState({ lightworkMenuIcon: source }));
-        FIcon.getImageSource("plus", 20).then((source) => this.setState({ configureStripIcon: source }));
-
         FlickerstripManager.on("StripUpdated",this.updateSelectedStripCount);
         FlickerstripManager.on("StripAdded",this.updateSelectedStripCount);
         FlickerstripManager.on("StripRemoved",this.updateSelectedStripCount);
@@ -96,22 +95,56 @@ class FlickerstripApp extends React.Component {
     updateSelectedLightworksCount() {
         this.setState({selectedLightworks: LightworkManager.getSelectedCount()});
     }
+    generateTitleButton(info,isTitle) {
+        var TouchableElement = Platform.OS === "android" ? TouchableNativeFeedback : TouchableHighlight;
+        if (!info) return null;
+
+        var content = null;
+        if (info.text) content = (<Text style={isTitle?skinStyles.navigationTitleStyle:null}>{info.text}</Text>);
+        if (info.render) content = info.render();
+
+        var containerStyles = [{padding:10,justifyContent:"center",flex:1}];
+
+        if (info.onPress) {
+            return (<TouchableElement style={containerStyles} onPress={info.onPress}>{content}</TouchableElement>);
+        } else {
+            return (<View style={containerStyles}>{content}</View>);
+        }
+    }
+    renderNavigationBar() {
+        return (
+            <Navigator.NavigationBar
+                routeMapper={{
+                    LeftButton: (route) => this.generateTitleButton(route.left),
+                    RightButton: (route) => this.generateTitleButton(route.right),
+                    Title: (route) => this.generateTitleButton(route.center,true),
+                }}
+                style={skinStyles.navigationBar}
+            />
+        );
+
+    }
+    sceneRenderer(route, navigator) {
+        return (
+            <View style={[layoutStyles.flexColumn,layoutStyles.paddingTopForNavigation,{backgroundColor:"white"}]}>
+                <route.component
+                    route={route}
+                    navigator={navigator}
+                    {...route.passProps}
+                />
+            </View>
+        );
+    }
     render() {
-        if (!this.state.configureStripIcon) return false;
-        if (!this.state.lightworkMenuIcon) return false;
-        if (!this.state.stripMenuIcon) return false;
-
-        var tabBarIconSize = 20;
-
         return (
             <ActionSheet ref={component => ComponentManager.actionSheet = component}>
-            <TabNavigator tabBar={styles.tabBar}>
+            <TabNavigator tabBarStyle={skinStyles.tabBar}>
                 <TabNavigator.Item
                     title="Strips"
-                    titleStyle={styles.tabTitle}
-                    selectedTitleStyle={styles.tabTitleSelected}
-                    renderIcon={() => <NIcon name="signal" color={flattenStyle(styles.tabTitle).color} size={tabBarIconSize} />}
-                    renderSelectedIcon={() => <NIcon name="signal" color={flattenStyle(styles.tabTitleSelected).color} size={tabBarIconSize} />}
+                    titleStyle={skinStyles.tabTitle}
+                    selectedTitleStyle={skinStyles.tabTitleSelected}
+                    renderIcon={() => <NIcon name="signal" color={flattenStyle(skinStyles.tabTitle).color} size={skinStyles.tabBarIconSize} />}
+                    renderSelectedIcon={() => <NIcon name="signal" color={flattenStyle(skinStyles.tabTitleSelected).color} size={skinStyles.tabBarIconSize} />}
                     badgeText={this.state.selectedStrips || null}
                     selected={this.state.selectedTab === "strips"}
                     onPress={() => {
@@ -120,49 +153,55 @@ class FlickerstripApp extends React.Component {
                             selectedTab: "strips",
                         });
                     }}>
-                    <View style={[layoutStyles.flexColumn]}>
-                        <NavigatorIOS
+                    <View style={[layoutStyles.flexColumn,layoutStyles.statusBarMarginTop]}>
+                        <Navigator
                             ref={(c) => this._stripsNavigator = c}
                             initialRoute={{
                                 component: StripListing,
-                                title: "Flickerstrip",
-                                wrapperStyle:layoutStyles.paddingTopForNavigation,
-                                leftButtonIcon: this.state.configureStripIcon, 
-                                onLeftButtonPress:() => {
-                                    this._stripsNavigator.push({
-                                        component: ConfigureNewStrip,
-                                        title:"Add Flickerstrip",
-                                        wrapperStyle:layoutStyles.paddingTopForNavigation,
-                                        leftButtonTitle: "Back",
-                                        onLeftButtonPress:() => {
-                                            this._stripsNavigator.pop();
-                                        }
-                                    });
+                                center: {text: "Flickerstrip" },
+                                left: {
+                                    render:() => (<FIcon size={20} name="plus" />), 
+                                    onPress:() => {
+                                        this._stripsNavigator.push({
+                                            component: ConfigureNewStrip,
+                                            center: {text:"Add Flickerstrip"},
+                                            left:{
+                                                text: "Back",
+                                                onPress:() => {
+                                                    this._stripsNavigator.pop();
+                                                }
+                                            }
+                                        });
+                                    },
                                 },
-                                rightButtonIcon: this.state.stripMenuIcon, 
-                                onRightButtonPress:() => {
-                                    MenuButton.showMenu([
-                                        (
-                                            FlickerstripManager.countWhere({"power":1}) > 0
-                                                ? {"label":"Off", onPress:() => BulkActions.selectedStripPowerToggle(false)}
-                                                : {"label":"On", onPress:() => BulkActions.selectedStripPowerToggle(true)}
-                                        ),
-                                        {"label":"Clear Patterns", destructive:true, onPress:() => { console.log("clearing patterns.."); }},
-                                        {"label":"Cancel", cancel:true},
-                                    ]);
+                                right: {
+                                    render:() => (<FIcon size={20} name="ellipsis-v" />), 
+                                    onPress:() => {
+                                        MenuButton.showMenu([
+                                            (
+                                                FlickerstripManager.countWhere({"power":1}) > 0
+                                                    ? {"label":"Off", onPress:() => BulkActions.selectedStripPowerToggle(false)}
+                                                    : {"label":"On", onPress:() => BulkActions.selectedStripPowerToggle(true)}
+                                            ),
+                                            {"label":"Clear Patterns", destructive:true, onPress:() => { console.log("clearing patterns.."); }},
+                                            {"label":"Cancel", cancel:true},
+                                        ]);
+                                    }
                                 }
                             }}
                             style={layoutStyles.flexColumn}
+                            navigationBar={this.renderNavigationBar()}
+                            renderScene={this.sceneRenderer.bind(this)}
                         />
                     </View>
                 </TabNavigator.Item>
 
                 <TabNavigator.Item
                     title="Lightworks"
-                    titleStyle={styles.tabTitle}
-                    selectedTitleStyle={styles.tabTitleSelected}
-                    renderIcon={() => <FIcon name="cube" color={flattenStyle(styles.tabTitle).color} size={tabBarIconSize} />}
-                    renderSelectedIcon={() => <FIcon name="cube" color={flattenStyle(styles.tabTitleSelected).color} size={tabBarIconSize} />}
+                    titleStyle={skinStyles.tabTitle}
+                    selectedTitleStyle={skinStyles.tabTitleSelected}
+                    renderIcon={() => <FIcon name="cube" color={flattenStyle(skinStyles.tabTitle).color} size={skinStyles.tabBarIconSize} />}
+                    renderSelectedIcon={() => <FIcon name="cube" color={flattenStyle(skinStyles.tabTitleSelected).color} size={skinStyles.tabBarIconSize} />}
                     selected={this.state.selectedTab === "lightworks"}
                     badgeText={LightworkManager.getSelectedCount() || null}
                     onPress={() => {
@@ -170,65 +209,74 @@ class FlickerstripApp extends React.Component {
                             selectedTab: "lightworks",
                         });
                     }}>
-                    <View style={[layoutStyles.flexColumn]}>
-                        <NavigatorIOS
+                    <View style={[layoutStyles.flexColumn,layoutStyles.statusBarMarginTop]}>
+                        <Navigator
+                            style={layoutStyles.flexColumn}
                             initialRoute={{
                                 component: LightworksMain,
-                                title: "Lightworks",
-                                wrapperStyle:layoutStyles.paddingTopForNavigation,
-                                rightButtonIcon: this.state.lightworkMenuIcon, 
-                                onRightButtonPress:() => { 
-                                    MenuButton.showMenu([
-                                        {"label":"Load Patterns", onPress:() => { BulkActions.loadSelectedLightworksToSelectedStrips() }},
-                                        {"label":"Cancel", cancel:true},
-                                    ]);
+                                center:{text: "Lightworks"},
+                                right:{
+                                    render:() => (<FIcon size={20} name="th-list" />), 
+                                    onPress:() => { 
+                                        MenuButton.showMenu([
+                                            {"label":"Load Patterns", onPress:() => { BulkActions.loadSelectedLightworksToSelectedStrips() }},
+                                            {"label":"Cancel", cancel:true},
+                                        ]);
+                                    }
                                 }
                             }}
-                            style={layoutStyles.flexColumn}
+                            navigationBar={this.renderNavigationBar()}
+                            renderScene={this.sceneRenderer.bind(this)}
                         />
                     </View>
                 </TabNavigator.Item>
                 <TabNavigator.Item
                     title="Editor"
-                    titleStyle={styles.tabTitle}
-                    selectedTitleStyle={styles.tabTitleSelected}
-                    renderIcon={() => <FIcon name="pencil" color={flattenStyle(styles.tabTitle).color} size={tabBarIconSize} />}
-                    renderSelectedIcon={() => <FIcon name="pencil" color={flattenStyle(styles.tabTitleSelected).color} size={tabBarIconSize} />}
+                    titleStyle={skinStyles.tabTitle}
+                    selectedTitleStyle={skinStyles.tabTitleSelected}
+                    renderIcon={() => <FIcon name="pencil" color={flattenStyle(skinStyles.tabTitle).color} size={skinStyles.tabBarIconSize} />}
+                    renderSelectedIcon={() => <FIcon name="pencil" color={flattenStyle(skinStyles.tabTitleSelected).color} size={skinStyles.tabBarIconSize} />}
                     selected={this.state.selectedTab === "editor"}
                     onPress={() => {
                     this.setState({
                         selectedTab: "editor",
                     });
                     }}>
-                    <View style={[layoutStyles.flexColumn]}>
-                        <NavigatorIOS
+                    <View style={[layoutStyles.flexColumn,layoutStyles.statusBarMarginTop]}>
+                        <Navigator
                             key={this.state.activeLightwork+this.state.activeLightworkVersion}
                             initialRoute={{
                                 component: LightworkEditor,
                                 passProps: { lightwork: EditorManager.getActiveLightwork() },
-                                title: EditorManager.getActiveLightwork() ? EditorManager.getActiveLightwork().name : "Editor",
-                                leftButtonTitle: EditorManager.getActiveLightwork() ? "Save" : undefined, 
-                                onLeftButtonPress: EditorManager.getActiveLightwork() ? () => { 
-                                    EditorActions.saveLightwork(EditorManager.getActiveLightwork().id)
-                                } : undefined,
-                                rightButtonIcon: EditorManager.getActiveLightwork() ? this.state.stripMenuIcon : undefined,
-                                rightButtonTitle: EditorManager.getActiveLightwork() ? undefined : "Create",
-                                onRightButtonPress: EditorManager.getActiveLightwork() ? () => { 
-                                    MenuButton.showMenu([
-                                        {"label":"Preview Lightwork", onPress:() => { BulkActions.previewLightworkOnSelectedStrips(EditorManager.getActiveLightwork().id) }},
-                                        {"label":"Load Lightwork", onPress:() => { BulkActions.previewLightworkOnSelectedStrips(EditorManager.getActiveLightwork().id) }},
-                                        {"label":"Rename Lightwork", onPress:() => {
-                                            this.setState({showRenamePrompt:true});
-                                        }},
-                                        {"label":"New Lightwork", onPress:() => { EditorActions.createLightwork() } },
-                                        {"label":"Close Lightwork", onPress:() => { EditorActions.closeLightwork(EditorManager.getActiveLightwork().id) }, destructive:true},
-                                        {"label":"Cancel", cancel:true},
-                                    ]);
-                                } : () => {
-                                    EditorActions.createLightwork();
+                                center:{text: EditorManager.getActiveLightwork() ? EditorManager.getActiveLightwork().name : "Editor"},
+                                left:{
+                                    text: EditorManager.getActiveLightwork() ? "Save" : undefined, 
+                                    onPress: EditorManager.getActiveLightwork() ? () => { 
+                                        EditorActions.saveLightwork(EditorManager.getActiveLightwork().id)
+                                    } : undefined,
                                 },
+                                right: EditorManager.getActiveLightwork() ? {
+                                        render:() => (<FIcon size={20} name="ellipsis-v" />),
+                                        onPress:() => MenuButton.showMenu([
+                                            {"label":"Preview Lightwork", onPress:() => { BulkActions.previewLightworkOnSelectedStrips(EditorManager.getActiveLightwork().id) }},
+                                            {"label":"Load Lightwork", onPress:() => { BulkActions.previewLightworkOnSelectedStrips(EditorManager.getActiveLightwork().id) }},
+                                            {"label":"Rename Lightwork", onPress:() => {
+                                                this.setState({showRenamePrompt:true});
+                                            }},
+                                            {"label":"New Lightwork", onPress:() => { EditorActions.createLightwork() } },
+                                            {"label":"Close Lightwork", onPress:() => { EditorActions.closeLightwork(EditorManager.getActiveLightwork().id) }, destructive:true},
+                                            {"label":"Cancel", cancel:true},
+                                        ]),
+                                    } : {
+                                        text: "Create",
+                                        onPress:() => {
+                                            EditorActions.createLightwork();
+                                        },
+                                    }
                             }}
                             style={layoutStyles.flexColumn}
+                            navigationBar={this.renderNavigationBar()}
+                            renderScene={this.sceneRenderer.bind(this)}
                         />
                         <Prompt
                             title="Rename Lightwork"
@@ -246,24 +294,25 @@ class FlickerstripApp extends React.Component {
 
                 <TabNavigator.Item
                     title="Settings"
-                    titleStyle={styles.tabTitle}
-                    selectedTitleStyle={styles.tabTitleSelected}
-                    renderIcon={() => <FIcon name="cogs" color={flattenStyle(styles.tabTitle).color} size={tabBarIconSize} />}
-                    renderSelectedIcon={() => <FIcon name="cogs" color={flattenStyle(styles.tabTitleSelected).color} size={tabBarIconSize} />}
+                    titleStyle={skinStyles.tabTitle}
+                    selectedTitleStyle={skinStyles.tabTitleSelected}
+                    renderIcon={() => <FIcon name="cogs" color={flattenStyle(skinStyles.tabTitle).color} size={skinStyles.tabBarIconSize} />}
+                    renderSelectedIcon={() => <FIcon name="cogs" color={flattenStyle(skinStyles.tabTitleSelected).color} size={skinStyles.tabBarIconSize} />}
                     selected={this.state.selectedTab === "settings"}
                     onPress={() => {
                     this.setState({
                         selectedTab: "settings",
                     });
                     }}>
-                    <View style={[layoutStyles.flexColumn]}>
-                        <NavigatorIOS
+                    <View style={[layoutStyles.flexColumn,layoutStyles.statusBarMarginTop]}>
+                        <Navigator
                             initialRoute={{
                                 component: SettingsMain,
-                                title: "Settings",
-                                wrapperStyle:layoutStyles.paddingTopForNavigation,
+                                center:{text: "Settings"},
                             }}
                             style={layoutStyles.flexColumn}
+                            navigationBar={this.renderNavigationBar()}
+                            renderScene={this.sceneRenderer.bind(this)}
                         />
                     </View>
                 </TabNavigator.Item>
@@ -274,15 +323,6 @@ class FlickerstripApp extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    tabBar: {
-        backgroundColor:"#eee",
-    },
-    tabTitle: {
-        color: "#666666",
-    },
-    tabTitleSelected: {
-        color: "#00f",
-    }
 });
 
 AppRegistry.registerComponent("FlickerstripApp", () => FlickerstripApp);

@@ -35,7 +35,7 @@ class LightworksMain extends React.Component {
     }
     render() {
         return (
-            <View style={layoutStyles.flexColumn}>
+            <View style={[this.props.style, layoutStyles.flexColumn]}>
                 <SimpleSegmentedControl
                     key={this.state.key}
                     values={["My Lightworks","Lightwork Repository"]}

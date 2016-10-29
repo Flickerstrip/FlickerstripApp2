@@ -51,12 +51,13 @@ class StripListing extends React.Component {
 
         this.props.navigator.push({
             component: StripDetails,
-            title:strip.name == "" ? "Unknown Strip" : strip.name,
-            wrapperStyle:layoutStyles.paddingTopForNavigation,
+            center:{text:strip.name == "" ? "Unknown Strip" : strip.name},
             passProps: { strip: strip },
-            leftButtonTitle: "Back",
-            onLeftButtonPress:() => {
-                this.props.navigator.pop();
+            left: {
+                text: "Back",
+                onPress:() => {
+                    this.props.navigator.pop();
+                }
             }
         });
     }
@@ -82,17 +83,18 @@ class StripListing extends React.Component {
     configureButtonClicked() {
         this.props.navigator.push({
             component: WiFiNetworkPrompt,
-            title:"Configure Flickerstrip",
-            wrapperStyle:layoutStyles.paddingTopForNavigation,
-            leftButtonTitle: "Cancel",
-            onLeftButtonPress:() => {
-                this.props.navigator.pop();
+            center: {text:"Configure Flickerstrip"},
+            left:{
+                text: "Cancel",
+                onPress:() => {
+                    this.props.navigator.pop();
+                }
             }
         });
     }
     render() {
         return FlickerstripManager.getCount() == 0 ? (
-            <View style={layoutStyles.flexColumn}>
+            <View style={[this.props.style,layoutStyles.flexColumn]}>
                 <View key={this.state.key} style={layoutStyles.centerChildren}>
                     <View style={skinStyles.notePanel}>
                         <Text style={[skinStyles.noteText, {marginBottom: 20}]}>
@@ -103,11 +105,12 @@ class StripListing extends React.Component {
                             onPress={() => {
                                 this.props.navigator.push({
                                     component: ConfigureNewStrip,
-                                    title:"Add Flickerstrip",
-                                    wrapperStyle:layoutStyles.paddingTopForNavigation,
-                                    leftButtonTitle: "Back",
-                                    onLeftButtonPress:() => {
-                                        this.props.navigator.pop();
+                                    center:{text:"Add Flickerstrip"},
+                                    left:{
+                                        text: "Back",
+                                        onPress:() => {
+                                            this.props.navigator.pop();
+                                        }
                                     }
                                 });
                             }}
@@ -119,7 +122,7 @@ class StripListing extends React.Component {
                 <StatusBar />
             </View>
         ) : (
-            <View key={this.state.key} style={layoutStyles.flexColumn}>
+            <View key={this.state.key} style={[this.props.style,layoutStyles.flexColumn]}>
                 {renderIf(FlickerstripManager.getConfigurationMasterFlickerstrip() != null)(
                     <View>
                         <Text>Note: You are currently connected directly to Flickerstrip, for best performance configure your Flickerstrips with an existing WiFi network</Text>

@@ -22,9 +22,6 @@ class LightworkEditor extends React.Component {
     constructor(props) {
         super(props);
     }
-    componentWillReceiveProps(nextProps) {
-        this.sendLightwork(nextProps.lightwork);
-    }
     /*
     sendLightwork(lw) {
         var objectToSend = {

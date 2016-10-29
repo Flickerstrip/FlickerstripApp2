@@ -57,12 +57,13 @@ class ConfigureNewStrip extends React.Component {
                     onPress={() => {
                         this.props.navigator.push({
                             component: WiFiNetworkPrompt,
-                            title:"Configure Flickerstrip",
-                            wrapperStyle:layoutStyles.paddingTopForNavigation,
+                            center:{title:"Configure Flickerstrip"},
                             passProps: { onDismiss: () => this.props.navigator.popToTop() },
-                            leftButtonTitle: "Back",
-                            onLeftButtonPress:() => {
-                                this.props.navigator.pop();
+                            left:{
+                                text: "Back",
+                                onPress:() => {
+                                    this.props.navigator.pop();
+                                }
                             }
                         });
                     }}

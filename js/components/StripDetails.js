@@ -111,12 +111,13 @@ class StripDetails extends React.Component {
                         hasNavArrow={true}
                         onPress={() => this.props.navigator.push({
                             component: StripInformation,
-                            title:stripName,
-                            wrapperStyle:layoutStyles.paddingTopForNavigation,
+                            center:{text:stripName},
                             passProps: { strip: this.props.strip },
-                            leftButtonTitle: "Back",
-                            onLeftButtonPress:() => {
-                                this.props.navigator.pop();
+                            left:{
+                                text: "Back",
+                                onPress:() => {
+                                    this.props.navigator.pop();
+                                }
                             }
                         })}
                     />
@@ -154,12 +155,13 @@ class StripDetails extends React.Component {
                         hasNavArrow={true}
                         onPress={() => this.props.navigator.push({
                             component: StripInformationPixels,
-                            title:stripName,
-                            wrapperStyle:layoutStyles.paddingTopForNavigation,
+                            center:{text:stripName},
                             passProps: { strip: this.props.strip },
-                            leftButtonTitle: "Back",
-                            onLeftButtonPress:() => {
-                                this.props.navigator.pop();
+                            left:{
+                                text: "Back",
+                                onPress:() => {
+                                    this.props.navigator.pop();
+                                }
                             }
                         })}
                     />

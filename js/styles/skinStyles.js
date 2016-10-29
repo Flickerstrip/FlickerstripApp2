@@ -29,7 +29,27 @@ const skinStyles = StyleSheet.create({
     button: {
         fontSize: 20,
     },
+    navigationBar: {
+        backgroundColor: "#fefefe",
+        borderBottomWidth: 1,
+        borderColor: "#e0e0e0",
+    },
+    navigationTitleStyle: {
+        fontSize: 18,
+        fontWeight: "bold",
+    },
+    tabBar: {
+        backgroundColor:"#fefefe",
+    },
+    tabTitle: {
+        color: "#666666",
+    },
+    tabTitleSelected: {
+        color: "#00f",
+    }
 });
+
+skinStyles.tabBarIconSize=25;
 
 export default skinStyles;
 

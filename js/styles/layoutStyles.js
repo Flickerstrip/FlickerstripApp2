@@ -36,6 +36,9 @@ const layoutStyles = StyleSheet.create({
     paddingTopForNavigation:{
         paddingTop: 64
     },
+    statusBarMarginTop:{
+        marginTop:0,
+    },
     imageIcon:{
         marginTop: 10,
         marginLeft:15,
