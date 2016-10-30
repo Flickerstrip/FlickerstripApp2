@@ -53,8 +53,6 @@ class FlickerstripRow extends React.Component {
                     />
                     <TouchableHighlight
                         onPress={() => { this.props.onPress(this.props.strip) } }
-                        //onShowUnderlay={this.props.onHighlight}
-                        //onHideUnderlay={this.props.onUnhighlight}
                         style={[styles.flex1,styles.flexRow]}
                         >
                         <View style={[styles.flex1,styles.flexRow]}>

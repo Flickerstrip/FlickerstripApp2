@@ -62,8 +62,6 @@ class LightworkRow extends React.Component {
                 <TouchableHighlight
                     onPress={this.props.onPress}
                     onLongPress={this.props.onLongPress}
-                    //onShowUnderlay={this.props.onHighlight}
-                    //onHideUnderlay={this.props.onUnhighlight}
                     style={[layoutStyles.flex1,layoutStyles.flexRow]}
                 >
                     <View style={[layoutStyles.flex1,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}>
