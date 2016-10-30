@@ -34,6 +34,9 @@ const skinStyles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: "#e0e0e0",
     },
+    navIcon: {
+        color: "red",
+    },
     navigationTitleStyle: {
         fontSize: 18,
         fontWeight: "bold",

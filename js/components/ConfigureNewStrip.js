@@ -6,8 +6,6 @@ import {
     View,
     TextInput,
     Platform,
-    TouchableHighlight,
-    TouchableNativeFeedback,
     Image,
     Dimensions,
 } from "react-native";

@@ -9,7 +9,6 @@ var {
     Text,
     TouchableHighlight,
     Switch,
-    TouchableNativeFeedback,
     View
 } = ReactNative;
 
@@ -44,7 +43,6 @@ class LightworkRow extends React.Component {
         this.setState({key:Math.random()});
     }
     render() {
-        var TouchableElement = Platform.OS === "android" ? TouchableNativeFeedback : TouchableHighlight;
         var selected = typeof this.props.selected == "function" ? this.props.selected() : this.props.selected;
         return (
             <View key={this.state.key} style={[layoutStyles.flexAlignStretch, layoutStyles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>
@@ -61,7 +59,7 @@ class LightworkRow extends React.Component {
                         </View>
                     </TouchableElement>
                 )}
-                <TouchableElement
+                <TouchableHighlight
                     onPress={this.props.onPress}
                     onLongPress={this.props.onLongPress}
                     //onShowUnderlay={this.props.onHighlight}
@@ -90,7 +88,7 @@ class LightworkRow extends React.Component {
                             />
                         )}
                     </View>
-                </TouchableElement>
+                </TouchableHighlight>
                 {renderIf(this.props.onDelete)(
                     <TouchableElement
                         onPress={this.props.onDelete}

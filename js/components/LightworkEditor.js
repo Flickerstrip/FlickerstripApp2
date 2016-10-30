@@ -69,8 +69,8 @@ class LightworkEditor extends React.Component {
                                     EditorActions.createLightwork();
                                 }}
                             >
-                            Create new Lightwork
-                        </Button>
+                                Create new Lightwork
+                            </Button>
                         </View>
                     </View>
                 )}

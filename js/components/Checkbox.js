@@ -6,7 +6,6 @@ var {
     Image,
     Platform,
     TouchableHighlight,
-    TouchableNativeFeedback,
     View
 } = ReactNative;
 

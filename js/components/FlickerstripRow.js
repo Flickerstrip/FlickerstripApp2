@@ -9,7 +9,6 @@ var {
     Text,
     TouchableHighlight,
     Switch,
-    TouchableNativeFeedback,
     View
 } = ReactNative;
 
@@ -44,7 +43,6 @@ class FlickerstripRow extends React.Component {
         this.setState({key:Math.random()});
     }
     render() {
-        var TouchableElement = Platform.OS === "android" ? TouchableNativeFeedback : TouchableHighlight;
         console.log("update manager",this.props.strip.firmware,UpdateManager.getLatestVersion(),UpdateManager.compareLatestVersion(this.props.strip.firmware));
         return (
             <View key={this.state.key}>
@@ -53,7 +51,7 @@ class FlickerstripRow extends React.Component {
                         onPress={() => this.props.onSelectToggle(this.props.strip)}
                         checked={this.props.strip.selected}
                     />
-                    <TouchableElement
+                    <TouchableHighlight
                         onPress={() => { this.props.onPress(this.props.strip) } }
                         //onShowUnderlay={this.props.onHighlight}
                         //onHideUnderlay={this.props.onUnhighlight}
@@ -73,7 +71,7 @@ class FlickerstripRow extends React.Component {
                                 />
                             )}
                         </View>
-                    </TouchableElement>
+                    </TouchableHighlight>
                     <Switch
                         onValueChange={() => { this.props.onToggle(this.props.strip) }}
                         style={[styles.flex0]}
