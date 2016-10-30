@@ -36,7 +36,7 @@ class MenuButton extends React.Component {
             <EIcon
                 name={this.props.name}
                 size={30}
-                color="rgba(0,136,204,1)"
+                style={skinStyles.infoButton}
                 style={menuCommonStyles.navigationBarIconPadding}
                 onPress={() => this.showMenu(this)}
             />

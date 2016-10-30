@@ -65,7 +65,7 @@ class WiFiNetworkPrompt extends React.Component {
                             onPress={this.configureWithSavedClicked.bind(this)}
                         >
                             <View style={[layoutStyles.flexRow, layoutStyles.flexCenter, {borderBottomWidth:1, borderColor: "black"}]}>
-                                <NIcon name="signal" style={[layoutStyles.flex0, layoutStyles.imageIcon]} size={40} color="rgba(0,136,204,1)" />
+                                <NIcon name="signal" style={[layoutStyles.flex0, layoutStyles.imageIcon, skinStyles.primaryIcon]} size={40} />
                                 <Text style={layoutStyles.flex1}>{"Use saved SSID: "+SettingsManager.getWiFi().ssid}</Text>
                             </View>
                         </TouchableHighlight>
@@ -73,7 +73,7 @@ class WiFiNetworkPrompt extends React.Component {
                             onPress={() => { this.setState({showChoice:false}); setTimeout(function() {this._networkField.focus()}.bind(this),50) } }
                         >
                             <View style={[layoutStyles.flexRow, layoutStyles.flexCenter, {borderBottomWidth:1, borderColor: "black"}]}>
-                                <NIcon name="signal" style={[layoutStyles.flex0, layoutStyles.imageIcon]} size={40} color="rgba(0,136,204,1)" />
+                                <NIcon name="signal" style={[layoutStyles.flex0, layoutStyles.imageIcon, skinStyles.primaryIcon]} size={40} />
                                 <Text style={layoutStyles.flex1}>Enter Network SSID</Text>
                             </View>
                         </TouchableHighlight>

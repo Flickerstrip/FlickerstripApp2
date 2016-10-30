@@ -22,6 +22,7 @@ import SettingsActions from "~/actions/SettingsActions";
 import SettingsList from "react-native-settings-list";
 import StripInformation from "~/components/StripInformation";
 import StripInformationPixels from "~/components/StripInformationPixels";
+import skinStyles from "~/styles/skinStyles";
 
 class StripDetails extends React.Component {
     constructor(props) {
@@ -233,7 +234,8 @@ class StripDetails extends React.Component {
                         this.state.promptCallback(value);
                     }}
                 />
-                <Text style={{flex: 0}}>Lightworks</Text>
+
+                <View style={[layoutStyles.flex0,skinStyles.sectionHeader]}><Text style={skinStyles.sectionHeaderText}>Lightworks</Text></View>
             </View>
         )
     }

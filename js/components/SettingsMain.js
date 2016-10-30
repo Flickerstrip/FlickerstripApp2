@@ -57,7 +57,7 @@ class SettingsMain extends React.Component {
     }
     render() {
         return (
-            <View style={[{backgroundColor:"#EFEFF4"},layoutStyles.flexColumn]}>
+            <View style={[{backgroundColor:"white"},layoutStyles.flexColumn]}>
                 <SettingsList key={this.state.key}>
                     {this.state.loggedIn ?
                         <SettingsList.Item
@@ -76,7 +76,7 @@ class SettingsMain extends React.Component {
                     :
                         <SettingsList.Item
                             icon={
-                                <EIcon name="user" style={layoutStyles.imageIcon} size={50} color={this.state.invalidUser ? "rgba(255,0,0,1)" : "rgba(0,136,204,1)"} />
+                                <EIcon name="user" style={[layoutStyles.imageIcon, this.state.invalidUser ? skinStyles.dangerIcon : skinStyles.primaryIcon]} size={50} />
                             }
                             isAuth={true}
                             authPropsUser={{
@@ -107,7 +107,7 @@ class SettingsMain extends React.Component {
                     {SettingsManager.isWiFiSet() ?
                         <SettingsList.Item
                             icon={
-                                <NIcon name="signal" style={layoutStyles.imageIcon} size={40} color="rgba(0,136,204,1)" />
+                                <NIcon name="signal" style={[layoutStyles.imageIcon, skinStyles.primaryIcon]} size={40} />
                             }
                             title={"Saved SSID: "+SettingsManager.getWiFi().ssid}
                             hasNavArrow={false}
@@ -122,7 +122,7 @@ class SettingsMain extends React.Component {
                     :
                         <SettingsList.Item
                             icon={
-                                <NIcon name="signal" style={layoutStyles.imageIcon} size={40} color="rgba(0,136,204,1)" />
+                                <NIcon name="signal" style={[layoutStyles.imageIcon, skinStyles.primaryIcon]} size={40} />
                             }
                             isAuth={true}
                             authPropsUser={{

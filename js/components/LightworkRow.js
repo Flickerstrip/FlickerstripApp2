@@ -48,7 +48,7 @@ class LightworkRow extends React.Component {
             <View key={this.state.key} style={[layoutStyles.flexAlignStretch, layoutStyles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>
                 {renderIf(!this.props.strip)(
                     <TouchableHighlight
-                        style={[layoutStyles.flexAlignCenter, layoutStyles.flexRow,{paddingLeft: 10, paddingRight: 0}]}
+                        style={[layoutStyles.flexAlignCenter, layoutStyles.flexRow]}
                         onPress={() => this.props.onSelectToggle(this.props.lightwork)}
                     >
                         <View>
@@ -65,7 +65,7 @@ class LightworkRow extends React.Component {
                     style={[layoutStyles.flex1,layoutStyles.flexRow]}
                 >
                     <View style={[layoutStyles.flex1,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}>
-                        <View style={layoutStyles.flex1}>
+                        <View style={[layoutStyles.flex1]}>
                             <Text numberOfLines={2}>
                                 {renderId ? "["+this.props.lightwork.id+"]" : ""}
                                 {this.props.lightwork.name}
@@ -75,14 +75,14 @@ class LightworkRow extends React.Component {
                             <FIcon
                                 name="exclamation-triangle"
                                 size={15}
-                                color="rgba(150,150,150,1)"
+                                style={skinStyles.passiveIcon}
                             />
                         )}
                         {renderIf(this.props.showPublished && this.props.lightwork.published)(
                             <FIcon
                                 name="globe"
                                 size={25}
-                                color="rgba(0,150,255,1)"
+                                style={skinStyles.infoIcon}
                             />
                         )}
                     </View>
@@ -93,9 +93,9 @@ class LightworkRow extends React.Component {
                         style={[layoutStyles.flex0,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}
                     >
                         <EIcon
-                            name="close-o"
+                            name="trash"
                             size={30}
-                            color="rgba(255,0,0,1)"
+                            style={skinStyles.dangerIcon}
                         />
                     </TouchableHighlight>
                 )}
@@ -107,7 +107,7 @@ class LightworkRow extends React.Component {
                         <EIcon
                             name="chevron-right"
                             size={30}
-                            color="rgba(55,150,255,1)"
+                            style={skinStyles.passiveIcon}
                         />
                     </TouchableHighlight>
                 )}

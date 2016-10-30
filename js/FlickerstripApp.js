@@ -98,7 +98,7 @@ class FlickerstripApp extends React.Component {
         if (!info) return null;
 
         var content = null;
-        if (info.text) content = (<Text style={isTitle?skinStyles.navigationTitleStyle:{}}>{info.text}</Text>);
+        if (info.text) content = (<Text style={isTitle?skinStyles.navigationTitle:skinStyles.navigationTextButton}>{info.text}</Text>);
         if (info.render) content = info.render();
 
         var containerStyles = [{padding:10,justifyContent:"center",flex:1}];
