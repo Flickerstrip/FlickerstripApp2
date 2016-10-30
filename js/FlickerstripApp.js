@@ -118,7 +118,6 @@ class FlickerstripApp extends React.Component {
                     Title: (route) => this.generateTitleButton(route.center,true),
                 }}
                 style={skinStyles.navigationBar}
-                navigationStyles={Navigator.NavigationBar.StylesIOS}
             />
         );
 

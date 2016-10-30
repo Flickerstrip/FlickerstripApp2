@@ -67,7 +67,7 @@ class FlickerstripRow extends React.Component {
                                 <FIcon
                                     name="cloud-download"
                                     size={25}
-                                    color="rgba(0,150,255,1)"
+                                    style={skinStyles.infoIconStyle}
                                 />
                             )}
                         </View>

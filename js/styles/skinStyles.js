@@ -2,23 +2,28 @@ import {
     StyleSheet,
 } from "react-native";
 
+var primaryColor     = "#0096ff";
+var backgroundPanel  = "#fefefe";
+var panelBorderColor = "#e0e0e0";
+var highlightColor   = "#c4daff";
+
 const skinStyles = StyleSheet.create({
     rowSelected: {
         height: 50,
-        backgroundColor: "#c4daff",
+        backgroundColor: highlightColor,
         borderBottomWidth: 1,
-        borderColor: "#e0e0e0",
+        borderColor: panelBorderColor,
     },
     rowDeselected: {
         height: 50,
         backgroundColor: "white",
         borderBottomWidth: 1,
-        borderColor: "#e0e0e0",
+        borderColor: panelBorderColor,
     },
     notePanel: {
         margin: 10,
         borderWidth: 1,
-        borderColor: "#ccc",
+        borderColor: panelBorderColor,
         padding: 20,
         borderRadius: 10,
     },
@@ -30,25 +35,29 @@ const skinStyles = StyleSheet.create({
         fontSize: 20,
     },
     navigationBar: {
-        backgroundColor: "#fefefe",
+        backgroundColor: backgroundPanel,
         borderBottomWidth: 1,
-        borderColor: "#e0e0e0",
+        borderColor: panelBorderColor,
     },
     navIcon: {
-        color: "red",
+        color:primaryColor,
     },
     navigationTitleStyle: {
         fontSize: 18,
         fontWeight: "bold",
+        color: "black",
     },
     tabBar: {
-        backgroundColor:"#fefefe",
+        backgroundColor: backgroundPanel,
     },
     tabTitle: {
         color: "#666666",
     },
     tabTitleSelected: {
-        color: "#00f",
+        color: primaryColor,
+    },
+    infoIconStyle: {
+        color:primaryColor,
     }
 });
 

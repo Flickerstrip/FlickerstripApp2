@@ -47,7 +47,7 @@ class LightworkRow extends React.Component {
         return (
             <View key={this.state.key} style={[layoutStyles.flexAlignStretch, layoutStyles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>
                 {renderIf(!this.props.strip)(
-                    <TouchableElement
+                    <TouchableHighlight
                         style={[layoutStyles.flexAlignCenter, layoutStyles.flexRow,{paddingLeft: 10, paddingRight: 0}]}
                         onPress={() => this.props.onSelectToggle(this.props.lightwork)}
                     >
@@ -57,7 +57,7 @@ class LightworkRow extends React.Component {
                                 checked={selected}
                             />
                         </View>
-                    </TouchableElement>
+                    </TouchableHighlight>
                 )}
                 <TouchableHighlight
                     onPress={this.props.onPress}
@@ -90,7 +90,7 @@ class LightworkRow extends React.Component {
                     </View>
                 </TouchableHighlight>
                 {renderIf(this.props.onDelete)(
-                    <TouchableElement
+                    <TouchableHighlight
                         onPress={this.props.onDelete}
                         style={[layoutStyles.flex0,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}
                     >
@@ -99,10 +99,10 @@ class LightworkRow extends React.Component {
                             size={30}
                             color="rgba(255,0,0,1)"
                         />
-                    </TouchableElement>
+                    </TouchableHighlight>
                 )}
                 {renderIf(this.props.onDrilldown)(
-                    <TouchableElement
+                    <TouchableHighlight
                         onPress={this.props.onDrilldown}
                         style={[layoutStyles.flex0,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}
                     >
@@ -111,7 +111,7 @@ class LightworkRow extends React.Component {
                             size={30}
                             color="rgba(55,150,255,1)"
                         />
-                    </TouchableElement>
+                    </TouchableHighlight>
                 )}
             </View>
         );
