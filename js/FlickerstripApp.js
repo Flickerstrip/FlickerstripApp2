@@ -104,7 +104,7 @@ class FlickerstripApp extends React.Component {
         var containerStyles = [{padding:10,justifyContent:"center",flex:1}];
 
         if (info.onPress) {
-            return (<TouchableHighlight style={containerStyles} onPress={info.onPress}>{content}</TouchableHighlight>);
+            return (<TouchableHighlight underlayColor={skinStyles.touchableUnderlayColor} style={containerStyles} onPress={info.onPress}>{content}</TouchableHighlight>);
         } else {
             return (<View style={containerStyles}>{content}</View>);
         }

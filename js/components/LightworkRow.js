@@ -48,6 +48,7 @@ class LightworkRow extends React.Component {
             <View key={this.state.key} style={[layoutStyles.flexAlignStretch, layoutStyles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>
                 {renderIf(!this.props.strip)(
                     <TouchableHighlight
+                        underlayColor={skinStyles.touchableUnderlayColor}
                         style={[layoutStyles.flexAlignCenter, layoutStyles.flexRow]}
                         onPress={() => this.props.onSelectToggle(this.props.lightwork)}
                     >
@@ -60,6 +61,7 @@ class LightworkRow extends React.Component {
                     </TouchableHighlight>
                 )}
                 <TouchableHighlight
+                    underlayColor={skinStyles.touchableUnderlayColor}
                     onPress={this.props.onPress}
                     onLongPress={this.props.onLongPress}
                     style={[layoutStyles.flex1,layoutStyles.flexRow]}
@@ -89,6 +91,7 @@ class LightworkRow extends React.Component {
                 </TouchableHighlight>
                 {renderIf(this.props.onDelete)(
                     <TouchableHighlight
+                        underlayColor={skinStyles.touchableUnderlayColor}
                         onPress={this.props.onDelete}
                         style={[layoutStyles.flex0,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}
                     >
@@ -101,6 +104,7 @@ class LightworkRow extends React.Component {
                 )}
                 {renderIf(this.props.onDrilldown)(
                     <TouchableHighlight
+                        underlayColor={skinStyles.touchableUnderlayColor}
                         onPress={this.props.onDrilldown}
                         style={[layoutStyles.flex0,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}
                     >

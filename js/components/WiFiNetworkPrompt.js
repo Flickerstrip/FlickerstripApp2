@@ -62,6 +62,7 @@ class WiFiNetworkPrompt extends React.Component {
                     <View style={layoutStyles.flexColumn}>
                         <Text>You have a configured network:</Text>
                         <TouchableHighlight
+                            underlayColor={skinStyles.touchableUnderlayColor}
                             onPress={this.configureWithSavedClicked.bind(this)}
                         >
                             <View style={[layoutStyles.flexRow, layoutStyles.flexCenter, {borderBottomWidth:1, borderColor: "black"}]}>
@@ -70,6 +71,7 @@ class WiFiNetworkPrompt extends React.Component {
                             </View>
                         </TouchableHighlight>
                         <TouchableHighlight
+                            underlayColor={skinStyles.touchableUnderlayColor}
                             onPress={() => { this.setState({showChoice:false}); setTimeout(function() {this._networkField.focus()}.bind(this),50) } }
                         >
                             <View style={[layoutStyles.flexRow, layoutStyles.flexCenter, {borderBottomWidth:1, borderColor: "black"}]}>

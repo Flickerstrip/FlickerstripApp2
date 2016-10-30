@@ -52,6 +52,7 @@ class FlickerstripRow extends React.Component {
                         checked={this.props.strip.selected}
                     />
                     <TouchableHighlight
+                        underlayColor={skinStyles.touchableUnderlayColor}
                         onPress={() => { this.props.onPress(this.props.strip) } }
                         style={[styles.flex1,styles.flexRow]}
                         >
