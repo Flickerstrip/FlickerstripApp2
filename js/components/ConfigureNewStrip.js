@@ -8,6 +8,7 @@ import {
     Platform,
     Image,
     Dimensions,
+    Platform,
 } from "react-native";
 
 var _ = require("lodash");
@@ -28,6 +29,7 @@ class ConfigureNewStrip extends React.Component {
         super(props);
 
         this.state = {key: null};
+        this.wifiImage = Platform.OS === 'ios' ? require("~/../resources/framed_wifi_screen.png") : require("~/../resources/framed_wifi_screen_android.png");
 
         this.refresh = this.refresh.bind(this);
     }
@@ -75,7 +77,8 @@ class ConfigureNewStrip extends React.Component {
                 <Text style={{padding: 20}}>
                     Navigate to your WiFi settings and connect to the "Flickerstrip" network, then relaunch the Flickerstrip app
                 </Text>
-                <Image style={{flex: 1, width:width*.5, height:200}} resizeMode={"contain"} source={require("~/../resources/framed_wifi_screen.png")} />
+                            if () {
+                <Image style={{flex: 1, width:width*.5, height:200}} resizeMode={"contain"} source={this.wifiImage} />
             </View>
         )
     }
