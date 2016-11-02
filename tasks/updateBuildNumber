@@ -12,7 +12,7 @@ if [[ "$1" == "PRECOMMIT" ]] || [[ "$2" == "PRECOMMIT" ]]; then
     ((COMMIT_COUNT++))
 fi
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $COMMIT_COUNT" $PLIST
-perl -i -pe 's/(?<=versionCode )".*"/'$COMMIT_COUNT'/' $APP_GRADLE
+perl -i -pe 's/(?<=versionCode ).*/'$COMMIT_COUNT'/' $APP_GRADLE
 
 if [[ "$1" == "GITADD" ]] || [[ "$2" == "GITADD" ]]; then
     git --git-dir $PROJECT/.git add $PLIST $APP_GRADLE

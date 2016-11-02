@@ -90,7 +90,7 @@ android {
         applicationId "com.flickerstripapp"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 1
+        versionCode 89
         versionName "0.1.6"
         ndk {
             abiFilters "armeabi-v7a", "x86"
