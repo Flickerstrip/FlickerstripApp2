@@ -4,9 +4,12 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT=$(dirname `dirname $DIR`)
+PLIST=$PROJECT/ios/FlickerstripApp/Info.plist
 
 echo "Pre-commit hook: Incrementing build number"
 $PROJECT/tasks/updateBuildNumber PRECOMMIT
+git add $PLIST
+
 
 
 echo "Pre-commit hook: Looking for NOCOMMIT, debugger, and git merge markers";
