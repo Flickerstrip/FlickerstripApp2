@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT=$(dirname $DIR)
+
+APK_NAME=`git describe --tags --abbrev=0`.apk
+
+cd $PROJECT/android
+./gradlew assembleRelease
+
+mkdir -p $PROJECT/releases
+
+cp $PROJECT/android/app/build/outputs/apk/app-release.apk $PROJECT/releases/$APK_NAME
