@@ -8,7 +8,6 @@ import {
     Platform,
     Image,
     Dimensions,
-    Platform,
 } from "react-native";
 
 var _ = require("lodash");
@@ -77,7 +76,6 @@ class ConfigureNewStrip extends React.Component {
                 <Text style={{padding: 20}}>
                     Navigate to your WiFi settings and connect to the "Flickerstrip" network, then relaunch the Flickerstrip app
                 </Text>
-                            if () {
                 <Image style={{flex: 1, width:width*.5, height:200}} resizeMode={"contain"} source={this.wifiImage} />
             </View>
         )
