@@ -4,11 +4,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT=$(dirname $DIR)
 PLIST=$PROJECT/ios/FlickerstripApp/Info.plist
 MANIFEST=$PROJECT/android/app/src/main/AndroidManifest.xml
+APP_GRADLE=$PROJECT/android/app/build.gradle
 
 VERSION_NUMBER=$1
 
 /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION_NUMBER" $PLIST
-perl -i -pe 's/(?<=android:versionName=)".*"/"'$VERSION_NUMBER'"/' $MANIFEST
+perl -i -pe 's/(?<=versionName )".*"/"'$VERSION_NUMBER'"/' $APP_GRADLE
 
 if [[ "$2" == "GITADD" ]]; then
     git --git-dir $PROJECT/.git add $PLIST $MANIFEST
