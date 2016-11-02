@@ -1,5 +1,9 @@
 #!/bin/bash
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT=$(dirname $DIR)
+PLIST=$PROJECT/ios/FlickerstripApp/Info.plist
+
 LAST_RELEASE=`git describe --tags --abbrev=0`
 
 parseRelease() {
@@ -49,12 +53,10 @@ esac
 
 echo "Next version will be: $NEXT_REVISION"
 
-./tasks/updateVersionNumber ${NEXT_REVISION#"v"}
-./tasks/updateBuildNumber 1
+./tasks/setVersionNumber ${NEXT_REVISION#"v"}
 
 #Add the files edited by the previous commands
-git add src/cordova/cordovaconfig.xml
-git add src/default.json
+git add $PLIST
 
 git commit -m "Preparing for release of $NEXT_REVISION"
 git tag -a $NEXT_REVISION -m "Releasing revision $NEXT_REVISION"
