@@ -3,6 +3,7 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT=$(dirname $DIR)
 PLIST=$PROJECT/ios/FlickerstripApp/Info.plist
+echo "PROJECT: $PROJECT  PLIST: $PLIST";
 
 LAST_RELEASE=`git describe --tags --abbrev=0`
 
@@ -56,7 +57,7 @@ echo "Next version will be: $NEXT_REVISION"
 ./tasks/setVersionNumber ${NEXT_REVISION#"v"}
 
 #Add the files edited by the previous commands
-git add $PLIST
+git --git-dir $PROJECT/.git add $PLIST
 
 git commit -m "Preparing for release of $NEXT_REVISION"
 git tag -a $NEXT_REVISION -m "Releasing revision $NEXT_REVISION"
