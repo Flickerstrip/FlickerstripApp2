@@ -7,8 +7,7 @@ PROJECT=$(dirname `dirname $DIR`)
 PLIST=$PROJECT/ios/FlickerstripApp/Info.plist
 
 echo "Pre-commit hook: Incrementing build number"
-$PROJECT/tasks/updateBuildNumber PRECOMMIT
-git add $PLIST
+$PROJECT/tasks/updateBuildNumber PRECOMMIT GITADD
 
 
 

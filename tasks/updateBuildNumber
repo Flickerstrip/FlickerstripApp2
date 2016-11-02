@@ -3,12 +3,18 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT=$(dirname $DIR)
 PLIST=$PROJECT/ios/FlickerstripApp/Info.plist
+MANIFEST=$PROJECT/android/app/src/main/AndroidManifest.xml
 
 COMMIT_COUNT=`git --git-dir $PROJECT/.git rev-list --count HEAD`
 
-if [[ "$1" == "PRECOMMIT" ]]; then
+if [[ "$1" == "PRECOMMIT" ]] || [[ "$2" == "PRECOMMIT" ]]; then
     ((COMMIT_COUNT++))
 fi
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $COMMIT_COUNT" $PLIST
+perl -i -pe 's/(?<=android:versionCode=)".*"/"'$COMMIT_COUNT'"/' $MANIFEST
+
+if [[ "$1" == "GITADD" ]] || [[ "$2" == "GITADD" ]]; then
+    git --git-dir $PROJECT/.git add $PLIST $MANIFEST
+fi
 
 echo "Updated build number to $COMMIT_COUNT";
