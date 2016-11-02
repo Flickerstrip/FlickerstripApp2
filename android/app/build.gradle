@@ -90,10 +90,18 @@ android {
         applicationId "com.flickerstripapp"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 89
+        versionCode 90
         versionName "0.1.6"
         ndk {
             abiFilters "armeabi-v7a", "x86"
+        }
+    }
+    signingConfigs {
+        release {
+            storeFile file(FLICKERSTRIP_RELEASE_STORE_FILE)
+            storePassword FLICKERSTRIP_RELEASE_STORE_PASSWORD
+            keyAlias FLICKERSTRIP_RELEASE_KEY_ALIAS
+            keyPassword FLICKERSTRIP_RELEASE_KEY_PASSWORD
         }
     }
     splits {
