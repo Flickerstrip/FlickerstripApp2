@@ -1,0 +1,14 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT=$(dirname $DIR)
+PLIST=$PROJECT/ios/FlickerstripApp/Info.plist
+
+COMMIT_COUNT=`git --git-dir $PROJECT/.git rev-list --count HEAD`
+
+if [[ "$1" == "PRECOMMIT" ]]; then
+    ((COMMIT_COUNT++))
+fi
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $COMMIT_COUNT" $PLIST
+
+echo "Updated build number to $COMMIT_COUNT";
