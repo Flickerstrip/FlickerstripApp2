@@ -53,10 +53,7 @@ esac
 
 echo "Next version will be: $NEXT_REVISION"
 
-./tasks/setVersionNumber ${NEXT_REVISION#"v"}
-
-#Add the files edited by the previous commands
-git --git-dir $PROJECT/.git add $PLIST
+./tasks/setVersionNumber ${NEXT_REVISION#"v"} GITADD
 
 git commit -m "Preparing for release of $NEXT_REVISION"
 git tag -a $NEXT_REVISION -m "Releasing revision $NEXT_REVISION"
