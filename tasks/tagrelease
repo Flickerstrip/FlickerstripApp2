@@ -56,7 +56,6 @@ echo "Next version will be: $NEXT_REVISION"
 ./tasks/setVersionNumber ${NEXT_REVISION#"v"}
 
 #Add the files edited by the previous commands
-echo "ADDING: git --git-dir $PROJECT/.git add $PLIST"
 git --git-dir $PROJECT/.git add $PLIST
 
 git commit -m "Preparing for release of $NEXT_REVISION"
