@@ -1,0 +1,41 @@
+#!/bin/sh
+# Refuse to commit files with the string NOCOMMIT, debugger, or merge markers present.
+#
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT=$(dirname `dirname $DIR`)
+
+echo "Pre-commit hook: Incrementing build number"
+$PROJECT/tasks/updateBuildNumber PRECOMMIT
+
+
+echo "Pre-commit hook: Looking for NOCOMMIT, debugger, and git merge markers";
+files=$(git diff-index --name-status --cached HEAD | grep -v ^D | cut -c3-)
+
+if [ "$files" != "" ]
+then
+  for f in $files
+  do
+    if [[ "$f" =~ [.](conf|css|erb|html|js|json|log|properties|rb|ru|txt|xml|yml|README|less)$ ]]
+    then
+      if [ "$(grep NOCOMMIT $f)" != '' ]
+      then
+        echo "COMMIT message present in file $f, aborting!"
+        echo "$(grep -n -C 3 NOCOMMIT $f)"
+        exit 1
+      fi
+      if [ "$(grep debugger $f)" != '' ]
+      then
+        echo "debugger present in file $f, aborting!"
+        echo "$(grep -n -C 3 debugger $f)"
+        exit 1
+      fi
+      if [ "$(grep '<<<<<<<' $f)" != '' ]
+      then
+        echo "merge markers present in file $f, aborting!"
+        echo "$(grep -n -C 3 '<<<<<<<' $f)"
+        exit 1
+      fi
+    fi
+  done
+fi
