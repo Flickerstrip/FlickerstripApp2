@@ -12,6 +12,6 @@ VERSION_NUMBER=$1
 perl -i -pe 's/(?<=versionName )".*"/"'$VERSION_NUMBER'"/' $APP_GRADLE
 
 if [[ "$2" == "GITADD" ]]; then
-    git --git-dir $PROJECT/.git add $PLIST $MANIFEST
+    git --git-dir $PROJECT/.git add $PLIST $APP_GRADLE
 fi
 
