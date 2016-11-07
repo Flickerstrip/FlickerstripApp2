@@ -1,6 +1,8 @@
 require(['underscore','jquery','shared/Pattern.js','view/EditPatternDialog.js','bootstrap'],function(_,$,Pattern,EditPatternDialog) {
     $(document).ready(function() {
 
+        /*INJECT_HERE*/
+
         window.platform = "mobile";
         window.isTablet = false;
         var This = function() {

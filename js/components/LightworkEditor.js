@@ -5,6 +5,7 @@ import {
     Text,
     View,
     WebView,
+    Platform,
 } from "react-native";
 
 import layoutStyles from "~/styles/layoutStyles";
@@ -17,10 +18,19 @@ import Button from "react-native-button";
 import EditorActions from "~/actions/EditorActions";
 
 var _ = require("lodash");
+var RNFS = require('react-native-fs');
 
 class LightworkEditor extends React.Component {
     constructor(props) {
         super(props);
+
+        this.editorHtml = null;
+
+        var editorPath = (Platform.OS === "ios" ? RNFS.MainBundlePath : RNFS.DocumentDirectoryPath) + "/assets/editor.html";
+        RNFS.readFile(editorPath,"utf-8").then(function(html) {
+            this.editorHtml = html;
+            this.render();
+        }.bind(this))
     }
     /*
     sendLightwork(lw) {
@@ -44,7 +54,11 @@ class LightworkEditor extends React.Component {
         }
     }
     render() {
+        if (!this.editorHtml) return null;
+
         var patternDefinition = "var injectedPattern="+JSON.stringify(this.props.lightwork)+";";
+        var editorHtml = this.editorHtml.replace("/*INJECT_HERE*/",patternDefinition);
+        
         return (
             <View style={layoutStyles.flexColumn}>
                 {renderIf(this.props.lightwork)(
@@ -54,7 +68,7 @@ class LightworkEditor extends React.Component {
                         injectedJavaScript={patternDefinition}
                         style={layoutStyles.flexColumn}
                         onBridgeMessage={this.onMessage.bind(this)}
-                        source={require("../../editor/build/editor.html")}
+                        source={editorHtml}
                     />
                 )}
                 {renderIf(!this.props.lightwork)(
