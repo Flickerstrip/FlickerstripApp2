@@ -27,7 +27,7 @@
     "react-native-tabs": "^1.0.9",
     "react-native-udp": "^1.2.6",
     "react-native-vector-icons": "^2.1.0",
-    "react-native-webview-bridge": "git+https://github.com/alinz/react-native-webview-bridge.git",
+    "react-native-webview-bridge": "git+https://github.com/Flickerstrip/react-native-webview-bridge.git",
     "tinycolor2": "^1.4.1"
   },
   "devDependencies": {

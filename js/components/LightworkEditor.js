@@ -18,19 +18,10 @@ import Button from "react-native-button";
 import EditorActions from "~/actions/EditorActions";
 
 var _ = require("lodash");
-var RNFS = require('react-native-fs');
 
 class LightworkEditor extends React.Component {
     constructor(props) {
         super(props);
-
-        this.editorHtml = null;
-
-        var editorPath = (Platform.OS === "ios" ? RNFS.MainBundlePath : RNFS.DocumentDirectoryPath) + "/assets/editor.html";
-        RNFS.readFile(editorPath,"utf-8").then(function(html) {
-            this.editorHtml = html;
-            this.render();
-        }.bind(this))
     }
     /*
     sendLightwork(lw) {
@@ -44,7 +35,6 @@ class LightworkEditor extends React.Component {
     onMessage(jsonString) {
         var json = JSON.parse(jsonString);
         if (json.command == "update") {
-            console.log("update cmd");
             EditorManager.lightworkEdited(json.lightwork.id,{
                 fps:json.lightwork.fps,
                 frames:json.lightwork.frames,
@@ -54,10 +44,7 @@ class LightworkEditor extends React.Component {
         }
     }
     render() {
-        if (!this.editorHtml) return null;
-
-        var patternDefinition = "var injectedPattern="+JSON.stringify(this.props.lightwork)+";";
-        var editorHtml = this.editorHtml.replace("/*INJECT_HERE*/",patternDefinition);
+        var patternDefinition = "window.injectedPattern="+JSON.stringify(this.props.lightwork)+"; if (typeof window.injectExecuted !== 'undefined') window.injectExecuted();";
         
         return (
             <View style={layoutStyles.flexColumn}>
@@ -65,10 +52,13 @@ class LightworkEditor extends React.Component {
                     <WebViewBridge
                         scrollEnabled={false}
                         ref="webview"
-                        injectedJavaScript={patternDefinition}
                         style={layoutStyles.flexColumn}
+                        javaScriptEnabled={true}
+                        bounces={false}
+                        scrollEnabled={false}
+                        injectedJavaScript={patternDefinition}
                         onBridgeMessage={this.onMessage.bind(this)}
-                        source={editorHtml}
+                        source={require("../../editor/build/editor.html")}
                     />
                 )}
                 {renderIf(!this.props.lightwork)(
