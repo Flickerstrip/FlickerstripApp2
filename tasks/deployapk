@@ -1,0 +1,9 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT=$(dirname $DIR)
+APKS=/Users/julian/Documents/Programming/flickerstrip.com/apks
+
+APK_NAME=`git describe --tags --abbrev=0`.apk
+
+cp $PROJECT/releases/$APK_NAME $APKS/$APK_NAME

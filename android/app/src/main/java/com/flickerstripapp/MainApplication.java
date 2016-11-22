@@ -29,7 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
           new RNFSPackage(),
           new UdpSocketsModule(),
-          new WebViewBridgePackage()
+          new WebViewBridgePackage(),
+          new PatternLoaderPackage()
       );
     }
   };
