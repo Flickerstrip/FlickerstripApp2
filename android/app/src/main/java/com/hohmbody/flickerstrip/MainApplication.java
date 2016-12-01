@@ -6,7 +6,6 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
-import com.flickerstrip.BuildConfig;
 import com.rnfs.RNFSPackage;
 import com.tradle.react.UdpSocketsModule;
 import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;

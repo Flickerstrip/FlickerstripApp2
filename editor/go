@@ -11,3 +11,4 @@ mkdir -p ./build/view/less
 cp -r ./app/view/lib/spectrum.css ./build/view/lib/spectrum.css
 cp -r ./app/view/less/fonts ./build/view/less/
 python buildEditor.py
+cp ./build/editor.html $DIR/../android/app/src/main/assets/

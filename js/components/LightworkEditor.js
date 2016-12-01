@@ -58,7 +58,7 @@ class LightworkEditor extends React.Component {
                         scrollEnabled={false}
                         injectedJavaScript={patternDefinition}
                         onBridgeMessage={this.onMessage.bind(this)}
-                        source={require("../../editor/build/editor.html")}
+                        source={Platform.OS === "ios" ? require("../../editor/build/editor.html") : {uri:"file:///android_asset/editor.html"}}
                     />
                 )}
                 {renderIf(!this.props.lightwork)(

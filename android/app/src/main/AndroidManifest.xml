@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.flickerstrip"
+    package="com.hohmbody.flickerstrip"
     android:versionCode="0"
     android:versionName="0.0.0"> <!-- these version numbers are set in the gradle file! -->
 
