@@ -1,4 +1,4 @@
-rootProject.name = 'FlickerstripApp'
+rootProject.name = 'Flickerstrip'
 
 include ':app'
 include ':react-native-fs'
