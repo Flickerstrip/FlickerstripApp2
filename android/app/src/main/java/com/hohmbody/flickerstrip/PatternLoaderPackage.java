@@ -1,4 +1,4 @@
-package com.flickerstripapp;
+package com.hohmbody.flickerstrip;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
