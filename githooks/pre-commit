@@ -9,8 +9,6 @@ PLIST=$PROJECT/ios/FlickerstripApp/Info.plist
 echo "Pre-commit hook: Incrementing build number"
 $PROJECT/tasks/updateBuildNumber PRECOMMIT GITADD
 
-
-
 echo "Pre-commit hook: Looking for NOCOMMIT, debugger, and git merge markers";
 files=$(git diff-index --name-status --cached HEAD | grep -v ^D | cut -c3-)
 
