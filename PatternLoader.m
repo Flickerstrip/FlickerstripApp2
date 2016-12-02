@@ -61,9 +61,6 @@ RCT_EXPORT_METHOD(download:(NSString*)url:(RCTResponseSenderBlock)callback) {
         [resArray addObject:[NSNumber numberWithUnsignedInteger:a]];
     }
 
-    NSString *myString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
-    //NSLog( @"data: %@" , myString ) ;
-
     callback(@[
         [NSNull null],
         resArray

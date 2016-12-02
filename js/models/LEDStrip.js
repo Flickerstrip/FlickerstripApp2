@@ -313,6 +313,7 @@ LEDStrip.probeStrip = function(ip,cb) {
     var url = "http://"+ip+"/status";
     fetch(url)
         .catch(function(err) {
+            console.log("probe err!",err);
             cb(null);
         })
         .then((response) => response ? response.json() : null)
