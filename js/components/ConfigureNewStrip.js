@@ -12,6 +12,8 @@ import {
 
 var _ = require("lodash");
 
+import StripActions from "~/actions/StripActions";
+import Prompt from 'react-native-prompt';
 import Button from "react-native-button"
 import renderIf from "~/utils/renderIf"
 import layoutStyles from "~/styles/layoutStyles"
@@ -27,7 +29,14 @@ class ConfigureNewStrip extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {key: null};
+        this.state = {
+            key: null,
+            promptName:"",
+            promptPlaceholder:"",
+            promptValue:"",
+            showPrompt:false,
+            promptCallback:(value) => {},
+        };
         this.wifiImage = Platform.OS === 'ios' ? require("~/../resources/framed_wifi_screen.png") : require("~/../resources/framed_wifi_screen_android.png");
 
         this.refresh = this.refresh.bind(this);
@@ -77,6 +86,33 @@ class ConfigureNewStrip extends React.Component {
                     Navigate to your WiFi settings and connect to the "Flickerstrip" network, then relaunch the Flickerstrip app
                 </Text>
                 <Image style={{flex: 1, width:width*.5, height:200}} resizeMode={"contain"} source={this.wifiImage} />
+                <Button style={skinStyles.button}
+                    onPress={() => {
+                        this.setState({
+                            promptName:"Add Flickerstrip by IP",
+                            promptPlaceholder:"IP Address",
+                            promptValue:null,
+                            showPrompt:true,
+                            promptCallback:(value) => {
+                                StripActions.addByIp(value)
+                                this.props.navigator.pop();
+                            },
+                        });
+                    }}
+                >
+                    Advanced: Add by IP
+                </Button>
+                <Prompt
+                    title={this.state.promptName}
+                    placeholder={this.state.promptPlaceholder}
+                    defaultValue={this.state.promptValue}
+                    visible={ this.state.showPrompt }
+                    onCancel={ () => this.setState({showPrompt:false}) }
+                    onSubmit={(value) => {
+                        this.setState({showPrompt: false});
+                        this.state.promptCallback(value);
+                    }}
+                />
             </View>
         )
     }

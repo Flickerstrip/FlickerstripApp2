@@ -70,7 +70,7 @@ class UserLightworks extends React.Component {
                             promptCallback:(value) => LightworkActions.duplicateLightwork(lightwork.id,value),
                         });
                     }},
-                    {"label":"Star Lightwork", onPress:() => { LightworkActions.starLightwork(lightwork.id,!lightwork.starred) }},
+                    //{"label":"Star Lightwork", onPress:() => { LightworkActions.starLightwork(lightwork.id,!lightwork.starred) }},
                     {"label":(lightwork.published ? "Unpublish" : "Publish") + " Lightwork", onPress:() => { LightworkActions.publishLightwork(lightwork.id,!lightwork.published) }},
                     {"label":"Rename Lightwork", onPress:() => { 
                         this.setState({

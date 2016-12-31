@@ -51,6 +51,7 @@ class SettingsManager extends EventEmitter {
                 this.queuedActions = null;
                 this.selectedStrips = null;
                 this.publicLightworks = null;
+                this.ipStrips = null;
                 this.persistSettings();
             }
         }.bind(this));
@@ -97,8 +98,9 @@ class SettingsManager extends EventEmitter {
             }
         }.bind(this));
     }
-    storeStrips(selectedStrips) {
+    storeStrips(selectedStrips,ipStrips) {
         this.selectedStrips = selectedStrips;
+        this.ipStrips = ipStrips;
         this.persistSettings();
     }
     storeLightworks(userLightworks,lightworksById, queuedActions, publicLightworks) {
@@ -117,6 +119,7 @@ class SettingsManager extends EventEmitter {
             queuedActions: this.queuedActions,
             selectedStrips: this.selectedStrips,
             publicLightworks: this.publicLightworks,
+            ipStrips: this.ipStrips,
         }
         AsyncStorage.setItem(asyncStorageKey,JSON.stringify(save)); //check for errors?
     }

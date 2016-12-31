@@ -11,6 +11,7 @@ export default keyMirror({
     DOWNLOAD_LIGHTWORK: null,
     FORGET_NETWORK: null,
     UPDATE_FIRMWARE: null,
+    ADD_BY_IP: null,
 
     SELECT_LIGHTWORK: null,
     DESELECT_LIGHTWORK: null,

@@ -16,16 +16,11 @@ class FlickerstripManager extends EventEmitter {
         this.discover = new DiscoveryService();
 
         this.listeners = [];
+        this.ipStrips = [];
 
         this.discover.on("Found",this.onStripDiscovered.bind(this));
-        //this.discover.on("Lost",this.onStripLost.bind(this));
-        SettingsManager.on("SettingsLoaded",this.onSettingsLoaded.bind(this));
 
-        /*
-        setInterval(function() {
-            console.log("strips: ",this.strips);
-        }.bind(this),3000);
-        */
+        SettingsManager.on("SettingsLoaded",this.onSettingsLoaded.bind(this));
 
         FlickerstripDispatcher.register(function(e) {
             if (e.type === ActionTypes.SELECT_STRIP) {
@@ -76,10 +71,23 @@ class FlickerstripManager extends EventEmitter {
             } else if (e.type === ActionTypes.UPDATE_FIRMWARE) {
                 var strip = this.getStrip(e.stripId);
                 strip.uploadFirmware(UpdateManager.getLatestVersion());
+            } else if (e.type === ActionTypes.ADD_BY_IP) {
+                this.ipStrips.push(e.ip);
+                this.checkIpStrips();
+                this.persistStrips();
             }
         }.bind(this));
 
         this.strips = {};
+
+        setInterval(this.checkIpStrips.bind(this),5000);
+    }
+    checkIpStrips() {
+        _.each(this.ipStrips,function(ip) {
+            if (!this.findStripIdByIp(ip)) {
+                LEDStrip.probeStrip(ip,this.probedStrip.bind(this));
+            }
+        }.bind(this));
     }
     findStripIdByIp(ip) {
         var found = null;
@@ -107,10 +115,13 @@ class FlickerstripManager extends EventEmitter {
         _.each(SettingsManager.selectedStrips,function(id) {
             if (this.strips[id]) this.strips[id].selected = true;
         }.bind(this));
+
+        this.ipStrips = SettingsManager.ipStrips || [];
+        this.checkIpStrips();
     }
     persistStrips() {
         var selectedStrips = _.map(_.pickBy(this.strips,"selected"),"id");
-        SettingsManager.storeStrips(selectedStrips);
+        SettingsManager.storeStrips(selectedStrips,this.ipStrips);
     }
     getConfigurationMasterFlickerstrip() { //returns null if none
         var apStrips = _.filter(this.strips,{"ap":1});
@@ -156,19 +167,18 @@ class FlickerstripManager extends EventEmitter {
         this.listeners.splice(index,1);
     }
     onStripDiscovered(ip) {
-        console.log("strip discovereD",ip);
-        LEDStrip.probeStrip(ip,function(strip) {
-            console.log("probed strip",strip);
-            if (this.strips[strip.id]) {
-                //this.emit("StripConnected",strip);
-            } else {
-                this.strips[strip.id] = strip;
-                if (_.includes(SettingsManager.selectedStrips,strip.id)) strip.selected = true;
-                this.emit("StripAdded",strip);
-                strip.on("StripDisconnected",this.onStripDisconnected.bind(this));
-                strip.on("StripUpdated",this.stripUpdateReceived.bind(this));
-            }
-        }.bind(this));
+        LEDStrip.probeStrip(ip,this.probedStrip.bind(this));
+    }
+    probedStrip(strip) {
+        if (this.strips[strip.id]) {
+            //this.emit("StripConnected",strip);
+        } else {
+            this.strips[strip.id] = strip;
+            if (_.includes(SettingsManager.selectedStrips,strip.id)) strip.selected = true;
+            this.emit("StripAdded",strip);
+            strip.on("StripDisconnected",this.onStripDisconnected.bind(this));
+            strip.on("StripUpdated",this.stripUpdateReceived.bind(this));
+        }
     }
     onStripDisconnected(id) {
         var strip = this.strips[id];

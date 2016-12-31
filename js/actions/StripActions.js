@@ -86,4 +86,10 @@ export default {
             stripId: stripId,
         });
     },
+    addByIp:function(ip) {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.ADD_BY_IP,
+            ip: ip,
+        });
+    },
 };
