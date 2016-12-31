@@ -196,7 +196,7 @@ class LEDStrip extends EventEmitter {
     setCycle(seconds) {
         if (seconds === false) seconds = 0;
         this.sendCommand("config/cycle?value="+parseInt(seconds));
-        this.cycle = cycle;
+        this.cycle = seconds;
         this.emit("StripUpdated",this.id,["configuration"]);
     }
     setLength(length) {
