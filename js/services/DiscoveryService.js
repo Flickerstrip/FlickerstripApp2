@@ -50,6 +50,14 @@ extend(This.prototype,{
             this.client = null;
         }.bind(this));
         this.client.close();
+
+        this.clearEndpoints()
+    },
+    clearEndpoints:function() {
+        _.each(this.endpoints,function(value,key) {
+            this.emit("Lost",key);
+        }.bind(this));
+        this.endpoints = {};
     },
     startListening: function() {
         this.client = dgram.createSocket("udp4");
@@ -72,6 +80,7 @@ extend(This.prototype,{
         }
 
         if (!this.ready) return;
+
 
         this.client.send(discoveryProbe, 0, discoveryProbe.length, 1900, "239.255.255.250");
 
