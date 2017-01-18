@@ -45,10 +45,6 @@ class StripListing extends React.Component {
         FlickerstripManager.removeListener("StripRemoved",this.updateDatasource);
     }
     rowPressed(strip) {
-        if (FlickerstripManager.getSelectedCount() != 0) {
-            return strip.selected ? StripActions.deselectStrip(strip.id) : StripActions.selectStrip(strip.id)
-        }
-
         this.props.navigator.push({
             component: StripDetails,
             center:{text:strip.name == "" ? "Unknown Strip" : strip.name},
