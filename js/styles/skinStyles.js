@@ -11,16 +11,18 @@ var touchableUnderlayColor = highlightColor;
 
 const skinStyles = StyleSheet.create({
     rowSelected: {
-        paddingLeft: 10,
-        paddingRight: 10,
         height: 50,
         backgroundColor: highlightColor,
         borderBottomWidth: 1,
         borderColor: panelBorderColor,
     },
-    rowDeselected: {
+    firstElementRowPadding: {
         paddingLeft: 10,
+    },
+    lastElementRowPadding: {
         paddingRight: 10,
+    },
+    rowDeselected: {
         height: 50,
         backgroundColor: "white",
         borderBottomWidth: 1,

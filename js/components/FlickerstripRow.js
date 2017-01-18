@@ -18,6 +18,7 @@ import skinStyles from "~/styles/skinStyles";
 import Checkbox from "~/components/Checkbox";
 import UpdateManager from "~/stores/UpdateManager.js";
 import FIcon from "react-native-vector-icons/FontAwesome";
+import layoutStyles from "~/styles/layoutStyles";
 import renderIf from "~/utils/renderIf"
 
 class FlickerstripRow extends React.Component {
@@ -46,19 +47,27 @@ class FlickerstripRow extends React.Component {
         console.log("update manager",this.props.strip.firmware,UpdateManager.getLatestVersion(),UpdateManager.compareLatestVersion(this.props.strip.firmware));
         return (
             <View key={this.state.key}>
-                <View style={[styles.row,styles.flexRow, this.props.strip.selected ? skinStyles.rowSelected : skinStyles.rowDeselected]}>
-                    <Checkbox
+                <View style={[layoutStyles.flexAlignStretch, layoutStyles.row,layoutStyles.flexRow, this.props.strip.selected ? skinStyles.rowSelected : skinStyles.rowDeselected]}>
+                    <TouchableHighlight
+                        underlayColor={skinStyles.touchableUnderlayColor}
+                        style={[layoutStyles.flex0, layoutStyles.flexRow, layoutStyles.flexAlignCenter]}
                         onPress={() => this.props.onSelectToggle(this.props.strip)}
-                        checked={this.props.strip.selected}
-                    />
+                    >
+                        <View style={skinStyles.firstElementRowPadding}>
+                            <Checkbox
+                                onPress={() => this.props.onSelectToggle(this.props.strip)}
+                                checked={this.props.strip.selected}
+                            />
+                        </View>
+                    </TouchableHighlight>
                     <TouchableHighlight
                         underlayColor={skinStyles.touchableUnderlayColor}
                         onPress={() => { this.props.onPress(this.props.strip) } }
-                        style={[styles.flex1,styles.flexRow]}
-                        >
-                        <View style={[styles.flex1,styles.flexRow]}>
-                            <View style={styles.flex1}>
-                                <Text style={styles.movieTitle} numberOfLines={2}>
+                        style={[layoutStyles.flex1,layoutStyles.flexRow]}
+                    >
+                        <View style={[layoutStyles.flex1,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}>
+                            <View style={layoutStyles.flex1}>
+                                <Text numberOfLines={2}>
                                     {this.props.strip.name == "" ? "Unknown Strip" : this.props.strip.name}
                                 </Text>
                             </View>
@@ -71,30 +80,22 @@ class FlickerstripRow extends React.Component {
                             )}
                         </View>
                     </TouchableHighlight>
-                    <Switch
-                        onValueChange={() => { this.props.onToggle(this.props.strip) }}
-                        style={[styles.flex0]}
-                        value={this.props.strip.power == 1} />
+                    <TouchableHighlight
+                        underlayColor={skinStyles.touchableUnderlayColor}
+                        style={[layoutStyles.flex0, layoutStyles.flexRow, layoutStyles.flexAlignCenter, skinStyles.lastElementRowPadding]}
+                        onPress={() => { this.props.onToggle(this.props.strip) }}
+                    >
+                        <View style={layoutStyles.flex0}>
+                            <Switch
+                                onValueChange={() => { this.props.onToggle(this.props.strip) }}
+                                value={this.props.strip.power == 1}
+                            />
+                        </View>
+                    </TouchableHighlight>
                 </View>
             </View>
         );
     }
 }
-
-var styles = StyleSheet.create({
-    row: {
-        padding: 5,
-    },
-    flexRow: {
-        alignItems: "center",
-        flexDirection: "row",
-    },
-    flex0: {
-        flex: 0,
-    },
-    flex1: {
-        flex: 1,
-    },
-});
 
 export default FlickerstripRow;

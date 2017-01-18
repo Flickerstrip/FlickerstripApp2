@@ -52,7 +52,7 @@ class LightworkRow extends React.Component {
                         style={[layoutStyles.flexAlignCenter, layoutStyles.flexRow]}
                         onPress={() => this.props.onSelectToggle(this.props.lightwork)}
                     >
-                        <View>
+                        <View style={skinStyles.firstElementRowPadding}>
                             <Checkbox
                                 onPress={() => this.props.onSelectToggle(this.props.lightwork)}
                                 checked={selected}
@@ -106,7 +106,7 @@ class LightworkRow extends React.Component {
                     <TouchableHighlight
                         underlayColor={skinStyles.touchableUnderlayColor}
                         onPress={this.props.onDrilldown}
-                        style={[layoutStyles.flex0,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}
+                        style={[layoutStyles.flex0,layoutStyles.flexRow, layoutStyles.flexAlignCenter, skinStyles.lastElementRowPadding]}
                     >
                         <EIcon
                             name="chevron-right"
