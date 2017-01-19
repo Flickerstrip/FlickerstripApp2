@@ -29,20 +29,25 @@ class LightworkRow extends React.Component {
         this.state = {key: null};
 
         this.lightworkUpdated = this.lightworkUpdated.bind(this);
+        this.refresh = this.refresh.bind(this);
     }
     componentWillMount() {
         LightworkManager.on("LightworkUpdated",this.lightworkUpdated);
+        if (this.props.rowRefresher) this.props.rowRefresher.addListener("Refresh",this.refresh)
     }
     componentWillUnmount() {
         LightworkManager.removeListener("LightworkUpdated",this.lightworkUpdated);
+        if (this.props.rowRefresher) this.props.rowRefresher.removeListener("Refresh",this.refresh)
     }
     lightworkUpdated(id) {
         if (id == this.props.lightwork.id) this.refresh();
     }
     refresh() {
+        console.log("lw refresh called");
         this.setState({key:Math.random()});
     }
     render() {
+        console.log("lw row render called");
         var selected = typeof this.props.selected == "function" ? this.props.selected() : this.props.selected;
         return (
             <View key={this.state.key} style={[layoutStyles.flexAlignStretch, layoutStyles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>
@@ -64,7 +69,7 @@ class LightworkRow extends React.Component {
                     underlayColor={skinStyles.touchableUnderlayColor}
                     onPress={this.props.onPress}
                     onLongPress={this.props.onLongPress}
-                    style={[layoutStyles.flex1,layoutStyles.flexRow]}
+                    style={[layoutStyles.flex1,layoutStyles.flexRow, this.props.strip ? skinStyles.firstElementRowPadding : {}]}
                 >
                     <View style={[layoutStyles.flex1,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}>
                         <View style={[layoutStyles.flex1]}>
@@ -93,7 +98,7 @@ class LightworkRow extends React.Component {
                     <TouchableHighlight
                         underlayColor={skinStyles.touchableUnderlayColor}
                         onPress={this.props.onDelete}
-                        style={[layoutStyles.flex0,layoutStyles.flexRow, layoutStyles.flexAlignCenter]}
+                        style={[layoutStyles.flex0,layoutStyles.flexRow, layoutStyles.flexAlignCenter, !this.props.onDrilldown ? skinStyles.firstElementRowPadding  : {}]}
                     >
                         <EIcon
                             name="trash"

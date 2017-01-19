@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 var _ = require("lodash");
+var EventEmitter = require("EventEmitter");
 
 import Prompt from 'react-native-prompt';
 import layoutStyles from "~/styles/layoutStyles";
@@ -41,6 +42,8 @@ class StripDetails extends React.Component {
         };
 
         this.stripRemovedHandler = this.stripRemovedHandler.bind(this);
+
+        this.rowRefresher = new EventEmitter();
     }
     componentWillMount() {
         this.listener = FlickerstripManager.addStripListener({
@@ -61,17 +64,19 @@ class StripDetails extends React.Component {
     refresh() {
         this.updateDatasource();
         this.setState({key: Math.random()});
+        this.rowRefresher.emit("Refresh");
     }
     renderRow(lightwork: Object,sectionID: number | string,rowID: number | string, highlightRowFunc: (sectionID: ?number | string, rowID: ?number | string) => void) {
         return (
             <LightworkRow
                 lightwork={lightwork}
                 strip={this.props.strip}
-                selected={this.props.strip.selectedPattern == lightwork.id}
+                rowRefresher={this.rowRefresher}
+                selected={() => this.props.strip.selectedPattern == lightwork.id}
                 onPress={() => { StripActions.selectPattern(this.props.strip.id, lightwork.id); }}
                 onLongPress={() => MenuButton.showMenu([
                     {"label":"Download Lightwork", onPress:() => StripActions.downloadLightwork(this.props.strip.id, lightwork.id) },
-                    {"label":"Delete Lightwork", destructive:true, onPress:() => { console.log("deleting lightwork.."); }},
+                    {"label":"Delete Lightwork", destructive:true, onPress:() => { StripActions.deletePattern(this.props.strip.id, lightwork.id); }},
                     {"label":"Cancel", cancel:true},
                 ]) }
                 onDelete={() => { StripActions.deletePattern(this.props.strip.id, lightwork.id); }}
@@ -240,6 +245,7 @@ class StripDetails extends React.Component {
         )
     }
     render() {
+        console.log("selected pattern: ",this.props.strip.selectedPattern);
         return (
             <ListView
                 style={{flex: 1}}
