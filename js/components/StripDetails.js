@@ -60,7 +60,7 @@ class StripDetails extends React.Component {
     }
     refresh() {
         this.updateDatasource();
-        this.setState({key:Math.random()});
+        this.setState({key: Math.random()});
     }
     renderRow(lightwork: Object,sectionID: number | string,rowID: number | string, highlightRowFunc: (sectionID: ?number | string, rowID: ?number | string) => void) {
         return (
@@ -93,7 +93,7 @@ class StripDetails extends React.Component {
         if (this.props.strip.reversed) stripLengthString += " (reversed)";
         var stripName = this.props.strip.name == "" ? "Unknown Strip" : this.props.strip.name;
         return (
-            <View style={layoutStyles.flexColumn}>
+            <View style={layoutStyles.flexColumn} key={this.state.key}>
                 <View style={[layoutStyles.flexRow, layoutStyles.flexAlignCenter]}>
                     <Text style={{padding: 5}}>Brightness: </Text>
                     <Slider
@@ -242,7 +242,6 @@ class StripDetails extends React.Component {
     render() {
         return (
             <ListView
-                key={this.state.key}
                 style={{flex: 1}}
                 enableEmptySections={true}
                 renderRow={this.renderRow.bind(this)}

@@ -90,7 +90,7 @@ android {
         applicationId "com.hohmbody.flickerstrip"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 119
+        versionCode 120
         versionName "0.2.5"
         ndk {
             abiFilters "armeabi-v7a", "x86"
