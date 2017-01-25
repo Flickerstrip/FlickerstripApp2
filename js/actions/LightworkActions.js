@@ -56,5 +56,12 @@ export default {
             name: duplicateName,
         });
     },
+    configureLightwork: function(lightworkId,configuration) {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.CONFIGURE_LIGHTWORK,
+            lightworkId: lightworkId,
+            configuration: configuration,
+        });
+    },
 };
 

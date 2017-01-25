@@ -245,7 +245,6 @@ class StripDetails extends React.Component {
         )
     }
     render() {
-        console.log("selected pattern: ",this.props.strip.selectedPattern);
         return (
             <ListView
                 style={{flex: 1}}

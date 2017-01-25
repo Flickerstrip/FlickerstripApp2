@@ -21,6 +21,7 @@ export default keyMirror({
     STAR_LIGHTWORK: null,
     DELETE_LIGHTWORK: null,
     DUPLICATE_LIGHTWORK: null,
+    CONFIGURE_LIGHTWORK: null,
 
     EDITOR_OPEN_LIGHTWORK: null,
     EDITOR_CLOSE_LIGHTWORK: null,

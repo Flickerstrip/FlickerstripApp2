@@ -8,6 +8,7 @@ import {
 } from "react-native";
 
 import LightworkRow from "~/components/LightworkRow.js";
+import LightworkConfiguration from "~/components/LightworkConfiguration.js";
 import PaginatedListView from "~/components/PaginatedListView.js";
 import LightworkActions from "~/actions/LightworkActions.js";
 import LightworkManager from "~/stores/LightworkManager.js";
@@ -47,6 +48,19 @@ class LightworkRepository extends React.Component {
                 onLongPress    = {() => MenuButton.showMenu([
                     {"label":"Preview Lightwork", onPress:() => BulkActions.previewLightworkOnSelectedStrips(lightwork.id) },
                     {"label":"Load Lightwork", onPress:() => BulkActions.loadLightworkToSelectedStrips(lightwork.id) },
+                    {"label":"Configure Lightwork", onPress:() => {
+                        this.props.navigator.push({
+                            component: LightworkConfiguration,
+                            center: {text:lightwork.name},
+                            passProps: { lightwork: lightwork },
+                            left:{
+                                text: "Back",
+                                onPress:() => {
+                                    this.props.navigator.pop();
+                                }
+                            }
+                        });
+                    }},
                     {"label":"Clone to My Lightworks", onPress:() => LightworkActions.duplicateLightwork(lightwork.id,lightwork.name) },
                     //{"label":"Star Lightwork", onPress:() => { LightworkActions.starLightwork(lightwork.id,!lightwork.starred) }},
                     {"label":"Cancel", cancel:true},

@@ -43,11 +43,9 @@ class LightworkRow extends React.Component {
         if (id == this.props.lightwork.id) this.refresh();
     }
     refresh() {
-        console.log("lw refresh called");
         this.setState({key:Math.random()});
     }
     render() {
-        console.log("lw row render called");
         var selected = typeof this.props.selected == "function" ? this.props.selected() : this.props.selected;
         return (
             <View key={this.state.key} style={[layoutStyles.flexAlignStretch, layoutStyles.flexRow,selected ? skinStyles.rowSelected : skinStyles.rowDeselected] }>

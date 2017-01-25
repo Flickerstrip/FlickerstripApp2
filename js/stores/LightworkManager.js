@@ -48,6 +48,10 @@ class LightworkManager extends EventEmitter {
 
                     this.saveLightwork(null,duplicate);
                 }.bind(this));
+            } else if (e.type === ActionTypes.CONFIGURE_LIGHTWORK) {
+                if (!this.lightworkConfiguration[e.lightworkId]) this.lightworkConfiguration[e.lightworkId] = {};
+                this.lightworkConfiguration[e.lightworkId] = _.extend(this.lightworkConfiguration[e.lightworkId],e.configuration);
+                this.persistLightworks();
             }
         }.bind(this));
 
@@ -61,6 +65,11 @@ class LightworkManager extends EventEmitter {
         this.lightworksById = {};
         this.userLightworks = {};
         this.publicLightworks = null;
+        this.lightworkConfiguration = {};
+    }
+    getConfiguration(id) {
+        if (this.lightworkConfiguration[id]) return this.lightworkConfiguration[id];
+        return null;
     }
     settingsLoaded() {
         if (SettingsManager.storedLightworksById) {
@@ -79,6 +88,10 @@ class LightworkManager extends EventEmitter {
 
         if (SettingsManager.publicLightworks) {
             this.publicLightworks = SettingsManager.publicLightworks;
+        }
+
+        if (SettingsManager.lightworkConfiguration) {
+            this.lightworkConfiguration = SettingsManager.lightworkConfiguration;
         }
     }
     lightworkDeleted(lightworkId,silent) {
@@ -103,18 +116,54 @@ class LightworkManager extends EventEmitter {
         }.bind(this));
         if (!silent) this.emit("LightworkListUpdated"); //TODO do we need this? this is internal state, we dont necessarily need to let anyone know..
     }
-    getLightworkData(id,cb) {
+    transformLightwork(lw,configuration) {
+        //console.log("transforming lightwork",lw.id,configuration);
+        var xformed = _.extend({},lw);
+        if (configuration.brightness === undefined) configuration.brightness = 100;
+        if (configuration.speed === undefined) configuration.speed = 1;
+
+        var brightnessMultiplier = configuration.brightness / 100.0;
+        xformed.fps = Math.round(xformed.fps * configuration.speed);
+
+        if (xformed.fps < 0) {
+            xformed.fps = -xformed.fps;
+            //flip the array..
+
+            xformed.pixelData = new Uint8Array(lw.pixelData.length);
+            //console.log("pix: ",lw.pixels,"frames: ",lw.frames);
+            for (var i=0; i<xformed.pixels * xformed.frames; i++) {
+                var oframe = Math.floor(i / xformed.pixels);
+                var pix = i % xformed.pixels;
+                var nframe = xformed.frames - oframe;
+                var ni = nframe * xformed.pixels + pix;
+                //console.log(i,oframe,pix,nframe,ni);
+                xformed.pixelData[3*i] = Math.round(lw.pixelData[3*ni] * brightnessMultiplier);
+                xformed.pixelData[3*i+1] = Math.round(lw.pixelData[3*ni+1] * brightnessMultiplier);
+                xformed.pixelData[3*i+2] = Math.round(lw.pixelData[3*ni+2] * brightnessMultiplier);
+            }
+        } else {
+            xformed.pixelData = new Uint8Array(xformed.pixelData);
+            for (var i=0; i<xformed.pixelData.length; i++) {
+                xformed.pixelData[i] = Math.round(xformed.pixelData[i] * brightnessMultiplier);
+            }
+        }
+
+        return xformed;
+    }
+    getLightworkData(id,cb,noTransform) {
         var lw = this.getLightwork(id);
         if (!lw) lw = EditorManager.getLightwork(id);
         if (!lw) return cb(null);
 
         if (lw.pixelData) {
+            if (!noTransform && this.lightworkConfiguration[id] !== undefined) lw = this.transformLightwork(lw,this.lightworkConfiguration[id]);
             cb(lw);
         } else {
             if (!NetworkManager.hasInternet()) return cb(null);
             LightworkService.fetchLightworkData(lw.id,function(lwdata) {
                 _.extend(lw,lwdata);
                 lw.pixelData = b64.toByteArray(lw.pixelData);
+                if (!noTransform && this.lightworkConfiguration[id] !== undefined) lw = this.transformLightwork(lw,this.lightworkConfiguration[id]);
                 cb(lw);
             }.bind(this));
         }
@@ -156,7 +205,7 @@ class LightworkManager extends EventEmitter {
 
         //console.log("queue",this.queuedActions.length,_.each(_.cloneDeep(this.queuedActions),(item) => item.lightwork ? delete item.lightwork["pixelData"] : null));
 
-        SettingsManager.storeLightworks(userLightworks,lightworksById,this.queuedActions,this.publicLightworks);
+        SettingsManager.storeLightworks(userLightworks,lightworksById,this.queuedActions,this.publicLightworks,this.lightworkConfiguration);
     }
     nextQueue() {
         console.log("next called");

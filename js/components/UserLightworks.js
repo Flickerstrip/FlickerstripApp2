@@ -10,6 +10,7 @@ import {
 var _ = require("lodash");
 
 import Prompt from 'react-native-prompt';
+import LightworkConfiguration from "~/components/LightworkConfiguration.js";
 import LightworkRow from "~/components/LightworkRow.js";
 import LightworkEditor from "~/components/LightworkEditor.js";
 import EditorActions from "~/actions/EditorActions.js";
@@ -61,6 +62,21 @@ class UserLightworks extends React.Component {
                 onPress       = {() => LightworkManager.getSelectedCount() == 0 ? BulkActions.previewLightworkOnSelectedStrips(lightwork.id) : lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
                 onSelectToggle= {() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
                 onLongPress   = {() => MenuButton.showMenu([
+                    {"label":"Preview Lightwork", onPress:() => BulkActions.previewLightworkOnSelectedStrips(lightwork.id) },
+                    {"label":"Load Lightwork", onPress:() => BulkActions.loadLightworkToSelectedStrips(lightwork.id) },
+                    {"label":"Configure Lightwork", onPress:() => {
+                        this.props.navigator.push({
+                            component: LightworkConfiguration,
+                            center: {text:lightwork.name},
+                            passProps: { lightwork: lightwork },
+                            left:{
+                                text: "Back",
+                                onPress:() => {
+                                    this.props.navigator.pop();
+                                }
+                            }
+                        });
+                    }},
                     {"label":"Duplicate Lightwork", onPress:() => { 
                         this.setState({
                             promptName:"Duplicate Lightwork",
@@ -89,7 +105,6 @@ class UserLightworks extends React.Component {
     }
     refreshUserLightworks() {
         this.loading = true;
-        console.log("refreshing user lightworks..",SettingsManager.getUserId());
         LightworkManager.getUserLightworks(SettingsManager.getUserId(),function(result) {
             //console.log("got results",result.length,result);
             this.loading = false;

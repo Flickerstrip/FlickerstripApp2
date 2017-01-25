@@ -31,7 +31,6 @@ class UpdateManager extends EventEmitter {
         });
     }
     checkForUpdates() {
-        console.log("checking updates");
         var opt = {
             headers: {
                 "User-Agent":"Flickerstrip-App",
@@ -41,12 +40,9 @@ class UpdateManager extends EventEmitter {
         }
         fetch(Configuration.FIRMWARE_LOCATION+"/latest.json",opt).then((response) => response.json()).then(function(json) {
             this.latestRelease = json;
-            console.log("release info",this.latestRelease);
             this.emit("LatestReleaseUpdated",this.latestRelease.latest);
             return this.isVersionDownloaded(this.latestRelease.latest).then(function(isDownloaded) {
-                console.log("version is downloaded",isDownloaded);
                 if (!isDownloaded) return this.downloadFirmwareVersion(this.latestRelease.latest).then(function() {
-                    console.log("COMPLETED DOWNLOAD!!");
                 }.bind(this));
             }.bind(this));
         }.bind(this));
@@ -59,7 +55,6 @@ class UpdateManager extends EventEmitter {
     }
     downloadFirmwareVersion(version) {
         var downloadPath = Configuration.FIRMWARE_LOCATION+"/"+version+".bin";
-        console.log("downloading firmware from",downloadPath);
         return RNFS.downloadFile({
             fromUrl: downloadPath,
             toFile: RNFS.DocumentDirectoryPath+"/firmware/"+version+".bin",

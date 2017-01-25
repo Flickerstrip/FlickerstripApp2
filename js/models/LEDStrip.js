@@ -98,7 +98,7 @@ class LEDStrip extends EventEmitter {
             if (change) changedProperties.push(key);
         }.bind(this));
 
-        if (changedProperties.length) console.log("Changed: ",changedProperties.join(","));
+        //if (changedProperties.length) console.log("Changed: ",changedProperties.join(","));
 
         _.extend(this,status);
         delete this.type;
@@ -115,7 +115,7 @@ class LEDStrip extends EventEmitter {
         if (_.intersection(changedProperties,["name","group","length","start","end","fade","reversed","cycle"]).length) events.push("configuration");
         if (_.intersection(changedProperties,["brightness","selectedPattern","memory"]).length) events.push("state");
 
-        if (events.length) console.log("emitting events: ",events.join(", "));
+        //if (events.length) console.log("emitting events: ",events.join(", "));
         if (events.length) this.emit("StripUpdated",this.id,events);
     }
     handleQueue() {

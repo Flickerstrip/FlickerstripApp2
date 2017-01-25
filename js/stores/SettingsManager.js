@@ -23,6 +23,7 @@ class SettingsManager extends EventEmitter {
         this.storedLightworksById = null;
         this.queuedActions = null;
         this.selectedStrips = null;
+        this.lightworkConfiguration = null;
 
         NetworkManager.on("ConnectionStatus",this.retryLogin.bind(this));
 
@@ -103,11 +104,12 @@ class SettingsManager extends EventEmitter {
         this.ipStrips = ipStrips;
         this.persistSettings();
     }
-    storeLightworks(userLightworks,lightworksById, queuedActions, publicLightworks) {
+    storeLightworks(userLightworks,lightworksById, queuedActions, publicLightworks,lightworkConfiguration) {
         this.userLightworks = userLightworks;
         this.storedLightworksById = lightworksById;
         this.queuedActions = queuedActions;
         this.publicLightworks = publicLightworks;
+        this.lightworkConfiguration = lightworkConfiguration;
         this.persistSettings();
     }
     persistSettings() {
@@ -119,6 +121,7 @@ class SettingsManager extends EventEmitter {
             queuedActions: this.queuedActions,
             selectedStrips: this.selectedStrips,
             publicLightworks: this.publicLightworks,
+            lightworkConfiguration: this.lightworkConfiguration,
             ipStrips: this.ipStrips,
         }
         AsyncStorage.setItem(asyncStorageKey,JSON.stringify(save)); //check for errors?
