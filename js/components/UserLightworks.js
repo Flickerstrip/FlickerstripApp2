@@ -78,7 +78,9 @@ class UserLightworks extends React.Component {
                         });
                     }},
                     {"label":"Duplicate Lightwork", onPress:() => { 
+                        console.log("setting state");
                         this.setState({
+                            key: Math.random(),
                             promptName:"Duplicate Lightwork",
                             promptPlaceholder:"Lightwork name",
                             promptValue:lightwork.name+" Copy",
@@ -121,9 +123,11 @@ class UserLightworks extends React.Component {
     }
     renderHeader() {
         return (
-            <View>
-                {SettingsManager.isUserValid() ? null : (<Text>Note: You are not logged in, Lightworks are stored locally, log in to preserve them!</Text>)}
+            <View key={this.state.key}>
+                {/* What is going on here?? for some reason a small visible element here fixes a bug that makes the Prompt fail to display TODO fixme */}
+                <Text style={{height: 2, color: "white"}}></Text> 
                 <Prompt
+                    key={this.state.key+"_prompt"}
                     title={this.state.promptName}
                     placeholder={this.state.promptPlaceholder}
                     defaultValue={this.state.promptValue}
@@ -134,6 +138,7 @@ class UserLightworks extends React.Component {
                         this.state.promptCallback(value);
                     }}
                 />
+                {SettingsManager.isUserValid() ? null : (<Text>Note: You are not logged in, Lightworks are stored locally, log in to preserve them!</Text>)}
             </View>
         )
     }
