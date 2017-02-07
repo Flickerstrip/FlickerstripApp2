@@ -17,7 +17,7 @@ var b64 = require("base64-js");
 class LightworkManager extends EventEmitter {
     constructor(props) {
         super(props);
-        this.setMaxListeners(100);
+        this.setMaxListeners(500);
 
         FlickerstripDispatcher.register(function(e) {
             if (e.type === ActionTypes.SELECT_LIGHTWORK) {
@@ -352,7 +352,7 @@ class LightworkManager extends EventEmitter {
                 this.userLightworks[userId].lastRefresh = new Date().getTime();
 
                 _.each(result,function(lw) {
-                    this.lightworksById[lw.id] = lw;
+                    _.extend(this.lightworksById[lw.id],lw);
                     this.userLightworks[userId].lightworks.push(lw.id);
                 }.bind(this));
 
