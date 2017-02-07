@@ -146,9 +146,10 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
 
 			this.requestFrame();
 		},
-        generateColorPanel:function(c,index) {
+        generateColorPanel:function(c,index,noDouble) {
             var $panel = $("<div class='color'></div>").css("background-color",c.toHexString());
             var handler = _.bind(function(e) {
+                console.log("handler called",e.type);
                 if (index != null && (e.type == "press" || e.button == 2)) {
                     if (e.shiftKey) {
                         c = this.bg;
@@ -192,17 +193,16 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
             if (platform == "mobile") {
 
                 var mc = new Hammer.Manager($panel.get(0));
-                mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
+                if (!noDouble) mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
                 mc.add( new Hammer.Tap({ event: 'singletap' }) );
+                mc.add( new Hammer.Press({ event: 'press' }) );
 
-                mc.get('doubletap').recognizeWith('singletap');
-                mc.get('singletap').requireFailure('doubletap');
+                if (!noDouble) mc.get('doubletap').recognizeWith('singletap');
+                if (!noDouble) mc.get('singletap').requireFailure('doubletap');
                 
                 mc.on("singletap",handler);
                 mc.on("press",handler);
-                mc.on("doubletap",dblHandler);
-                
-                //new Hammer($panel.get(0)).on("tap doubletap press",handler);
+                if (!noDouble) mc.on("doubletap",dblHandler);
             }
 
             return $panel;
@@ -218,7 +218,7 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
             ];
             _.each(colors,_.bind(function(c) {
                 if (isBlackOrWhite(c)) c = this.fg;
-                specialPalette.push(this.generateColorPanel(c));
+                specialPalette.push(this.generateColorPanel(c,undefined,true));
             },this));
 
             //Generate normal palette
@@ -604,6 +604,16 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
                 this.doLineDrawing(pos,pos,false);
                 this.addHistory(this.pendingHistory);
                 this.pendingHistory = [];
+            },this));
+
+            hammer.on("press",_.bind(function(e) {
+                var pos = util.getCursorPosition(this.drawingArea,e,this.displayMargins.left,this.displayMargins.top);
+                if (pos == null) return;
+                var image_pos = this.translateCanvasToImage(pos[0],pos[1]);
+
+                var pixel = this.image.getContext("2d").getImageData(image_pos[0],image_pos[1], 1, 1).data;
+                this.fg = new tinycolor({r:pixel[0],g:pixel[1],b:pixel[2]});
+                this.updateColorUI();
             },this));
 
             hammer.on("panstart",_.bind(function(e) {
