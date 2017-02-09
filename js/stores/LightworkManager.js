@@ -352,7 +352,10 @@ class LightworkManager extends EventEmitter {
                 this.userLightworks[userId].lastRefresh = new Date().getTime();
 
                 _.each(result,function(lw) {
-                    _.extend(this.lightworksById[lw.id],lw);
+                    var exlw = this.lightworksById[lw.id];
+                    if (!exlw) exlw = {};
+                    _.extend(exlw,lw);
+                    this.lightworksById[lw.id] = exlw;
                     this.userLightworks[userId].lightworks.push(lw.id);
                 }.bind(this));
 

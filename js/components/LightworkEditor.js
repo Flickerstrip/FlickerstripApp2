@@ -54,6 +54,9 @@ class LightworkEditor extends React.Component {
                         ref="webview"
                         style={layoutStyles.flexColumn}
                         javaScriptEnabled={true}
+                        scalesPageToFit={false}
+                        multipleTouchEnabled={false}
+                        keyboardDisplayRequiresUserAction={false}
                         bounces={false}
                         scrollEnabled={false}
                         injectedJavaScript={patternDefinition}

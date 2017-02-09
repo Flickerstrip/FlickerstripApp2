@@ -21,8 +21,22 @@
     .flex(0 0 auto);
 }
 
+.palette {
+    .align-items(stretch);
+
+    .special, .colors { .align-items(center); }
+
+    .special { display: none; }
+    &.showSpecial {
+        .special { display: flex; }
+        .colors { display: none; }
+    }
+
+    .swapPalette { margin-right: 1px; }
+}
+
 .patternPreview {
-    height: 20px;
+    height: 15px;
 }
 
 .editorcontainer {
@@ -34,7 +48,8 @@
     .flex-direction(row);
 
     .currentColor { flex: 0 0 auto; }
-    .metricsPanel { flex: 1 1 auto; }
+    .metricsPanel { flex: 0 0 auto; }
+    .palette { flex: 1 1 auto; }
 
     .saveImage, .loadImage {
         display: none;

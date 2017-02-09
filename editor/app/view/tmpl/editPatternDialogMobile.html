@@ -8,19 +8,24 @@
             </div>
         </div>
         <div class="metricsPanel">
-            <label><span class="labelText">FPS: </span><span class="fps_value valueText"></span><input type="number" pattern="\d*" class="fps" /></label>
-            <label><span class="labelText">Frames: </span><span class="frames_value valueText"></span><input type="number" pattern="\d*" class="frames" /></label>
-            <label><span class="labelText">Pixels: </span><span class="pixels_value valueText"></span><input type="number" pattern="\d*" class="pixels" /></label>
-            <button type="button" class="saveImage btn btn-default btn-xs" title="Save Lightwork as image" ><span class="glyphicon glyphicon-save"></span></button>&nbsp;
-            <button type="button" class="loadImage btn btn-default btn-xs" title="Load Lightwork from image" ><span class="glyphicon glyphicon-folder-open"></span></button>&nbsp;
+            <div class="mrow"><span class="labelText">FPS: </span><span class="fps_value valueText"></span></div>
+            <div class="mrow"><span class="labelText">Fra: </span><span class="frames_value valueText"></span></div>
+            <div class="mrow"><span class="labelText">Pix: </span><span class="pixels_value valueText"></span></div>
+            <div class="metricsPopup">
+                <label><span>FPS:</span><input type="number" pattern="\d*" class="fps" /></label>
+                <label><span>Frames:</span><input type="number" pattern="\d*" class="frames" /></label>
+                <label><span>Pixels:</span><input type="number" pattern="\d*" class="pixels" /></label>
+            </div>
         </div>
-        <div style="margin-right: 5px" class="undoredo">
-            <button class="undoButton btn btn-xs btn-default"><i class="glyphicon glyphicon-share-alt glyphicon-flipped"></i></button>
-            <button class="redoButton btn btn-xs btn-default"><i class="glyphicon glyphicon-share-alt"></i></button>
+        <div class="palette" title="This is the color pallet, left click to load, right click to set, shift click for background color">
+            <button class="swapPalette btn btn-xs btn-default"><i class="glyphicon glyphicon-random"></i></button>
+            <div class="special"></div>
+            <div class="colors"></div>
         </div>
-    </div>
-    <div class="controlRow">
-        <div class="palette" title="This is the color pallet, left click to load, right click to set, shift click for background color"></div>
+        <div class="undoredo">
+            <button class="undoButton btn btn-sm btn-default"><i class="glyphicon glyphicon-share-alt glyphicon-flipped"></i></button>
+            <button class="redoButton btn btn-sm btn-default"><i class="glyphicon glyphicon-share-alt"></i></button>
+        </div>
     </div>
 </div>
 <div class="editorcontainer flexExpand"></div>

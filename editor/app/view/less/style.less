@@ -168,18 +168,63 @@
     position: relative;
     top: 2px;
 }
+
+.redoButton {
+    margin-right: 2px
+}
+
 .undoButton {
-    margin-right: 5px;
+    margin-right: 0px;
+    margin-left: 4px;
 }
 
 .metricsPanel {
-    label {
-        display: inline-block;
-        border: 1px solid #ddd;
+    .mrow {
+        font-size: 10px;
+        display: block;
+        margin: 0;
+        line-height: 9px;
+    }
+    border: 1px solid #666;
+    border-radius: 3px;
+    margin: 0 1px;
+    padding: 2px;
+
+    position: relative;
+    .metricsPopup {
+        display: none;
+        position: absolute;
+        top: -2px;
+        left: -1px;
+        background: white;
+        border: 2px solid black;
         border-radius: 5px;
-        font-size: 12px;
-        padding: 1px 3px;
-        margin: 2px 1px;
+        width: 40vw;
+        z-index:10;
+
+        label {
+            display: block;
+            border-bottom:1px solid #eee;
+            padding:4px;
+            &:last-child {
+                border: none;
+            }
+        }
+
+        span {
+            display: inline-block;
+            width: 50%;
+        }
+
+        input {
+            display: inline-block;
+            border: 1px solid #666;
+            width: 50%;
+        }
+    }
+
+    &.showPopup .metricsPopup {
+        display: block;
     }
 }
 
@@ -202,16 +247,18 @@
 
     .current {
         .flex(0 0 auto);
-        padding: 1px;
-        border: 1px solid #ddd;
-        border-radius: 3px;
+        //padding: 1px;
+        //border: 1px solid #ddd;
+        //border-radius: 3px;
 
         .sp-replacer {
             background: none;
             border: none;
+            padding: 0;
         }
         .sp-preview {
-            height:17px;
+            height:35px;
+            width:35px;
             margin-right: 0;
         }
         .sp-dd {
@@ -219,20 +266,24 @@
         }
     }
 
-    .palette {
+    .palette,.colors,.special {
         .flex-display;
         .flex-direction(row);
+    }
 
-        .color {
-            .flex(1 1 auto);
-            height: 20px;
-            padding: 0;
-            //margin: 2px;
-            border: 1px solid #666;
-            border-right: none;
-            &:first-child {
-                border-left: none;
-            }
+    .colors,.special {
+        flex: 1 1 auto;
+    }
+
+    .palette .color {
+        .flex(1 1 auto);
+        height: 20px;
+        padding: 0;
+        //margin: 2px;
+        border: 1px solid #666;
+        border-right: none;
+        &:first-child {
+            border-left: none;
         }
     }
 

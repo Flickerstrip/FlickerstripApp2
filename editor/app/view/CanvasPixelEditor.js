@@ -45,6 +45,11 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
             this.$el = $(template);
             this.lastNonblackwhiteColor = null;
 
+            this.fg = new tinycolor("white");
+            this.bg = new tinycolor("black");
+            this.lastFg = this.fg;
+            this.lastBg = this.bg;
+
             this.currentHistoryIndex = null;
             this.history = [];
             this.pendingHistory = [];
@@ -146,10 +151,21 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
 
 			this.requestFrame();
 		},
+        setFg:function(c) {
+            if (tinycolor.equals(this.fg,c)) return;
+            this.lastFg = this.fg;
+            this.fg = c;
+            this.updateColorUI();
+        },
+        setBg:function(c) {
+            if (tinycolor.equals(this.bg,c)) return;
+            this.lastBg = this.bg;
+            this.bg = c;
+            this.updateColorUI();
+        },
         generateColorPanel:function(c,index,noDouble) {
             var $panel = $("<div class='color'></div>").css("background-color",c.toHexString());
             var handler = _.bind(function(e) {
-                console.log("handler called",e.type);
                 if (index != null && (e.type == "press" || e.button == 2)) {
                     if (e.shiftKey) {
                         c = this.bg;
@@ -162,11 +178,9 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
                     $(this).trigger("PaletteUpdated",[this.palette]);
                 } else {
                     if (e.shiftKey) {
-                        this.bg = c;
-                        this.updateColorUI();
+                        this.setBg(c);
                     } else {
-                        this.fg = c;
-                        this.updateColorUI();
+                        this.setFg(c);
                     }
                 }
                 e.preventDefault();
@@ -207,19 +221,27 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
 
             return $panel;
         },
+        doPaletteResize:function() {
+            var $colors = this.$paletteContainer.find(".colors");
+            var $special = this.$paletteContainer.find(".special");
+            var size = this.paletteBoxSize ? this.paletteBoxSize : ($colors.is(":visible") ? $colors : $special).children().first().width();
+            console.log("resizing palette: ",size);
+            this.$paletteContainer.find(".color").each(function() {
+                $(this).height(size);
+            });
+            this.paletteBoxSize = size;
+        },
         updatePalette:function() {
             //Generate special palette
-            var specialPalette = [];
-            var colors = [
+            var specialPalette = [
                 this.fg.clone().spin(nudgeSpinAmount),
                 this.fg.clone().spin(-nudgeSpinAmount),
                 this.fg.clone().lighten(nudgeBrightenAmount),
                 this.fg.clone().darken(nudgeBrightenAmount)
             ];
-            _.each(colors,_.bind(function(c) {
-                if (isBlackOrWhite(c)) c = this.fg;
-                specialPalette.push(this.generateColorPanel(c,undefined,true));
-            },this));
+            specialPalette = _.map(specialPalette,function(c) { return isBlackOrWhite(c) ? this.fg : c}.bind(this));
+            specialPalette.unshift(this.lastFg);
+            specialPalette = _.map(specialPalette,function(c) { return this.generateColorPanel(c,undefined,true)}.bind(this));
 
             //Generate normal palette
             var colorPalette = [];
@@ -228,29 +250,22 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
                 colorPalette.push(this.generateColorPanel(c,index));
             },this));
 
-            var $palette = this.$paletteContainer.empty();
-            $palette.append(specialPalette);
-            $palette.append(colorPalette);
-
-            setTimeout(function() {
-                $palette.children().each(function() {
-                    $(this).height($(this).width());
-                });
-                $palette.height($palette.height());
-            },20);
-
-            /*
-            if (platform == "mobile" && !isTablet) {
-                setTimeout(_.bind(function() {
-                    var nPerRow = palette.length/2;
-                    var paddingSpaceRequired = nPerRow*3+5; //1 px per border and 1px spacing
-                    var w = (this.$controls.width() - paddingSpaceRequired)/8;
-                    this.$controls.find(".sp-preview").width(Math.floor(w*2)+"px").height(Math.floor(w*2)+"px");
-                    this.$controls.find(".color").width(Math.floor(w)+"px").height(Math.floor(w)+"px");
-                    this.$controls.find(".metricsDisclosure").width(Math.floor(w)+"px");
-                },this),5);
+            if (this.$paletteContainer.find(".colors").length) {
+                var $colors = this.$paletteContainer.find(".colors").empty();
+                var $special = this.$paletteContainer.find(".special").empty();
+                $colors.append(colorPalette);
+                $special.append(specialPalette);
+            } else {
+                var $palette = this.$paletteContainer.empty();
+                $palette.append(specialPalette);
+                $palette.append(colorPalette);
             }
-            */
+
+            if (this.paletteBoxSize) {
+                this.doPaletteResize();
+            } else {
+                setTimeout(this.doPaletteResize.bind(this),20);
+            }
         },
         setImage:function(image) {
             this.image = image;
@@ -313,8 +328,8 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
             return [this.history.length > 0 && this.currentHistoryIndex != 0, this.history.length > 0 && this.currentHistoryIndex != null];
         },
         colorChanged:function() {
-            this.fg = tinycolor(this.$currentColorContainer.find(".fg").val());
-            this.bg = tinycolor(this.$currentColorContainer.find(".bg").val());
+            this.setFg(tinycolor(this.$currentColorContainer.find(".fg").val()));
+            this.setBg(tinycolor(this.$currentColorContainer.find(".bg").val()));
 
             if (!isBlackOrWhite(this.fg)) {
                 this.lastNonblackwhiteColor = this.fg;
@@ -507,9 +522,9 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
                     if (this.down.button == 2) { //grab color under mouse
                         var pixel = this.image.getContext("2d").getImageData(image_pos[0],image_pos[1], 1, 1).data;
                         if (e.shiftKey) {
-                            this.bg = new tinycolor({r:pixel[0],g:pixel[1],b:pixel[2]});
+                            this.setBg(new tinycolor({r:pixel[0],g:pixel[1],b:pixel[2]}));
                         } else {
-                            this.fg = new tinycolor({r:pixel[0],g:pixel[1],b:pixel[2]});
+                            this.setFg(new tinycolor({r:pixel[0],g:pixel[1],b:pixel[2]}));
                         }
                         this.updateColorUI();
                     } else {
@@ -550,23 +565,21 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
                 var code = e.keyCode;
 
                 var lastColor = this.fg;
+                var newColor = null;
                 if (code == 38) { //UP
-                    this.fg = this.fg.clone().lighten(nudgeBrightenAmount);
-                    if (isBlackOrWhite(this.fg)) this.fg = lastColor;
-                    this.updateColorUI();
+                    newColor = this.fg.clone().lighten(nudgeBrightenAmount);
+                    if (isBlackOrWhite(this.fg)) newColor = lastColor;
                 } else if (code == 40) { //DOWN
-                    this.fg = this.fg.clone().darken(nudgeBrightenAmount);
-                    if (isBlackOrWhite(this.fg)) this.fg = lastColor;
-                    this.updateColorUI();
+                    newColor = newColor.clone().darken(nudgeBrightenAmount);
+                    if (isBlackOrWhite(newColor)) newColor = lastColor;
                 } else if (code == 37) { //LEFT
-                    this.fg = this.fg.clone().spin(nudgeSpinAmount);
-                    if (isBlackOrWhite(this.fg)) this.fg = lastColor;
-                    this.updateColorUI();
+                    newColor = newColor.clone().spin(nudgeSpinAmount);
+                    if (isBlackOrWhite(newColor)) newColor = lastColor;
                 } else if (code == 39) { //RIGHT
-                    this.fg = this.fg.clone().spin(-nudgeSpinAmount);
-                    if (isBlackOrWhite(this.fg)) this.fg = lastColor;
-                    this.updateColorUI();
+                    newColor = newColor.clone().spin(-nudgeSpinAmount);
+                    if (isBlackOrWhite(newColor)) newColor = lastColor;
                 }
+                if (newColor) this.setFg(newColor);
             },this));
             ////////////////// MOUSE AND KEYBOARD CODE ///////////////////////////
         },
@@ -612,8 +625,7 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
                 var image_pos = this.translateCanvasToImage(pos[0],pos[1]);
 
                 var pixel = this.image.getContext("2d").getImageData(image_pos[0],image_pos[1], 1, 1).data;
-                this.fg = new tinycolor({r:pixel[0],g:pixel[1],b:pixel[2]});
-                this.updateColorUI();
+                this.setFg(new tinycolor({r:pixel[0],g:pixel[1],b:pixel[2]}));
             },this));
 
             hammer.on("panstart",_.bind(function(e) {

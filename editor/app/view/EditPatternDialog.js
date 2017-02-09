@@ -43,6 +43,10 @@ function($,tinycolor,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop_tem
                 this.stripRenderer.resizeToParent();
             },this),100);
 
+            this.$el.find(".swapPalette").click(function() {
+                $(this).closest(".palette").toggleClass("showSpecial");
+            });
+
             $(window).on("resize",_.bind(function() {
                 this.stripRenderer.resizeToParent();
                 this.editor.resizeToParent();
@@ -59,15 +63,40 @@ function($,tinycolor,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop_tem
             this.canvas = util.renderPattern(this.pattern.pixelData,this.pattern.pixels,this.pattern.frames,null,null,false,false);
             this.editor.setImage(this.canvas);
 
+            this.$metricsPanel = this.$el.find(".metricsPanel");
+
+            this.$metricsPanel.click(function() {
+                if ($(this).is(".showPopup")) return;
+
+                $(this).addClass("showPopup");
+                setTimeout(function() {
+                   $(this).find(".fps").select(); 
+                }.bind(this),50);
+            });
+
+            var $metricsPanel = this.$metricsPanel;
+            this.$metricsPanel.find("input").focus(function() {
+                setTimeout(function() {
+                    this.setSelectionRange(0, 9999);
+                }.bind(this),20);
+                $(this).one("blur",function() {
+                    setTimeout(function() {
+                        var hasFocus = false;
+                        $metricsPanel.find("input").each(function() {
+                            if ($(this).is(":focus")) hasFocus = true;
+                        });
+                        if (!hasFocus) $metricsPanel.removeClass("showPopup");
+                    },50);
+                });
+            });
+
+            /*
             this.$el.find(".metricsPanel input").click(function() {
                 $(this).select();
             });
-
             util.bindClickEvent(this.$el.find(".metricsDisclosure"),_.bind(function() {
                 this.$el.find(".metricsPanel").toggle();
             },this));
-
-            this.$metricsPanel = this.$el.find(".metricsPanel");
 
             //fancytize
             this.$metricsPanel.find("input").hide();
@@ -81,6 +110,7 @@ function($,tinycolor,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop_tem
                     $el.find("input").hide();
                 });
             }.bind(this));
+            */
 
             this.$el.find(".metricsPanel input").change(_.bind(function() {
                 this.pattern.fps = parseInt(this.$fps.val()); //TODO upgrade to float

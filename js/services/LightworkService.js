@@ -18,9 +18,13 @@ class LightworkService extends EventEmitter {
 
         opt.headers = {};
         if (SettingsManager.getUser()) opt.headers["Authorization"] = UserService.getAuthorizationHeader(SettingsManager.getUser());
+        console.log("Authorization",opt.headers["Authorization"]);
+        console.log("userId",userId);
          
         if (debugRequests) console.log("FETCH: userLightworks",userId);
+        var start = new Date().getTime();
         fetch(Configuration.LIGHTWORK_ENDPOINT+"/user/"+userId+"/patterns",opt).catch(() => cb(null)).then((response) => response.json()).then(function(data) {
+            console.log("fetch lightworks took",new Date().getTime() - start);
             cb(data);
         }); 
     }
