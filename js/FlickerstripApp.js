@@ -37,6 +37,7 @@ import skinStyles from "~/styles/skinStyles";
 import BulkActions from "~/actions/BulkActions.js";
 import EditorActions from "~/actions/EditorActions.js";
 import ComponentManager from "~/stores/ComponentManager.js";
+import FlickerstripNavigationBar from "~/components/FlickerstripNavigationBar.js";
 
 var flattenStyle = require('flattenStyle')
 
@@ -82,7 +83,6 @@ class FlickerstripApp extends React.Component {
         this.setState({activeLightwork: id, selectedTab:"editor"});
     }
     onActiveLightworkUpdated() {
-        console.log("active lightwork updated!");
         this.setState({activeLightworkVersion: Math.random()});
     }
     onLightworkUpdated(id) {
@@ -94,30 +94,10 @@ class FlickerstripApp extends React.Component {
     updateSelectedLightworksCount() {
         this.setState({selectedLightworks: LightworkManager.getSelectedCount()});
     }
-    generateTitleButton(info,isTitle) {
-        if (!info) return null;
-
-        var content = null;
-        if (info.text) content = (<Text style={isTitle?skinStyles.navigationTitle:skinStyles.navigationTextButton}>{info.text}</Text>);
-        if (info.render) content = info.render();
-
-        var containerStyles = [{padding:10,justifyContent:"center",flex:1}];
-
-        if (info.onPress) {
-            return (<TouchableHighlight underlayColor={skinStyles.touchableUnderlayColor} style={containerStyles} onPress={info.onPress}>{content}</TouchableHighlight>);
-        } else {
-            return (<View style={containerStyles}>{content}</View>);
-        }
-    }
-    renderNavigationBar() {
+    renderNavigationBar(refresher) {
         return (
-            <Navigator.NavigationBar
-                routeMapper={{
-                    LeftButton: (route) => this.generateTitleButton(route.left),
-                    RightButton: (route) => this.generateTitleButton(route.right),
-                    Title: (route) => this.generateTitleButton(route.center,true),
-                }}
-                style={skinStyles.navigationBar}
+            <FlickerstripNavigationBar
+                refresher={refresher}
             />
         );
 
@@ -181,7 +161,7 @@ class FlickerstripApp extends React.Component {
                                                     ? {"label":"Off", onPress:() => BulkActions.selectedStripPowerToggle(false)}
                                                     : {"label":"On", onPress:() => BulkActions.selectedStripPowerToggle(true)}
                                             ),
-                                            {"label":"Clear Patterns", destructive:true, onPress:() => { console.log("clearing patterns.."); }},
+                                            //{"label":"Clear Patterns", destructive:true, onPress:() => { console.log("clearing patterns.."); }},
                                             {"label":"Cancel", cancel:true},
                                         ]);
                                     }
@@ -246,7 +226,7 @@ class FlickerstripApp extends React.Component {
                             initialRoute={{
                                 component: LightworkEditor,
                                 passProps: { lightwork: EditorManager.getActiveLightwork() },
-                                center:{text: EditorManager.getActiveLightwork() ? EditorManager.getActiveLightwork().name : "Editor"},
+                                center:() => { return {text: EditorManager.getActiveLightwork() ? EditorManager.getActiveLightwork().name : "Editor"}; },
                                 left:{
                                     text: EditorManager.getActiveLightwork() ? "Save" : undefined, 
                                     onPress: EditorManager.getActiveLightwork() ? () => { 
@@ -273,7 +253,7 @@ class FlickerstripApp extends React.Component {
                                     }
                             }}
                             style={layoutStyles.flexColumn}
-                            navigationBar={this.renderNavigationBar()}
+                            navigationBar={this.renderNavigationBar(EditorManager.getNavigationBarRefresher())}
                             renderScene={this.sceneRenderer.bind(this)}
                         />
                         <Prompt

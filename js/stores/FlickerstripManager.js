@@ -183,7 +183,6 @@ class FlickerstripManager extends EventEmitter {
     onStripDisconnected(id) {
         var strip = this.strips[id];
         if (!strip) return;
-        console.log("removing strip (dc/err)",id);
         this.discover.markLost(strip.ip);
         delete this.strips[id];
         this.emit("StripRemoved",id);
@@ -193,7 +192,6 @@ class FlickerstripManager extends EventEmitter {
         if (id == null) return;
         var strip = this.strips[id];
         if (!strip) return;
-        console.log("removing strip (lost)",id);
         delete this.strips[id];
 
         this.discover.markLost(ip);

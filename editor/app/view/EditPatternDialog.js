@@ -43,7 +43,9 @@ function($,tinycolor,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop_tem
                 this.stripRenderer.resizeToParent();
             },this),100);
 
-            this.$el.find(".swapPalette").click(function() {
+            this.$el.find(".swapPalette").click(function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 $(this).closest(".palette").toggleClass("showSpecial");
             });
 
@@ -55,6 +57,7 @@ function($,tinycolor,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop_tem
             this.editor = new CanvasPixelEditor(null,this.pattern.palette,this.$el.find(".currentColor"),this.$el.find(".palette"));
             $(this.editor).on("PaletteUpdated",_.bind(function(e,palette) {
                 this.pattern.palette = palette;
+                $(this).trigger("PatternUpdated",[this.pattern])
             },this));
             
 
@@ -124,10 +127,14 @@ function($,tinycolor,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop_tem
                 this.updatePattern();
             },this));
 
-            this.$undoButton = this.$el.find(".undoButton").click(function() {
+            this.$undoButton = this.$el.find(".undoButton").click(function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 this.editor.undo();
             }.bind(this));
-            this.$redoButton = this.$el.find(".redoButton").click(function() {
+            this.$redoButton = this.$el.find(".redoButton").click(function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 this.editor.redo()
             }.bind(this));
 

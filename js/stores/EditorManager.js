@@ -12,6 +12,7 @@ class EditorManager extends EventEmitter {
 
         this.lightworks = [];
         this.activeLightwork = null;
+        this.navigationBarRefresher = new EventEmitter();
 
         FlickerstripDispatcher.register(function(e) {
             if (e.type === ActionTypes.EDITOR_OPEN_LIGHTWORK) {
@@ -40,13 +41,16 @@ class EditorManager extends EventEmitter {
             }
         }.bind(this));
     }
+    getNavigationBarRefresher() {
+        return this.navigationBarRefresher;
+    }
     getLightwork(lightworkId) {
         var index = this.lightworkIndexById(lightworkId);
         if (index === -1) return null;
         return this.lightworks[index];
     }
     lightworkEdited(lightworkId,lw) {
-        var parametersChanged = _.without(_.keys(lw),"pixelData");
+        var parametersChanged = _.intersection(_.keys(lw),["name"]);
         parametersChanged = _.filter(parametersChanged,function(param) {
             return lw[param] != this.lightworks[this.lightworkIndexById(lightworkId)][param];
         }.bind(this));
@@ -54,7 +58,7 @@ class EditorManager extends EventEmitter {
         _.extend(this.lightworks[this.lightworkIndexById(lightworkId)],lw);
 
         if (parametersChanged.length > 0 && lightworkId == this.activeLightwork) {
-            this.emit("ActiveLightworkUpdated");
+            this.navigationBarRefresher.emit("Refresh");
         }
     }
     addLightwork(lw) {

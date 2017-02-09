@@ -44,7 +44,6 @@ class FlickerstripRow extends React.Component {
         this.setState({key:Math.random()});
     }
     render() {
-        console.log("update manager",this.props.strip.firmware,UpdateManager.getLatestVersion(),UpdateManager.compareLatestVersion(this.props.strip.firmware));
         return (
             <View key={this.state.key}>
                 <View style={[layoutStyles.flexAlignStretch, layoutStyles.row,layoutStyles.flexRow, this.props.strip.selected ? skinStyles.rowSelected : skinStyles.rowDeselected]}>

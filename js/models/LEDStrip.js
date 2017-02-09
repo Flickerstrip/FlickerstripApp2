@@ -78,7 +78,6 @@ class LEDStrip extends EventEmitter {
         });
     }
     disconnectClient() {
-        console.log("Client disconnected: "+this.ip);
         this.ip = null;
         this._busy = false;
         this._queue = [];

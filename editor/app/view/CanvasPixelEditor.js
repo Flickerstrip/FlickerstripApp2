@@ -184,6 +184,7 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
                     }
                 }
                 e.preventDefault();
+                e.stopPropagation();
                 return false;
             },this);
             var dblHandler = _.bind(function(e) {
@@ -201,6 +202,7 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
                 this.requestFrame();
 
                 e.preventDefault();
+                e.stopPropagation();
                 return false;
             },this);
             if (platform == "desktop") $panel.on("click contextmenu",handler);
