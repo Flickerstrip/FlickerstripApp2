@@ -162,6 +162,7 @@ function($,tinycolor,util,LEDStripRenderer,CanvasPixelEditor,Pattern,desktop_tem
             this.pattern = pattern;
 
             this.canvas = util.renderPattern(this.pattern.pixelData,this.pattern.pixels,this.pattern.frames,null,null,false,false);
+            this.editor.setPalette(this.pattern.palette);
             this.editor.setImage(this.canvas);
             this.editor.setFps(this.pattern.fps);
 

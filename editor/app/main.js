@@ -4,6 +4,7 @@ require(['underscore','jquery','shared/Pattern.js','view/EditPatternDialog.js','
         initialized = true;
         var p = typeof window.injectedPattern !== "undefined" ? _.extend(new Pattern(),window.injectedPattern) : null;
 
+        if (p) p.palette = Pattern.resizePalette(p.palette,5);
         window.editPatternDialog = new EditPatternDialog(null,null,p,$(".lightworkEditor"));
     };
 
@@ -19,6 +20,9 @@ require(['underscore','jquery','shared/Pattern.js','view/EditPatternDialog.js','
                 if (json.command) {
                     var command = json.command;
                     if (command == "load") {
+                        console.log("loading palette",json.lightwork.palette);
+                        json.lightwork.palette = Pattern.resizePalette(json.lightwork.palette,5);
+                        console.log("loading palette",json.lightwork.palette);
                         window.editPatternDialog.loadPattern(json.lightwork);
                     }
                 }
@@ -32,6 +36,7 @@ require(['underscore','jquery','shared/Pattern.js','view/EditPatternDialog.js','
     window.injectExecuted = function() {
         if (!initialized) initialize();
         var p = _.extend(new Pattern(),window.injectedPattern);
+        p.palette = Pattern.resizePalette(p.palette,5);
         window.editPatternDialog.loadPattern(p);
     }
 

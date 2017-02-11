@@ -151,6 +151,8 @@ This.objectToPlainArray = function(obj) {
     return Array.prototype.slice.call(obj);
 }
 
+This.resizePalette = resizePalette;
+
 
 module.exports = This;
 

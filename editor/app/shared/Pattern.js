@@ -11,6 +11,7 @@ define([ "underscore","tinycolor2","base64-js" ],
         ];
 
         function resizePalette(original,paletteSize) {
+            console.log("resizing palette",original.length,original);
             var palette = $.extend([],original);
             while(palette.length < paletteSize) palette.push([255,255,255]);
             while(palette.length > paletteSize) palette.pop();
@@ -139,6 +140,8 @@ define([ "underscore","tinycolor2","base64-js" ],
 
         This.DEFAULT_PATTERN = new This();
         _.extend(This.DEFAULT_PATTERN,{pixels:7,fps:3,frames:7,pixelData:[0,0,0,0,0,0,0,0,0,251,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,251,255,0,255,170,0,251,255,0,0,0,0,0,0,0,0,0,0,251,255,0,255,170,0,255,0,0,255,170,0,251,255,0,0,0,0,251,255,0,255,170,0,255,0,0,255,255,255,255,0,0,255,170,0,251,255,0,0,0,0,251,255,0,255,170,0,255,0,0,255,170,0,251,255,0,0,0,0,0,0,0,0,0,0,251,255,0,255,170,0,251,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,251,255,0,0,0,0,0,0,0,0,0,0]});
+
+        This.resizePalette = resizePalette;
 
         return This;
     }

@@ -163,6 +163,10 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
             this.bg = c;
             this.updateColorUI();
         },
+        setPalette:function(palette) {
+            this.palette = palette;
+            this.updateColorUI();
+        },
         generateColorPanel:function(c,index,noDouble) {
             var $panel = $("<div class='color'></div>").css("background-color",c.toHexString());
             var handler = _.bind(function(e) {
@@ -227,7 +231,6 @@ define(['jquery','tinycolor2',"view/util.js", 'text!tmpl/canvasPixelEditor.html'
             var $colors = this.$paletteContainer.find(".colors");
             var $special = this.$paletteContainer.find(".special");
             var size = this.paletteBoxSize ? this.paletteBoxSize : ($colors.is(":visible") ? $colors : $special).children().first().width();
-            console.log("resizing palette: ",size);
             this.$paletteContainer.find(".color").each(function() {
                 $(this).height(size);
             });
