@@ -208,7 +208,6 @@ class LightworkManager extends EventEmitter {
         SettingsManager.storeLightworks(userLightworks,lightworksById,this.queuedActions,this.publicLightworks,this.lightworkConfiguration);
     }
     nextQueue() {
-        console.log("next called");
         if (this.taskId) this.taskId = TaskManager.updateProgress(this.taskId,true,null,true) ? null : this.taskId;
         this.busy = false;
         if (this.actionCallback) this.actionCallback.apply(null,arguments); //TODO gross, dont use a instance var 

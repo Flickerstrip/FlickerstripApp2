@@ -36,6 +36,7 @@ class EditorManager extends EventEmitter {
                 LightworkManager.saveLightwork(id,this.lightworks[i],function(saveId,lw) {
                     if (id == null && this.activeLightork == id) {
                         this.activeLightwork = saveId;
+                        this.lightworks[i].id = saveId;
                     }
                 }.bind(this));
             }
@@ -50,14 +51,18 @@ class EditorManager extends EventEmitter {
         return this.lightworks[index];
     }
     lightworkEdited(lightworkId,lw) {
-        var parametersChanged = _.intersection(_.keys(lw),["name"]);
-        parametersChanged = _.filter(parametersChanged,function(param) {
+        var parametersChanged = _.filter(_.keys(lw),function(param) {
             return lw[param] != this.lightworks[this.lightworkIndexById(lightworkId)][param];
         }.bind(this));
 
         _.extend(this.lightworks[this.lightworkIndexById(lightworkId)],lw);
 
+        var nameChanged = _.intersection(parametersChanged,["name"]).length;
+
         if (parametersChanged.length > 0 && lightworkId == this.activeLightwork) {
+            this.emit("ActiveLightworkChanged",this.activeLightwork);
+        }
+        if (nameChanged) {
             this.navigationBarRefresher.emit("Refresh");
         }
     }
