@@ -11,6 +11,13 @@ import UserService from "~/services/UserService";
 var debugRequests = true;
 
 function fetchJson(url,opt) {
+    /*
+    return new Promise(function(resolve,reject) {
+        if (debugRequests) console.log("Skipping Fetch: "+url);
+        resolve([]);
+    });
+    */
+
     var start = new Date().getTime();
     return fetch(url,opt).catch(() => console.log("CAUGHT ERROR")).then(function(response) {
         var end = new Date().getTime();

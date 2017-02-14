@@ -17,10 +17,21 @@ class PaginatedListView extends React.Component {
             dataSource: new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2}).cloneWithRows([])
         };
 
+        this._isMounted = false;
         this.page = 0;
         this.rows = [];
 
         this.loadNextPage();
+    }
+    componentWillMount() {
+        this._isMounted = true;
+
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(this.rows.slice(0))
+        });
+    }
+    componentWillUnmount() {
+        this._isMounted = false;
     }
     loadNextPage() {
         this.loading = true;
@@ -30,11 +41,12 @@ class PaginatedListView extends React.Component {
         this.loading = false;
         this.totalPages = totalPages;
         this.rows = this.rows.concat(rows);
-        setTimeout(function() {
-            this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(this.rows.slice(0))
-            });
-        }.bind(this),0);
+
+        if (!this._isMounted) return;
+
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(this.rows.slice(0))
+        });
     }
     onEndReached() { //TODO this seems to be firing prematurely..
         if (this.loading) return;

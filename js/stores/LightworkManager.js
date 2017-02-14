@@ -397,7 +397,8 @@ class LightworkManager extends EventEmitter {
         if (page != pagesLoaded) return console.log("ERROR: tried to load public lightwork pages out of order..!"); //TODO automatically load intervening pages
 
         LightworkService.fetchPublicLightworks(page,function(result) {
-            if (!this.publicLightworks) this.publicLightworks = {totalLightworks:result.total,lightworks:[]};
+            if (result.length == 0) return;
+            if (!this.publicLightworks) this.publicLightworks = {totalLightworks:result.total ? result.total : 0,lightworks:[]};
 
             _.each(result.results,function(lw) {
                 this.lightworksById[lw.id] = lw;
