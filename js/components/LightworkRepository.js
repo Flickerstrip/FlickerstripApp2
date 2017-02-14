@@ -44,7 +44,7 @@ class LightworkRepository extends React.Component {
                 lightwork      = {lightwork}
                 selected       = {() => lightwork.selected}
                 onDrilldown    = {() => this.rowDrilldownPressed(lightwork)}
-                onPress        = {() => LightworkManager.getSelectedCount() == 0 ? BulkActions.previewLightworkOnSelectedStrips(lightwork.id) : lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
+                onPress        = {() => BulkActions.previewLightworkOnSelectedStrips(lightwork.id)}
                 onLongPress    = {() => MenuButton.showMenu([
                     {"label":"Preview Lightwork", onPress:() => BulkActions.previewLightworkOnSelectedStrips(lightwork.id) },
                     {"label":"Load Lightwork", onPress:() => BulkActions.loadLightworkToSelectedStrips(lightwork.id) },

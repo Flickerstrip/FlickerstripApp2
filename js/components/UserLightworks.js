@@ -59,7 +59,7 @@ class UserLightworks extends React.Component {
                 showPublished = {true}
                 selected      = {() => lightwork.selected || false}
                 onDrilldown   = {() => this.rowDrilldownPressed(lightwork)}
-                onPress       = {() => LightworkManager.getSelectedCount() == 0 ? BulkActions.previewLightworkOnSelectedStrips(lightwork.id) : lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
+                onPress       = {() => BulkActions.previewLightworkOnSelectedStrips(lightwork.id)}
                 onSelectToggle= {() => lightwork.selected ? LightworkActions.deselectLightwork(lightwork.id) : LightworkActions.selectLightwork(lightwork.id)}
                 onLongPress   = {() => MenuButton.showMenu([
                     {"label":"Preview Lightwork", onPress:() => BulkActions.previewLightworkOnSelectedStrips(lightwork.id) },
