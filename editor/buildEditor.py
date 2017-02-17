@@ -12,6 +12,7 @@ for line in f:
 
         f3 = open(buildRoot+filename,"r");
         for line2 in f3:
+            line2 = line2.replace("url(/","url(")
             f2.write(line2);
     else:
         f2.write(line);

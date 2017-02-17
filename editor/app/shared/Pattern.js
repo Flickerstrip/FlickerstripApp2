@@ -11,7 +11,6 @@ define([ "underscore","tinycolor2","base64-js" ],
         ];
 
         function resizePalette(original,paletteSize) {
-            console.log("resizing palette",original.length,original);
             var palette = $.extend([],original);
             while(palette.length < paletteSize) palette.push([255,255,255]);
             while(palette.length > paletteSize) palette.pop();
