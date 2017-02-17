@@ -1,4 +1,5 @@
 require(['underscore','jquery','shared/Pattern.js','view/EditPatternDialog.js','bootstrap'],function(_,$,Pattern,EditPatternDialog) {
+    var testInitialize = false;
     var readyRun = false;
 
     var initialize = function() {
@@ -35,12 +36,12 @@ require(['underscore','jquery','shared/Pattern.js','view/EditPatternDialog.js','
         if (readyRun) {
             var p = _.extend(new Pattern(),window.injectedPattern);
             p.palette = Pattern.resizePalette(p.palette,5);
-            window.editPatternDialog.loadPattern(json.lightwork);
+            window.editPatternDialog.loadPattern(p);
         }
     }
 
     $(document).ready(function() {
-        var testInitialize = false;
+        readyRun = true;
 
         if (testInitialize) {
             $("<button>Clickme</button>").css({"z-index":"1000","position":"absolute"}).click(function() {
