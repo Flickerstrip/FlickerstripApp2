@@ -40,7 +40,7 @@ require(['underscore','jquery','shared/Pattern.js','view/EditPatternDialog.js','
     }
 
     $(document).ready(function() {
-        var testInitialize = true;
+        var testInitialize = false;
 
         if (testInitialize) {
             $("<button>Clickme</button>").css({"z-index":"1000","position":"absolute"}).click(function() {
