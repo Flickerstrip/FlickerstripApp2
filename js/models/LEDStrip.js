@@ -13,6 +13,9 @@ var PatternLoader = NativeModules.PatternLoader;
 
 var visibleTimeout = 9000;
 
+fetch = undefined;
+require("whatwg-fetch-timeout");
+
 function param(params) {
     var query = Object.keys(params)
         .map(function(k) { return params[k] == null ? encodeURIComponent(k) : encodeURIComponent(k) + "=" + encodeURIComponent(params[k]); })

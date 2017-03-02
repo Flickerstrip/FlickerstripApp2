@@ -30,9 +30,6 @@ var This = function() {
 
 import NetworkManager from "~/stores/NetworkManager";
 
-fetch = undefined;
-require("whatwg-fetch-timeout");
-
 util.inherits(This, EventEmitter);
 extend(This.prototype,{
     init:function() {

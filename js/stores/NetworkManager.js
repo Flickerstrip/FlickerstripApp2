@@ -45,21 +45,16 @@ class NetworkManager extends EventEmitter {
     pingServerImpl(cb) {
         var opt = {
             method: "GET",
-            timeout: 2,
+            timeout: 3000,
             headers: {
                 'cache-control':'no-cache',
                 'pragma':'no-cache',
             }
         };
 
-        var t = setTimeout(function() {
-            cb(false);
-        },2000);
         fetch(Configuration.LIGHTWORK_ENDPOINT,opt).then(function(res) {
-            clearTimeout(t);
             if (cb) cb(true);
         }).catch(function(res) {
-            clearTimeout(t);
             if (cb) cb(false);
         });
     }
