@@ -169,7 +169,12 @@ class FlickerstripManager extends EventEmitter {
     onStripDiscovered(ip) {
         LEDStrip.probeStrip(ip,this.probedStrip.bind(this));
     }
-    probedStrip(strip) {
+    probedStrip(strip,ip) {
+        if (strip == null) {
+            console.log("Strip probe failed!",ip)
+            this.discover.markLost(ip);
+            return;
+        }
         if (this.strips[strip.id]) {
             //this.emit("StripConnected",strip);
         } else {
@@ -180,10 +185,10 @@ class FlickerstripManager extends EventEmitter {
             strip.on("StripUpdated",this.stripUpdateReceived.bind(this));
         }
     }
-    onStripDisconnected(id) {
+    onStripDisconnected(id,ip) {
         var strip = this.strips[id];
         if (!strip) return;
-        this.discover.markLost(strip.ip);
+        this.discover.markLost(ip);
         delete this.strips[id];
         this.emit("StripRemoved",id);
     }

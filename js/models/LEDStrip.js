@@ -78,11 +78,12 @@ class LEDStrip extends EventEmitter {
         });
     }
     disconnectClient() {
+        var ipAddress = this.ip;
         this.ip = null;
         this._busy = false;
         this._queue = [];
         this.stopWatchdogTimer();
-        this.emit("StripDisconnected",this.id);
+        this.emit("StripDisconnected",this.id,ipAddress);
         //this.emit("Strip.StatusUpdated",{"visible":false});
     }
     receivedStatus(status,err) {
@@ -257,6 +258,7 @@ class LEDStrip extends EventEmitter {
         var data = pattern.pixelData;
         var bufferSize = pattern.pixels*pattern.frames*3;
         var payload = [];
+        if (data.length == 0) console.log("ERROR ERROR, DATA LENGTH 0");
         for (var i=0; i<data.length; i++) payload[i] = data[i];
 
         var p = {
@@ -311,16 +313,16 @@ class LEDStrip extends EventEmitter {
 
 LEDStrip.probeStrip = function(ip,cb) {
     var url = "http://"+ip+"/status";
-    fetch(url)
+    fetch(url,{timeout: 1000})
         .catch(function(err) {
-            console.log("probe err!",err);
-            cb(null);
+            cb(null,ip);
         })
         .then((response) => response ? response.json() : null)
         .then(function(json) {
+            if (json == null) return cb(null,ip);
             var strip = new LEDStrip(json.mac,ip);
             strip.receivedStatus(json,null);
-            cb(strip);
+            cb(strip,ip);
         }.bind(this));
 }
 
