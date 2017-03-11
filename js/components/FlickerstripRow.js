@@ -13,11 +13,11 @@ var {
 } = ReactNative;
 
 import EIcon from "react-native-vector-icons/EvilIcons";
+import FIcon from "react-native-vector-icons/FontAwesome";
 import FlickerstripManager from "~/stores/FlickerstripManager.js";
 import skinStyles from "~/styles/skinStyles";
 import Checkbox from "~/components/Checkbox";
 import UpdateManager from "~/stores/UpdateManager.js";
-import FIcon from "react-native-vector-icons/FontAwesome";
 import layoutStyles from "~/styles/layoutStyles";
 import renderIf from "~/utils/renderIf"
 

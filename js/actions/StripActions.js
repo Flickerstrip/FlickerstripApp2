@@ -86,6 +86,11 @@ export default {
             stripId: stripId,
         });
     },
+    updateAllFirmware:function() {
+        FlickerstripDispatcher.dispatch({
+            type: ActionTypes.UPDATE_ALL_FIRMWARE,
+        });
+    },
     addByIp:function(ip) {
         FlickerstripDispatcher.dispatch({
             type: ActionTypes.ADD_BY_IP,

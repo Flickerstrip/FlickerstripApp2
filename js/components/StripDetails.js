@@ -7,12 +7,14 @@ import {
     ListView,
     Slider,
     Platform,
+    Alert,
     AlertIOS,
 } from "react-native";
 
 var _ = require("lodash");
 var EventEmitter = require("EventEmitter");
 
+import FIcon from "react-native-vector-icons/FontAwesome";
 import Prompt from 'react-native-prompt';
 import layoutStyles from "~/styles/layoutStyles";
 import LightworkRow from "~/components/LightworkRow";
@@ -24,6 +26,9 @@ import SettingsList from "react-native-settings-list";
 import StripInformation from "~/components/StripInformation";
 import StripInformationPixels from "~/components/StripInformationPixels";
 import skinStyles from "~/styles/skinStyles";
+import UpdateManager from "~/stores/UpdateManager.js";
+import renderIf from "~/utils/renderIf"
+import Button from "react-native-button"
 
 class StripDetails extends React.Component {
     constructor(props) {
@@ -99,6 +104,21 @@ class StripDetails extends React.Component {
         var stripName = this.props.strip.name == "" ? "Unknown Strip" : this.props.strip.name;
         return (
             <View style={layoutStyles.flexColumn} key={this.state.key}>
+                {renderIf(UpdateManager.compareLatestVersion(this.props.strip.firmware))(
+                    <Button
+                        style={skinStyles.button}
+                        onPress={() => Alert.alert(
+                            'Update to '+UpdateManager.getLatestVersion(),
+                            UpdateManager.getLatestVersionNote(),
+                            [
+                                {text:"Update",onPress:() => StripActions.updateFirmware(this.props.strip.id)},
+                                {text:"Cancel"},
+                            ]
+                        )}
+                    >
+                        Firmware update to {UpdateManager.getLatestVersion()}
+                    </Button>
+                )}
                 <View style={[layoutStyles.flexRow, layoutStyles.flexAlignCenter]}>
                     <Text style={{padding: 5}}>Brightness: </Text>
                     <Slider

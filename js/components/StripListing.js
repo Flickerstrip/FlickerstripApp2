@@ -5,6 +5,7 @@ import {
     Text,
     View,
     ListView,
+    Alert,
 } from "react-native";
 
 var _ = require("lodash");
@@ -21,6 +22,7 @@ import WiFiNetworkPrompt from "~/components/WiFiNetworkPrompt.js";
 import ConfigureNewStrip from "~/components/ConfigureNewStrip.js";
 import StatusBar from "~/components/StatusBar.js";
 import skinStyles from "~/styles/skinStyles";
+import UpdateManager from "~/stores/UpdateManager.js";
 
 var NavigationBar = require("react-native-navbar");
 
@@ -88,6 +90,25 @@ class StripListing extends React.Component {
             }
         });
     }
+    renderHeader() {
+        return (<View>
+            {renderIf(FlickerstripManager.firmwareUpdateRequired())(
+                <Button
+                    style={skinStyles.button}
+                    onPress={() => Alert.alert(
+                        'Update to '+UpdateManager.getLatestVersion(),
+                        UpdateManager.getLatestVersionNote(),
+                        [
+                            {text:"Update",onPress:() => StripActions.updateAllFirmware()},
+                            {text:"Cancel"},
+                        ]
+                    )}
+                >
+                    Firmware update available
+                </Button>
+            )}
+        </View>)
+    }
     render() {
         return FlickerstripManager.getCount() == 0 ? (
             <View style={[this.props.style,layoutStyles.flexColumn]}>
@@ -138,6 +159,7 @@ class StripListing extends React.Component {
                     enableEmptySections={true}
                     automaticallyAdjustContentInsets={false}
                     //renderFooter={this.renderFooter}
+                    renderHeader={this.renderHeader}
                     renderRow={this.renderRow.bind(this)}
                     //onEndReached={this.onEndReached}
                     //keyboardDismissMode="on-drag"

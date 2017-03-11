@@ -71,6 +71,12 @@ class FlickerstripManager extends EventEmitter {
             } else if (e.type === ActionTypes.UPDATE_FIRMWARE) {
                 var strip = this.getStrip(e.stripId);
                 strip.uploadFirmware(UpdateManager.getLatestVersion());
+                this.onStripDisconnected(e.stripId,strip.ip);
+            } else if (e.type === ActionTypes.UPDATE_ALL_FIRMWARE) {
+                _.each(this.strips,function(strip) {
+                    strip.uploadFirmware(UpdateManager.getLatestVersion());
+                    this.onStripDisconnected(strip.id,strip.ip);
+                }.bind(this));
             } else if (e.type === ActionTypes.ADD_BY_IP) {
                 this.ipStrips.push(e.ip);
                 this.checkIpStrips();
@@ -81,6 +87,13 @@ class FlickerstripManager extends EventEmitter {
         this.strips = {};
 
         setInterval(this.checkIpStrips.bind(this),5000);
+    }
+    firmwareUpdateRequired() {
+        var updateRequired = false;
+        _.each(this.strips,function(strip) {
+            if (UpdateManager.compareLatestVersion(strip.firmware)) updateRequired = true;
+        });
+        return updateRequired;
     }
     checkIpStrips() {
         _.each(this.ipStrips,function(ip) {

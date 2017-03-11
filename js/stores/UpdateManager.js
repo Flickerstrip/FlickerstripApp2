@@ -53,6 +53,9 @@ class UpdateManager extends EventEmitter {
     getLatestVersion() {
         return this.latestRelease ? this.latestRelease.latest : null;
     }
+    getLatestVersionNote() {
+        return this.latestRelease ? this.latestRelease.note : null;
+    }
     downloadFirmwareVersion(version) {
         var downloadPath = Configuration.FIRMWARE_LOCATION+"/"+version+".bin";
         return RNFS.downloadFile({
